@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/indexStyle.css">
+</head>
+
+<body>
+<header>
+    <a id="logo" href="/">LinguaSphere</a>
+    <nav>
+        <ul>
+            <li><a href="/registration">Реєстрація</a></li>
+            <li><a href="/authorisation">Увійти</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section>
+        <h1>LinguaSphere</h1>
+        <h2>Explore the World Through Words</h2>
+        <button onclick="submitAboutUsForm()">Дізнайтеся більше про нас</button>
+    </section>
+
+    <section>
+        <h3>Чому обирають нас?</h3>
+        <div style="display: flex;">
+            <button href="#">Персональні курси</button><br>
+            <button href="#">Досвід викладачів</button><br>
+            <button href="#">Гнучкий графік</button><br>
+            <button href="#">Сучасні методи</button>
+        </div>
+    </section>
+</main>
+
+<form id="aboutUsForm" typeof="hidden" method="get" action="aboutUs"></form>
+
+<footer>
+    <table>
+        <tr>
+            <td>
+                <p>Контактні дані:</p>
+            </td>
+            <td>
+                <address>
+                    Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+                </address>
+            </td>
+            <td>
+                <p>Copyright © 2023 LinguaSphere</p>
+            </td>
+        </tr>
+    </table>
+</footer>
+
+<script src="/script/indexForms.js"></script>
+</body>
+</html>

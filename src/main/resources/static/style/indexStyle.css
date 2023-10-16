@@ -1,0 +1,169 @@
+/* Global Styles */
+html {
+    color: white;
+    text-align: center;
+}
+
+/* Header Styles */
+header {
+    border: 0;
+    border-radius: 20px;
+    background-color: #F69809;
+    margin: 10px 2px 10px 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#logo {
+    text-align: left;
+    font-weight: bold;
+    font-size: 32px;
+    cursor: pointer;
+    margin: 0;
+    height: 70px;
+    line-height: 70px;
+    padding: 0;
+    padding-left: 30px;
+    text-decoration: none;
+    color: white;
+}
+
+nav {
+    float: right;
+    padding-right: 30px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+nav li {
+    margin: 0;
+    margin-left: 20px;
+    border: 0;
+}
+
+nav li a {
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+    font-weight: medium;
+    cursor: pointer;
+}
+
+/* Section Styles */
+section {
+    border: 0;
+    border-radius: 20px;
+    margin: 10px 2px 10px 2px;
+}
+
+section:first-of-type {
+    background-color: #0038FF;
+}
+
+section:last-of-type {
+    background-color: #329DFF;
+}
+
+h1 {
+    font-weight: 800;
+}
+
+h2 {
+    line-height: 60px;
+    font-weight: semi bold;
+    font-size: 64px;
+    margin: 0;
+}
+
+h3 {
+    font-size: 32px;
+    margin: 0;
+}
+
+h1, h2, h3 {
+    padding: 20px;
+    align-items: center;
+}
+
+section h1 {
+    font-size: 128px;
+    height: 128px;
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+/* Button Styles */
+button {
+    background-color: #F69809;
+    border: 0;
+    border-radius: 20px;
+    text-align: center;
+    font-weight: semi bold;
+    height: 80px;
+    width: 300px;
+    color: white;
+    font-size: 28px;
+    font-weight: semi bold;
+    margin: 30px;
+    margin-top: 0;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #fda41c;
+}
+
+section:first-of-type button {
+    height: 100px;
+    width: 500px;
+    font-weight: bold;
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+/* Div Styles */
+div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #F69809;
+    border: 0;
+    border-radius: 20px;
+    margin: 10px 2px 10px 2px;
+}
+
+/* Table Styles */
+table {
+    border-collapse: collapse;
+    margin: 0px 30px 0px 30px;
+}
+
+td {
+    border: 0;
+    width: 33.33%;
+    text-align: left;
+}
+
+td:first-of-type {
+    width: 6%;
+}
+
+td:last-of-type {
+    width: 30%;
+    text-align: right;
+}
+
+address a {
+    margin-right: 10px;
+}

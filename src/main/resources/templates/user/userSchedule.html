@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaSphere</title>
+  <link rel="stylesheet" href="/style/userScheduleStyle.css">
+</head>
+
+<body>
+<header>
+  <a id="logo" th:attr="onclick='submitPageForm(\'' + ${token} + '\')'">LinguaSphere</a>
+  <img src="/photo.png" width="50" height="50" alt="user photo header">
+</header>
+
+<main style="display: flex;">
+  <aside>
+    <img src="/photo.png" width="200" height="200" alt="user photo header"><br>
+
+    <b th:text="${user.name + '   ' + user.surname}"></b><br><br>
+
+    <p>Електронна пошта:</p>
+    <p><i th:text="${user.email}"></i></p><br>
+
+    <p>Номер телефону:</p>
+    <p><i th:text="${user.phone}"></i></p><br>
+
+    <p>Додатковий контакт:</p>
+    <p><i>Додаткова контактна інформація</i></p><br>
+
+    <p>День народження:</p>
+    <p><i th:text="${user.dateOfBirth}"></i></p><br>
+  </aside>
+
+  <div>
+    <table>
+      <tr>
+        <th></th>
+        <th>Пн</th>
+        <th>Вт</th>
+        <th>Ср</th>
+        <th>Чт</th>
+        <th>Пт</th>
+        <th>Сб</th>
+        <th>Нд</th>
+      </tr>
+
+      <tr>
+        <th>08:00-09:00</th>
+        <td class="used"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>09:00-10:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>10:00-11:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="used"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>11:00-12:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="used"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>12:00-13:00</th>
+        <td class="used"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>13:00-14:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>14:00-15:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>15:00-16:00</th>
+        <td class="free"></td>
+        <td class="used"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="used"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>16:00-17:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>17:00-18:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="used"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>18:00-19:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>19:00-20:00</th>
+        <td class="free"></td>
+        <td class="used"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>20:00-21:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>21:00-22:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>22:00-23:00</th>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+      </tr>
+      <tr>
+        <th>23:00-24:00</th>
+        <td class="used"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="free"></td>
+        <td class="used"></td>
+      </tr>
+    </table>
+
+
+    <div>
+      <button th:attr="onclick='submitPageForm(\'' + ${token} + '\')'">Назад</button>
+      <button href="#">Додати урок</button>
+    </div>
+  </div>
+</main>
+
+<form typeof="hidden" method="get" id="userPageForm" action="userPage">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<footer>
+  <table>
+    <tr>
+      <td>
+        <p>Контактні дані:</p>
+      </td>
+      <td>
+        <address>
+          Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+        </address>
+      </td>
+      <td>
+        <p>Copyright © 2023 LinguaSphere</p>
+      </td>
+    </tr>
+  </table>
+</footer>
+
+<script src="/script/userPageForms.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaSphere</title>
+  <link rel="stylesheet" href="/style/regFormStyle.css">
+</head>
+
+<body>
+<header>
+  <a id="logo" href="/">LinguaSphere</a>
+  <nav>
+    <ul>
+      <li><a href="/registration">Реєстрація</a></li>
+      <li><a href="/authorisation">Увійти</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div class="regTitle">
+    <h1>Реєстрація</h1>
+  </div>
+  <div class="regForm">
+    <form id="regForm" method="post" action="/registration">
+      <div class="regInput">
+        <h2 class="name">Ім'я</h2>
+        <input class="field" id="name" th:value="${user.name}" type="text" name="name">
+        <h2 class="name">Прізвище</h2>
+        <input class="field" id="surname" th:value="${user.surname}" type="text" name="surname">
+        <h2 class="name">Електронна пошта</h2>
+        <input class="field" id="email" th:value="${user.email}" type="text" name="email">
+        <h2 class="name">Пароль</h2>
+        <input class="field" id="password" th:value="${user.password}" type="text" name="password">
+        <h2 class="name">Номер телефону</h2>
+        <input class="field" id="phone" th:value="${user.phone}" type="text" name="phone">
+        <h2 class="name">День народження</h2>
+        <input class="field" id="dob-day" th:value="${user.year != -1 ? user.day : ''}" type="text" name="day">
+        <h2 class="name">Місяць народження</h2>
+        <select id="dob-month" name="month">
+          <option value="" th:selected="${user.month == null}" th:disabled="${user.month == null}">Місяць</option>
+          <option value="1" th:selected="${user.month == 'Січень'}">Січень</option>
+          <option value="2" th:selected="${user.month == 'Лютий'}">Лютий</option>
+          <option value="3" th:selected="${user.month == 'Березень'}">Березень</option>
+          <option value="4" th:selected="${user.month == 'Квітень'}">Квітень</option>
+          <option value="5" th:selected="${user.month == 'Травень'}">Травень</option>
+          <option value="6" th:selected="${user.month == 'Червень'}">Червень</option>
+          <option value="7" th:selected="${user.month == 'Липень'}">Липень</option>
+          <option value="8" th:selected="${user.month == 'Серпень'}">Серпень</option>
+          <option value="9" th:selected="${user.month == 'Вересень'}">Вересень</option>
+          <option value="10" th:selected="${user.month == 'Жовтень'}">Жовтень</option>
+          <option value="11" th:selected="${user.month == 'Листопад'}">Листопад</option>
+          <option value="12" th:selected="${user.month == 'Грудень'}">Грудень</option>
+        </select>
+        <h2 class="name">Рік народження</h2>
+        <select id="dob-year" name="year">
+          <option th:value="${user.year != 0 && user.year != -1 ? user.year : ''}"
+                  th:selected="${user.year != 0 && user.year != -1}"
+                  th:disabled="${user.year == 0 || user.year == -1}"
+                  th:text="${user.year != 0 && user.year != -1 ? user.year : 'Рік'}"></option>
+        </select>
+        <input type="hidden" id="dateOfBirth" name="dateOfBirth" value="">
+        <input onclick="registerUser()" class="button" type="submit" value="Зареєструватися">
+        <p class="errorText" id="errorText"></p>
+        <p class="errorText" th:text="${errorText}"></p>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer>
+  <table>
+    <tr>
+      <td>
+        <p>Контактні дані:</p>
+      </td>
+      <td>
+        <address>
+          Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+        </address>
+      </td>
+      <td>
+        <p>Copyright © 2023 LinguaSphere</p>
+      </td>
+    </tr>
+  </table>
+</footer>
+
+<script src="/script/generateYears.js"></script>
+<script src="/script/dateValidation.js"></script>
+</body>
+</html>

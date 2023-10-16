@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaSphere</title>
+  <link rel="stylesheet" href="/style/userPageStyle.css">
+</head>
+
+<body>
+<header>
+  <a id="logo" th:attr="onclick='submitPageForm(\'' + ${token} + '\')'">LinguaSphere</a>
+  <img src="/photo.png" width="50" height="50" alt="user photo header">
+</header>
+
+<main>
+  <aside>
+    <img src="/photo.png" width="200" height="200" alt="user photo header"><br>
+
+    <b th:text="${user.name + '   ' + user.surname}"></b><br><br>
+
+    <p>Електронна пошта:</p>
+    <p><i th:text="${user.email}"></i></p><br>
+
+    <p>Номер телефону:</p>
+    <p><i th:text="${user.phone}"></i></p><br>
+
+    <p>Додатковий контакт:</p>
+    <p><i>Додаткова контактна інформація</i></p><br>
+
+    <p>День народження:</p>
+    <p><i th:text="${user.dateOfBirth}"></i></p><br>
+  </aside>
+
+  <div>
+    <button th:attr="onclick='submitSchedule(\'' + ${token} + '\')'">Розклад занять</button><br>
+    <button href="#">Навчальні матеріали</button><br>
+    <button href="#">Мої досягнення</button><br>
+    <button href="#">Щоденні цікавинки</button><br>
+    <button href="#">Підтримка</button>
+  </div>
+</main>
+
+<form typeof="hidden" method="get" id="userPageForm" action="user/userPage">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="scheduleForm" action="user/userSchedule">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<footer>
+  <table>
+    <tr>
+      <td>
+        <p>Контактні дані:</p>
+      </td>
+      <td>
+        <address>
+          Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+        </address>
+      </td>
+      <td>
+        <p>Copyright © 2023 LinguaSphere</p>
+      </td>
+    </tr>
+  </table>
+</footer>
+
+<script src="/script/userPageForms.js"></script>
+</body>
+</html>
