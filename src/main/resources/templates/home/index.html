@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -10,13 +10,7 @@
 
 <body>
 <header>
-    <a id="logo" href="/">LinguaSphere</a>
-    <nav>
-        <ul>
-            <li><a href="/registration">Реєстрація</a></li>
-            <li><a href="/authorisation">Увійти</a></li>
-        </ul>
-    </nav>
+    <div th:replace="~{/shared/layout1}"></div>
 </header>
 
 <main>

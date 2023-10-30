@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LinguaSphere</title>
   <link rel="stylesheet" href="/style/userScheduleStyle.css">
+  <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
 <body>
 <header>
-  <a id="logo" th:attr="onclick='submitPageForm(\'' + ${token} + '\')'">LinguaSphere</a>
-  <img src="/photo.png" width="50" height="50" alt="user photo header">
+  <div th:replace="~{/shared/layout2}"></div>
 </header>
 
 <main style="display: flex;">
@@ -48,7 +48,7 @@
 
       <tr>
         <th>08:00-09:00</th>
-        <td class="used"></td>
+        <td class="used" onclick="submitCell(0, 0)"></td>
         <td class="free"></td>
         <td class="free"></td>
         <td class="free"></td>
@@ -219,6 +219,11 @@
 <form typeof="hidden" method="get" id="userPageForm" action="userPage">
   <input type="hidden" th:value="${token}" name="token">
 </form>
+<form typeof="hidden" method="get" id="formCellSubmit" action="#">
+  <input type="hidden" th:value="${token}" name="token">
+  <input id="cellSubmitDay" type="hidden" value="" name="day">
+  <input id="cellSubmitTime" type="hidden" value="" name="time">
+</form>
 
 <footer>
   <table>
@@ -239,5 +244,7 @@
 </footer>
 
 <script src="/script/userPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+<script src="/script/userSchedule.js"></script>
 </body>
 </html>

@@ -18,15 +18,19 @@ header {
 #logo {
     color: white;
     cursor: pointer;
-    font-size: 32px;
     font-weight: bold;
+    font-size: 32px;
     height: 70px;
     line-height: 70px;
     margin: 0;
+    margin-left: 30px;
     padding: 0;
-    padding-left: 30px;
     text-align: left;
     text-decoration: none;
+}
+
+#logo:hover {
+    background-color: #fda41c;
 }
 
 header img {

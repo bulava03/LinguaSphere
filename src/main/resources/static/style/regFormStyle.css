@@ -14,17 +14,21 @@ header {
 }
 
 #logo {
-    text-align: left;
+    color: white;
+    cursor: pointer;
     font-weight: bold;
     font-size: 32px;
-    cursor: pointer;
-    margin: 0;
     height: 70px;
     line-height: 70px;
+    margin: 0;
+    margin-left: 30px;
     padding: 0;
-    padding-left: 30px;
+    text-align: left;
     text-decoration: none;
-    color: white;
+}
+
+#logo:hover {
+    background-color: #fda41c;
 }
 
 nav {

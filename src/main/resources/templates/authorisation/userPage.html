@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LinguaSphere</title>
   <link rel="stylesheet" href="/style/userPageStyle.css">
+  <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
 <body>
 <header>
-  <a id="logo" th:attr="onclick='submitPageForm(\'' + ${token} + '\')'">LinguaSphere</a>
-  <img src="/photo.png" width="50" height="50" alt="user photo header">
+  <div th:replace="~{/shared/layout2}"></div>
 </header>
 
 <main>
@@ -68,5 +68,6 @@
 </footer>
 
 <script src="/script/userPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
 </body>
 </html>
