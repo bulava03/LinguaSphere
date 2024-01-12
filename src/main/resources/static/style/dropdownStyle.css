@@ -35,6 +35,10 @@
     border-radius: 0px 0px 15px 15px;
 }
 
+.dropdown a:first-of-type:last-of-type:hover {
+    border-radius: 15px 15px 15px 15px;
+}
+
 .show {
     display: block;
 }

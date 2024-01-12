@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+    <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+    <div th:replace="~{/shared/layout4}"></div>
+</header>
+
+<form id="updateForm" action="/superAdmin/updateLanguage" method="get">
+    <input id="nameUpdate" type="hidden" value="" name="name" />
+    <input id="subNameUpdate" type="hidden" value="" name="subName" />
+</form>
+<form id="removeForm" action="/superAdmin/deleteLanguage" method="post">
+    <input id="nameRemove" type="hidden" value="" name="name" />
+    <input id="subNameRemove" type="hidden" value="" name="subName" />
+</form>
+
+<main>
+    <h2>Мови</h2>
+    <table id="table" th:if="${not #lists.isEmpty(languages)}">
+        <tr>
+            <th class="date-column">Назва</th>
+            <th class="complaint-column">Назва в родовому відмінку</th>
+            <th class="action-column"></th>
+            <th class="action-column"></th>
+        </tr>
+        <tr th:each="language : ${languages}">
+            <td th:text="${language.name}"></td>
+            <td th:text="${language.subName}"></td>
+            <td class="action-column" onclick="removeLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Видалити</td>
+            <td class="action-column" onclick="updateLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Змінити</td>
+        </tr>
+    </table>
+    <h2 id="emptyList" th:unless="${not #lists.isEmpty(languages)}">Список мов порожній</h2>
+    <form action="/superAdmin/addLanguage" method="get">
+        <input class="button" type="submit" value="Додати мову">
+    </form>
+</main>
+
+<footer>
+    <table>
+        <tr>
+            <td>
+                <p>Контактні дані:</p>
+            </td>
+            <td>
+                <address>
+                    Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+                </address>
+            </td>
+            <td>
+                <p>Copyright © 2023 LinguaSphere</p>
+            </td>
+        </tr>
+    </table>
+</footer>
+
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

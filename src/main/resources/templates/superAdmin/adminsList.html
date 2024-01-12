@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+    <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+    <div th:replace="~{/shared/layout4}"></div>
+</header>
+
+<form id="updateForm" action="/superAdmin/updateAdmin" method="get">
+    <input id="loginUpdate" type="hidden" value="" name="login" />
+    <input id="passwordUpdate" type="hidden" value="" name="password" />
+</form>
+<form id="removeForm" action="/superAdmin/deleteAdmin" method="post">
+    <input id="loginRemove" type="hidden" value="" name="login" />
+    <input id="passwordRemove" type="hidden" value="" name="password" />
+</form>
+
+<main>
+    <h2>Адміністратори</h2>
+    <table th:if="${not #lists.isEmpty(admins)}">
+        <tr>
+            <th class="date-column">Логін</th>
+            <th class="complaint-column">Пароль</th>
+            <th class="action-column"></th>
+            <th class="action-column"></th>
+        </tr>
+        <tr th:each="admin : ${admins}">
+            <td th:text="${admin.login}"></td>
+            <td th:text="${admin.password}"></td>
+            <td class="action-column" onclick="removeAdminConfirm(this.parentNode.getElementsByTagName('td')[0].innerText, this.parentNode.getElementsByTagName('td')[1].innerText)">Видалити</td>
+            <td class="action-column" onclick="updateAdminConfirm(this.parentNode.getElementsByTagName('td')[0].innerText, this.parentNode.getElementsByTagName('td')[1].innerText)">Змінити</td>
+        </tr>
+    </table>
+    <h2 id="emptyList" th:unless="${not #lists.isEmpty(admins)}">Список адміністраторів порожній</h2>
+    <form action="/superAdmin/addAdmin" method="get">
+            <input class="button" type="submit" value="Додати адміністратора">
+    </form>
+</main>
+
+<footer>
+    <table>
+        <tr>
+            <td>
+                <p>Контактні дані:</p>
+            </td>
+            <td>
+                <address>
+                    Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+                </address>
+            </td>
+            <td>
+                <p>Copyright © 2023 LinguaSphere</p>
+            </td>
+        </tr>
+    </table>
+</footer>
+
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

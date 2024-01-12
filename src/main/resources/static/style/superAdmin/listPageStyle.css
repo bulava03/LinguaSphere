@@ -1,0 +1,117 @@
+html {
+    color: white;
+    text-align: center;
+}
+
+/* Header Styles */
+header {
+    border: 0;
+    border-radius: 20px;
+    background-color: #F69809;
+    margin: 10px 2px 10px 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#logo {
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 32px;
+    height: 70px;
+    line-height: 70px;
+    margin: 0;
+    margin-left: 30px;
+    padding: 0;
+    text-align: left;
+    text-decoration: none;
+}
+
+#logo:hover {
+    background-color: #fda41c;
+}
+
+header img {
+    float: right;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+#adminPageForm, #adminPageForm input {
+    display: none;
+}
+
+.button {
+    background-color: #F69809;
+    display: block;
+    text-align: center;
+    border-radius: 20px;
+    width: 250px;
+    padding: 14px 5px;
+    outline: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 auto;
+    border: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button:hover {
+    background-color: #fda41c;
+}
+
+h2 {
+    font-size: 36px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+main {
+    background-color: #0038FF;
+    border-radius: 20px;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+#emptyList {
+    color: red;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #F69809;
+    border: 0;
+    border-radius: 20px;
+    margin: 20px 2px 10px 2px;
+}
+
+footer table {
+    border-collapse: collapse;
+    margin: 0px 30px 0px 30px;
+}
+
+footer td {
+    border: 0;
+    width: 33.33%;
+    text-align: left;
+}
+
+footer td:first-of-type {
+    width: 6%;
+}
+
+footer td:last-of-type {
+    width: 30%;
+    text-align: right;
+}
+
+address a {
+    margin-right: 10px;
+}
+

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${title}"></title>
+  <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+  <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+  <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+  <div th:replace="~{/shared/layout3}"></div>
+</header>
+
+<form id="updateForm" action="/admin/updateTeacher" method="get">
+  <input id="emailUpdate" type="hidden" value="" name="email" />
+  <input id="passwordUpdate" type="hidden" value="" name="password" />
+</form>
+<form id="removeForm" action="/admin/deleteTeacher" method="post">
+  <input id="emailRemove" type="hidden" value="" name="email" />
+  <input id="passwordRemove" type="hidden" value="" name="password" />
+</form>
+
+<main>
+  <h2>Викладачі</h2>
+  <table id="table" th:if="${not #lists.isEmpty(teachers)}">
+    <tr>
+      <th>Електронна пошта</th>
+      <th>Пароль</th>
+      <th>Ім'я</th>
+      <th>Прізвище</th>
+      <th>Номер телефону</th>
+      <th>Контакти</th>
+      <th>Мови</th>
+      <th class="action-column"></th>
+      <th class="action-column"></th>
+    </tr>
+    <tr th:each="teacher : ${teachers}">
+      <td th:text="${teacher.email}"></td>
+      <td th:text="${teacher.password}"></td>
+      <td th:text="${teacher.name}"></td>
+      <td th:text="${teacher.surname}"></td>
+      <td th:text="${teacher.phone}"></td>
+      <td th:text="${teacher.contacts}"></td>
+      <td>
+        <span th:each="lang, iterationStat : ${teacher.languages}">
+        <span th:text="${lang}"></span>
+        <span th:if="${!iterationStat.last}"> </span>
+    </span>
+      </td>
+      <td class="action-column" onclick="removeLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Видалити</td>
+      <td class="action-column" onclick="updateLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Змінити</td>
+    </tr>
+  </table>
+  <h2 id="emptyList" th:unless="${not #lists.isEmpty(teachers)}">Список викладачів порожній</h2>
+  <form action="/admin/addTeacher" method="get">
+    <input class="button" type="submit" value="Додати викладача">
+  </form>
+</main>
+
+<footer>
+  <table>
+    <tr>
+      <td>
+        <p>Контактні дані:</p>
+      </td>
+      <td>
+        <address>
+          Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+        </address>
+      </td>
+      <td>
+        <p>Copyright © 2023 LinguaSphere</p>
+      </td>
+    </tr>
+  </table>
+</footer>
+
+<script src="/script/adminPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

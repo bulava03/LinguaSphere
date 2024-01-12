@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaSphere</title>
+  <link rel="stylesheet" href="/style/userPageStyle.css">
+  <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+  <div th:replace="~{/shared/layout4}"></div>
+</header>
+
+<main>
+  <div>
+    <button onclick="submitGetLanguagesList()">Мови</button><br>
+    <button onclick="submitGetAdminsList()">Адміністратори</button><br>
+  </div>
+</main>
+
+<form id="getLanguagesListForm" typeof="hidden" action="superAdmin/getLanguagesList" method="get"></form>
+<form id="getAdminsListForm" typeof="hidden" action="superAdmin/getAdminsList" method="get"></form>
+
+<footer>
+  <table>
+    <tr>
+      <td>
+        <p>Контактні дані:</p>
+      </td>
+      <td>
+        <address>
+          Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+        </address>
+      </td>
+      <td>
+        <p>Copyright © 2023 LinguaSphere</p>
+      </td>
+    </tr>
+  </table>
+</footer>
+
+<script src="/script/superAdminPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

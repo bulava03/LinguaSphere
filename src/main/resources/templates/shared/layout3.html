@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<a id="logo" onclick="submitAdminPageForm()">LinguaSphere</a>
+<img onclick="dropdownUser()" id="userIcon" src="/photo.png" width="50" height="50" alt="user photo header">
+
+<div id="dropdown" class="dropdown">
+  <a href="#" onclick="adminInformation()">Особиста інформація</a>
+  <a href="/">Вийти</a>
+</div>
+
+<form id="adminPageForm" typeof="hidden" method="post" action="/admin/alogin">
+  <input type="hidden" th:value="${admin.login}" name="login">
+  <input type="hidden" th:value="${admin.password}" name="password">
+</form>
+</html>

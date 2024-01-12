@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaSphere</title>
+  <link rel="stylesheet" href="/style/authFormStyle.css">
+</head>
+
+<body>
+<header>
+  <div th:replace="~{/shared/layout1}"></div>
+</header>
+
+<main>
+  <div class="regTitle">
+    <h1>Увійти</h1>
+  </div>
+  <div class="regForm">
+    <form id="regForm" method="post" action="/admin/alogin">
+      <div class="regInput">
+        <h2 class="name">Логін</h2>
+        <input class="field" id="login" type="text" name="login">
+        <h2 class="name">Пароль</h2>
+        <input class="field" id="password" type="text" name="password">
+        <input class="button" type="submit" value="Увійти">
+        <p class="errorText" id="errorText"></p>
+        <p class="errorText" th:text="${errorText}"></p>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer>
+  <table>
+    <tr>
+      <td>
+        <p>Контактні дані:</p>
+      </td>
+      <td>
+        <address>
+          Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+        </address>
+      </td>
+      <td>
+        <p>Copyright © 2023 LinguaSphere</p>
+      </td>
+    </tr>
+  </table>
+</footer>
+
+</body>
+</html>
