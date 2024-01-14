@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/adminDailyFormStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout3}"></div>
+</header>
+
+<main>
+    <div class="regTitle">
+        <h1>Додати цікавинку</h1>
+    </div>
+
+    <div class="regForm">
+        <form id="regForm" action="/admin/addDaily" method="post" enctype="multipart/form-data">
+            <div class="regInput">
+                <fieldset>
+                    <legend>Мова:</legend>
+                    <div th:each="language : ${languages}">
+                        <input type="radio" th:id="${'radio-' + language.name}" th:value="${language.name}" th:name="${'language'}" />
+                        <label th:for="${'radio-' + language.name}" th:text="${language.name}"></label><br>
+                    </div>
+                </fieldset><br>
+
+                <h2 class="name">Текст</h2>
+                <textarea class="field" id="text" value="" type="text" name="text"></textarea>
+                <h2 class="name">Посилання</h2>
+                <textarea class="field" id="links" value="" type="text" name="links"></textarea>
+                <h2 class="name">Зображення</h2>
+                <input class="field" id="file" value="" type="file" name="file">
+
+                <input type="hidden" th:value="${admin.login}" name="login">
+                <input type="hidden" th:value="${admin.password}" name="password">
+
+                <input class="button" type="submit" value="Додати цікавинку">
+                <p class="errorText" id="errorText"></p>
+                <p class="errorText" th:text="${errorText}"></p>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <table>
+        <tr>
+            <td>
+                <p>Контактні дані:</p>
+            </td>
+            <td>
+                <address>
+                    Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+                </address>
+            </td>
+            <td>
+                <p>Copyright © 2023 LinguaSphere</p>
+            </td>
+        </tr>
+    </table>
+</footer>
+
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

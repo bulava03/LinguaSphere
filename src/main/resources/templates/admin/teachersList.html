@@ -43,12 +43,17 @@
       <td th:text="${teacher.name}"></td>
       <td th:text="${teacher.surname}"></td>
       <td th:text="${teacher.phone}"></td>
-      <td th:text="${teacher.contacts}"></td>
+      <td>
+        <span th:each="contact, iterationStat : ${teacher.contacts}">
+          <span th:text="${contact}"></span>
+          <span th:if="${!iterationStat.last}"> </span>
+        </span>
+      </td>
       <td>
         <span th:each="lang, iterationStat : ${teacher.languages}">
-        <span th:text="${lang}"></span>
-        <span th:if="${!iterationStat.last}"> </span>
-    </span>
+          <span th:text="${lang}"></span>
+          <span th:if="${!iterationStat.last}"> </span>
+        </span>
       </td>
       <td class="action-column" onclick="removeLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Видалити</td>
       <td class="action-column" onclick="updateLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Змінити</td>
@@ -56,6 +61,8 @@
   </table>
   <h2 id="emptyList" th:unless="${not #lists.isEmpty(teachers)}">Список викладачів порожній</h2>
   <form action="/admin/addTeacher" method="get">
+    <input type="hidden" th:value="${admin.login}" name="login">
+    <input type="hidden" th:value="${admin.password}" name="password">
     <input class="button" type="submit" value="Додати викладача">
   </form>
 </main>

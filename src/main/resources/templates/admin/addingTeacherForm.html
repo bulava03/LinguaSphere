@@ -11,7 +11,7 @@
 
 <body>
 <header>
-  <div th:replace="~{/shared/layout4}"></div>
+  <div th:replace="~{/shared/layout3}"></div>
 </header>
 
 <main>
@@ -39,11 +39,14 @@
           <legend>Мови:</legend>
           <div th:each="language : ${languages}">
             <input type="checkbox" th:id="${'checkbox-' + language.name}" th:value="${language.name}" th:name="${'languages'}" />
-            <label th:for="${'checkbox-' + language.name}" th:text="${language.name}"></label><br/>
+            <label th:for="${'checkbox-' + language.name}" th:text="${language.name}"></label><br>
           </div>
         </fieldset>
 
-        <input class="button" type="submit" value="Зареєструватися">
+        <input type="hidden" th:value="${admin.login}" name="login">
+        <input type="hidden" th:value="${admin.password}" name="password">
+
+        <input class="button" type="submit" value="Додати викладача">
         <p class="errorText" id="errorText"></p>
         <p class="errorText" th:text="${errorText}"></p>
       </div>
@@ -69,5 +72,6 @@
   </table>
 </footer>
 
+<script src="/script/dropdown.js"></script>
 </body>
 </html>
