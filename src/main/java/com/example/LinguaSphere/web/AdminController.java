@@ -135,7 +135,7 @@ public class AdminController {
     }
 
     @GetMapping("/getDailiesList")
-    public String getDailiesList(Admin admin, Model model) throws IOException {
+    public String getDailiesList(Admin admin, Model model) {
         List<DailyMessage> list = dailyMessageService.findAll();
         List<DailyMessageDtoBytes> newList = new ArrayList<>();
         for (DailyMessage daily : list
@@ -152,7 +152,6 @@ public class AdminController {
 
     @GetMapping("/addDaily")
     public String getDailiesAddingForm(Admin admin, Model model) {
-        model.addAttribute("dailies", dailyMessageService.findAll());
         model.addAttribute("languages", languageService.findAll());
         model.addAttribute("admin", admin);
         return "admin/addingDailiesForm";
@@ -165,6 +164,57 @@ public class AdminController {
         dailyMessage.setLanguageId(languageService.findByName(dailyMessageDto.getLanguage()).getId());
         System.out.println(dailyMessage.getImage());
         dailyMessageService.save(dailyMessage);
+        List<DailyMessage> list = dailyMessageService.findAll();
+        List<DailyMessageDtoBytes> newList = new ArrayList<>();
+        for (DailyMessage daily : list
+        ) {
+            DailyMessageDtoBytes dto = modelMapper.map(daily, DailyMessageDtoBytes.class);
+            dto.setLanguage(languageService.findById(daily.getLanguageId()).getName());
+            dto.setFile(Base64.encodeBase64String(daily.getImage()));
+            newList.add(dto);
+        }
+        model.addAttribute("dailies", newList);
+        model.addAttribute("admin", admin);
+        return "admin/dailiesList";
+    }
+
+    @GetMapping("/updateDaily")
+    public String getUpdateDailyForm(Admin admin, DailyMessage dailyMessage, Model model) {
+        dailyMessage = dailyMessageService.findById(dailyMessage.getId());
+        DailyMessageDtoBytes dailyDto = modelMapper.map(dailyMessage, DailyMessageDtoBytes.class);
+        dailyDto.setLanguage(languageService.findById(dailyMessage.getLanguageId()).getName());
+        dailyDto.setFile(Base64.encodeBase64String(dailyMessage.getImage()));
+
+        model.addAttribute("admin", admin);
+        model.addAttribute("languages", languageService.findAll());
+        model.addAttribute("daily", dailyDto);
+        return "admin/updateDailiesForm";
+    }
+
+    @PostMapping("/updateDaily")
+    public String updateDaily(Admin admin, DailyMessageDto dailyMessageDto, Model model) throws IOException {
+        DailyMessage dailyMessage = modelMapper.map(dailyMessageDto, DailyMessage.class);
+        dailyMessage.setImage(dailyMessageDto.getFile().getBytes());
+        dailyMessage.setLanguageId(languageService.findByName(dailyMessageDto.getLanguage()).getId());
+        System.out.println(dailyMessage.getImage());
+        dailyMessageService.save(dailyMessage);
+        List<DailyMessage> list = dailyMessageService.findAll();
+        List<DailyMessageDtoBytes> newList = new ArrayList<>();
+        for (DailyMessage daily : list
+        ) {
+            DailyMessageDtoBytes dto = modelMapper.map(daily, DailyMessageDtoBytes.class);
+            dto.setLanguage(languageService.findById(daily.getLanguageId()).getName());
+            dto.setFile(Base64.encodeBase64String(daily.getImage()));
+            newList.add(dto);
+        }
+        model.addAttribute("dailies", newList);
+        model.addAttribute("admin", admin);
+        return "admin/dailiesList";
+    }
+
+    @PostMapping("/deleteDaily")
+    public String deleteDaily(Admin admin, DailyMessageDto dailyMessageDto, Model model) {
+        dailyMessageService.deleteById(dailyMessageDto.getId());
         List<DailyMessage> list = dailyMessageService.findAll();
         List<DailyMessageDtoBytes> newList = new ArrayList<>();
         for (DailyMessage daily : list

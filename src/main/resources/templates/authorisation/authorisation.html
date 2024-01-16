@@ -18,13 +18,14 @@
     <h1>Увійти</h1>
   </div>
   <div class="regForm">
-    <form id="regForm" method="post" action="/authorisation">
+    <form id="regForm" method="post" action="">
       <div class="regInput">
         <h2 class="name">Електронна пошта</h2>
         <input class="field" id="email" type="text" name="email">
         <h2 class="name">Пароль</h2>
         <input class="field" id="password" type="text" name="password">
-        <input class="button" type="submit" value="Увійти">
+        <input class="button" type="submit" value="Увійти як учень" onclick="changeAction('/authorisation/student_authorisation')">
+        <input class="button" type="submit" value="Увійти як вчитель" onclick="changeAction('/authorisation/teacher_authorisation')">
         <p class="errorText" id="errorText"></p>
         <p class="errorText" th:text="${errorText}"></p>
       </div>
@@ -50,5 +51,6 @@
   </table>
 </footer>
 
+<script src="/script/authorisation/authorisationFormScript.js"></script>
 </body>
 </html>

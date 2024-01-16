@@ -20,8 +20,18 @@ public class DailyMessageServiceImpl implements DailyMessageService {
     }
 
     @Override
+    public DailyMessage findById(Long id) {
+        return dailyMessageRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public void save(DailyMessage dailyMessage) {
         dailyMessageRepository.save(dailyMessage);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        dailyMessageRepository.deleteById(id);
     }
 
 }

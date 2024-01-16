@@ -15,10 +15,14 @@
 </header>
 
 <form id="updateForm" action="/admin/updateDaily" method="get">
-  <input id="idUpdate" type="hidden" value="" name="id" />
+  <input id="idUpdate" type="hidden" value="" name="id">
+  <input type="hidden" th:value="${admin.login}" name="login">
+  <input type="hidden" th:value="${admin.password}" name="password">
 </form>
 <form id="removeForm" action="/admin/deleteDaily" method="post">
-  <input id="idRemove" type="hidden" value="" name="id" />
+  <input id="idRemove" type="hidden" value="" name="id">
+  <input type="hidden" th:value="${admin.login}" name="login">
+  <input type="hidden" th:value="${admin.password}" name="password">
 </form>
 
 <main>
@@ -34,14 +38,15 @@
     </tr>
     <tr th:each="daily : ${dailies}">
       <td th:text="${daily.text}"></td>
+      <td style="display: none;" th:text="${daily.id}"></td>
       <td th:text="${daily.links}"></td>
       <td>
         <img th:src="'data:image/jpeg;base64,' + ${daily.file}" alt="Image" width="300" height="200">
       </td>
       <td th:text="${daily.language}"></td>
 
-      <td class="action-column" onclick="removeLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Видалити</td>
-      <td class="action-column" onclick="updateLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Змінити</td>
+      <td class="action-column" onclick="removeDailyConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">Видалити</td>
+      <td class="action-column" onclick="updateDailyConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">Змінити</td>
     </tr>
   </table>
   <h2 id="emptyList" th:unless="${not #lists.isEmpty(dailies)}">Список цікавинок порожній</h2>
@@ -70,6 +75,7 @@
   </table>
 </footer>
 
+<script src="/script/admin/dailyList.js"></script>
 <script src="/script/adminPageForms.js"></script>
 <script src="/script/dropdown.js"></script>
 </body>

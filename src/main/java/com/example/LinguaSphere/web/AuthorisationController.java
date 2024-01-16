@@ -5,10 +5,13 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.LinguaSphere.config.security.JwtTokenService;
+import com.example.LinguaSphere.entity.Teacher;
 import com.example.LinguaSphere.entity.User;
 import com.example.LinguaSphere.entity.dto.LoginDto;
+import com.example.LinguaSphere.entity.dto.TeacherDto;
 import com.example.LinguaSphere.entity.dto.UserDto;
 import com.example.LinguaSphere.helper.ConvertHelper;
+import com.example.LinguaSphere.service.TeacherService;
 import com.example.LinguaSphere.service.UserService;
 import com.example.LinguaSphere.service.impl.UserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
@@ -30,6 +33,8 @@ public class AuthorisationController {
     @Autowired
     private UserService userService;
     @Autowired
+    private TeacherService teacherService;
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -44,8 +49,8 @@ public class AuthorisationController {
         return "authorisation/authorisation";
     }
 
-    @PostMapping()
-    public String authorisation(@ModelAttribute("authenticationRequest") LoginDto authenticationRequest, Model model) {
+    @PostMapping("/student_authorisation")
+    public String authorisationStudent(@ModelAttribute("authenticationRequest") LoginDto authenticationRequest, Model model) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getEmail(), authenticationRequest.getPassword(), Collections.emptyList()));
@@ -73,7 +78,20 @@ public class AuthorisationController {
         userDto.setDateOfBirth(date);
         model.addAttribute("user", userDto);
         model.addAttribute("token", token);
-        return "authorisation/userPage";
+        return "user/userPage";
+    }
+
+    @PostMapping("/teacher_authorisation")
+    public String authorisationTeacher(@ModelAttribute("authenticationRequest") LoginDto authenticationRequest, Model model) {
+        Teacher teacherFounded = teacherService.findByEmail(authenticationRequest.getEmail());
+        if (teacherFounded != null) {
+            TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
+            model.addAttribute("teacher", teacherDto);
+            return "teacher/teacherPage";
+        } else {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
     }
 
 }
