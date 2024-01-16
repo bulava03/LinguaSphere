@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${title}"></title>
+  <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+  <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+  <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+  <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<form id="removeForm" action="/user/takeLesson" method="post">
+  <input type="hidden" th:value="${token}" name="token">
+  <input type="hidden" value="" name="lessonId">
+</form>
+
+<main>
+  <h2>Запис на уроки</h2>
+  <table th:if="${not #lists.isEmpty(lessons)}">
+    <tr>
+      <th class="date-column">Ім'я</th>
+      <th class="complaint-column">Час</th>
+      <th class="action-column"></th>
+    </tr>
+    <tr th:each="lesson : ${lessons}">
+      <td th:text="${lesson.name}"></td>
+      <td th:text="${lesson.id}" style="display: none;"></td>
+      <td th:text="${lesson.time}"></td>
+      <td class="action-column" onclick="selectLessonConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">Додати урок</td>
+    </tr>
+  </table>
+  <h2 id="emptyList" th:unless="${not #lists.isEmpty(lessons)}">Доступних варіантів немає</h2>
+  <form action="/user/userSchedule" method="get">
+    <input type="hidden" th:value="${token}" name="token">
+    <input class="button" type="submit" value="Розклад занять">
+  </form>
+</main>
+
+<form typeof="hidden" id="lessonForm" method="post" action="/user/setLesson">
+  <input type="hidden" th:value="${token}" name="token">
+  <input type="hidden" th:value="${languageId}" name="languageId">
+  <input type="hidden" value="" id="lessonId" name="id">
+</form>
+
+<footer>
+  <table>
+    <tr>
+      <td>
+        <p>Контактні дані:</p>
+      </td>
+      <td>
+        <address>
+          Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
+        </address>
+      </td>
+      <td>
+        <p>Copyright © 2023 LinguaSphere</p>
+      </td>
+    </tr>
+  </table>
+</footer>
+
+<script src="/script/user/setLessonForm.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

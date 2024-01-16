@@ -7,5 +7,6 @@ import java.util.List;
 public interface TeacherLanguageService {
     void save(TeacherLanguage teacherLanguage);
     void saveAll(List<TeacherLanguage> teacherLanguageList);
-    List<TeacherLanguage> findByTeacherId(Long teacherId);
+    List<TeacherLanguage> findAllByTeacherId(Long teacherId);
+    List<TeacherLanguage> findAllByLanguageId(Long id);
 }

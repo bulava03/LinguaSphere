@@ -6,6 +6,7 @@ import com.example.LinguaSphere.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,10 +41,13 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Lesson> findAllFreeByLanguageId(Long languageId) {
-        List<Lesson> list = lessonRepository.findAllByLanguageId(languageId);
-        list.removeIf(lesson -> lesson.getUserId() != null);
-        return list;
+    public List<Lesson> findAllByTeacherIds(List<Long> list) {
+        List<Lesson> resultList = new ArrayList<>();
+        for (Long element : list
+             ) {
+            resultList.addAll(lessonRepository.findAllByTeacherId(element));
+        }
+        return resultList;
     }
 
     @Override

@@ -34,6 +34,11 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    public Teacher findById(Long id) {
+        return teacherRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public Teacher findByEmail(String email) {
         return teacherRepository.findByEmail(email);
     }

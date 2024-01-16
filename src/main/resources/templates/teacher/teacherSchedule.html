@@ -170,10 +170,18 @@
   <input type="hidden" th:value="${teacher.password}" name="password">
 </form>
 
-<form typeof="hidden" method="get" id="formCellSubmit" action="#">
-  <input type="hidden" th:value="${token}" name="token">
-  <input id="cellSubmitDay" type="hidden" value="" name="day">
-  <input id="cellSubmitTime" type="hidden" value="" name="time">
+<form id="formCellSubmitUsed" typeof="hidden" method="post" action="/teacher/submitCellUsed">
+  <input type="hidden" th:value="${teacher.email}" name="email">
+  <input type="hidden" th:value="${teacher.password}" name="password">
+  <input id="cellSubmitDayUsed" type="hidden" value="" name="day">
+  <input id="cellSubmitTimeUsed" type="hidden" value="" name="time">
+</form>
+
+<form id="formCellSubmitFree" typeof="hidden" method="post" action="/teacher/submitCellFree">
+  <input type="hidden" th:value="${teacher.email}" name="email">
+  <input type="hidden" th:value="${teacher.password}" name="password">
+  <input id="cellSubmitDayFree" type="hidden" value="" name="day">
+  <input id="cellSubmitTimeFree" type="hidden" value="" name="time">
 </form>
 
 <footer>

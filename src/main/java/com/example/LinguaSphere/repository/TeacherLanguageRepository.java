@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface TeacherLanguageRepository extends JpaRepository<TeacherLanguage, Long> {
     List<TeacherLanguage> findByTeacherId(Long teacherId);
+    List<TeacherLanguage> findAllByLanguageId(Long languageId);
 }

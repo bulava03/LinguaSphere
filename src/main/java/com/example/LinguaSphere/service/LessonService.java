@@ -10,7 +10,7 @@ public interface LessonService {
     List<Lesson> findAllByTeacherId(Long teacherId);
     List<Lesson> findAllByUserId(Long userId);
     List<Lesson> findAllByLanguageId(Long languageId);
-    List<Lesson> findAllFreeByLanguageId(Long languageId);
+    List<Lesson> findAllByTeacherIds(List<Long> list);
     void save (Lesson lesson);
     void deleteById(Long id);
     void deleteByTeacherId(Long teacherId);

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LinguaSphere</title>
-  <link rel="stylesheet" href="/style/userScheduleStyle.css">
+  <link rel="stylesheet" href="/style/userPageStyle.css">
   <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
@@ -14,7 +14,7 @@
   <div th:replace="~{/shared/layout2}"></div>
 </header>
 
-<main style="display: flex;">
+<main>
   <aside>
     <img src="/photo.png" width="200" height="200" alt="user photo header"><br>
 
@@ -34,44 +34,24 @@
   </aside>
 
   <div>
-    <table>
-      <tr>
-        <th></th>
-        <th>Пн</th>
-        <th>Вт</th>
-        <th>Ср</th>
-        <th>Чт</th>
-        <th>Пт</th>
-        <th>Сб</th>
-        <th>Нд</th>
-      </tr>
+    <th:block th:each="language : ${languages}">
+      <button th:attr="onclick='submitLanguage(\'' + ${language.id} + '\')'"
+              th:text="${language.name}"></button><br>
+    </th:block>
 
-      <tr th:each="hour, hourStat : ${#numbers.sequence(8, 23)}">
-        <th th:text="${hour} + ':00-' + (${hour + 1}) + ':00'"></th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[__${hour - 8}__] == 0 ? 'free' : 'used'}"
-            th:attr="onclick=${row[__${hour - 8}__] == 1 ? 'submitCell(__${hour - 8}__, ' + rowStat.index + ')' : ''}"></td>
-      </tr>
-    </table>
-
-
-    <div>
-      <button th:attr="onclick='submitPageForm(\'' + ${token} + '\')'">Назад</button>
-      <button th:attr="onclick='submitLanguageChoosingForm(\'' + ${token} + '\')'">Додати урок</button>
-    </div>
+    <button th:attr="onclick='submitSchedule(\'' + ${token} + '\')'">Назад</button>
   </div>
 </main>
 
 <form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
   <input type="hidden" th:value="${token}" name="token">
 </form>
-<form typeof="hidden" method="get" id="choosingLanguageForm" action="/user/getLanguageChoosingPage">
+<form typeof="hidden" method="get" id="scheduleForm" action="/user/userSchedule">
   <input type="hidden" th:value="${token}" name="token">
 </form>
-<form typeof="hidden" method="get" id="formCellSubmit" action="#">
+<form typeof="hidden" method="get" id="chooseLanguageForm" action="/user/submitChooseLanguageForm">
   <input type="hidden" th:value="${token}" name="token">
-  <input id="cellSubmitDay" type="hidden" value="" name="day">
-  <input id="cellSubmitTime" type="hidden" value="" name="time">
+  <input type="hidden" id="languageIdInput" value="" name="languageId">
 </form>
 
 <footer>
@@ -93,7 +73,7 @@
 </footer>
 
 <script src="/script/userPageForms.js"></script>
+<script src="/script/user/languageChoosingForm.js"></script>
 <script src="/script/dropdown.js"></script>
-<script src="/script/userSchedule.js"></script>
 </body>
 </html>

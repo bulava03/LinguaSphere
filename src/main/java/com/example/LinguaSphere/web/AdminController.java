@@ -62,7 +62,7 @@ public class AdminController {
         for (Teacher element : teacherService.findAll()
              ) {
             TeacherRegistration temp = modelMapper.map(element, TeacherRegistration.class);
-            List<TeacherLanguage> temporaryList = teacherLanguageService.findByTeacherId(temp.getId());
+            List<TeacherLanguage> temporaryList = teacherLanguageService.findAllByTeacherId(temp.getId());
             List<String> subjectList = new ArrayList<>();
             for (TeacherLanguage elem : temporaryList
                  ) {
@@ -118,7 +118,7 @@ public class AdminController {
             for (Teacher element : teacherService.findAll()
             ) {
                 TeacherRegistration temp = modelMapper.map(element, TeacherRegistration.class);
-                List<TeacherLanguage> temporaryList = teacherLanguageService.findByTeacherId(temp.getId());
+                List<TeacherLanguage> temporaryList = teacherLanguageService.findAllByTeacherId(temp.getId());
                 List<String> subjectList = new ArrayList<>();
                 for (TeacherLanguage elem : temporaryList
                 ) {
