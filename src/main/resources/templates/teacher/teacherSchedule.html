@@ -43,118 +43,13 @@
         <th>Нд</th>
       </tr>
 
-      <tr>
-        <th>08:00-09:00</th>
+      <tr th:each="hour, hourStat : ${#numbers.sequence(8, 23)}">
+        <th th:text="${hour} + ':00-' + (${hour + 1}) + ':00'"></th>
+
         <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[0] == 0 ? 'free' : (row[0] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[0] == 1 || row[0] == 0}"
-            th:attr="onclick=${row[0] == 1 ? 'submitCellUsed(0, ' + rowStat.index + ')' : 'submitCellFree(0, ' + rowStat.index + ')'}">
-        </td>
-      </tr>
-      <tr>
-        <th>09:00-10:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[1] == 0 ? 'free' : (row[1] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[1] == 1 || row[1] == 0}"
-            th:attr="onclick=${row[1] == 1 ? 'submitCellUsed(1, ' + rowStat.index + ')' : 'submitCellFree(1, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>10:00-11:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[2] == 0 ? 'free' : (row[2] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[2] == 1 || row[2] == 0}"
-            th:attr="onclick=${row[2] == 1 ? 'submitCellUsed(2, ' + rowStat.index + ')' : 'submitCellFree(2, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>11:00-12:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[3] == 0 ? 'free' : (row[3] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[3] == 1 || row[3] == 0}"
-            th:attr="onclick=${row[3] == 1 ? 'submitCellUsed(3, ' + rowStat.index + ')' : 'submitCellFree(3, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>12:00-13:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[4] == 0 ? 'free' : (row[4] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[4] == 1 || row[4] == 0}"
-            th:attr="onclick=${row[4] == 1 ? 'submitCellUsed(4, ' + rowStat.index + ')' : 'submitCellFree(4, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>13:00-14:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[5] == 0 ? 'free' : (row[5] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[5] == 1 || row[5] == 0}"
-            th:attr="onclick=${row[5] == 1 ? 'submitCellUsed(5, ' + rowStat.index + ')' : 'submitCellFree(5, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>14:00-15:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[6] == 0 ? 'free' : (row[6] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[6] == 1 || row[6] == 0}"
-            th:attr="onclick=${row[6] == 1 ? 'submitCellUsed(6, ' + rowStat.index + ')' : 'submitCellFree(6, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>15:00-16:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[7] == 0 ? 'free' : (row[7] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[7] == 1 || row[7] == 0}"
-            th:attr="onclick=${row[7] == 1 ? 'submitCellUsed(7, ' + rowStat.index + ')' : 'submitCellFree(7, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>16:00-17:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[8] == 0 ? 'free' : (row[8] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[8] == 1 || row[8] == 0}"
-            th:attr="onclick=${row[8] == 1 ? 'submitCellUsed(8, ' + rowStat.index + ')' : 'submitCellFree(8, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>17:00-18:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[9] == 0 ? 'free' : (row[9] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[9] == 1 || row[9] == 0}"
-            th:attr="onclick=${row[9] == 1 ? 'submitCellUsed(9, ' + rowStat.index + ')' : 'submitCellFree(9, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>18:00-19:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[10] == 0 ? 'free' : (row[10] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[10] == 1 || row[10] == 0}"
-            th:attr="onclick=${row[10] == 1 ? 'submitCellUsed(10, ' + rowStat.index + ')' : 'submitCellFree(10, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>19:00-20:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[11] == 0 ? 'free' : (row[11] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[11] == 1 || row[11] == 0}"
-            th:attr="onclick=${row[11] == 1 ? 'submitCellUsed(11, ' + rowStat.index + ')' : 'submitCellFree(11, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>20:00-21:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[12] == 0 ? 'free' : (row[12] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[12] == 1 || row[12] == 0}"
-            th:attr="onclick=${row[12] == 1 ? 'submitCellUsed(12, ' + rowStat.index + ')' : 'submitCellFree(12, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>21:00-22:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[13] == 0 ? 'free' : (row[13] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[13] == 1 || row[13] == 0}"
-            th:attr="onclick=${row[13] == 1 ? 'submitCellUsed(13, ' + rowStat.index + ')' : 'submitCellFree(13, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>22:00-23:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[14] == 0 ? 'free' : (row[14] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[14] == 1 || row[14] == 0}"
-            th:attr="onclick=${row[14] == 1 ? 'submitCellUsed(14, ' + rowStat.index + ')' : 'submitCellFree(14, ' + rowStat.index + ')'}"></td>
-      </tr>
-      <tr>
-        <th>23:00-24:00</th>
-        <td th:each="row, rowStat : ${lessons}"
-            th:class="${row[15] == 0 ? 'free' : (row[15] == 1 ? 'used' : 'lesson')}"
-            th:if="${row[15] == 1 || row[15] == 0}"
-            th:attr="onclick=${row[15] == 1 ? 'submitCellUsed(15, ' + rowStat.index + ')' : 'submitCellFree(15, ' + rowStat.index + ')'}"></td>
+            th:class="${row[__${hour - 8}__] == 0 ? 'free' : (row[__${hour - 8}__] == 1 ? 'used' : 'lesson')}"
+            th:attr="onclick=${row[__${hour - 8}__] == 1 ? 'submitCellUsed(__${hour - 8}__, ' + rowStat.index + ')' :
+                    (row[__${hour - 8}__] == 0 ? 'submitCellFree(__${hour - 8}__, ' + rowStat.index + ')' : '')}"></td>
       </tr>
     </table>
 
