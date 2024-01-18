@@ -21,10 +21,10 @@
 
 <main>
   <h2>Запис на уроки</h2>
-  <table th:if="${not #lists.isEmpty(lessons)}">
+  <table th:if="${not #lists.isEmpty(lessons)}" id="lessonsTable">
     <tr>
-      <th class="date-column">Ім'я</th>
-      <th class="complaint-column">Час</th>
+      <th class="date-column" onclick="sortTable(0)" style="cursor: pointer;">Ім'я</th>
+      <th class="complaint-column" onclick="sortTable(2)" style="cursor: pointer;">Час</th>
       <th class="action-column"></th>
     </tr>
     <tr th:each="lesson : ${lessons}">
@@ -50,6 +50,7 @@
 <div th:replace="~{/shared/footer}"></div>
 
 <script src="/script/user/setLessonForm.js"></script>
+<script src="/script/user/sortTable.js"></script>
 <script src="/script/dropdown.js"></script>
 </body>
 </html>

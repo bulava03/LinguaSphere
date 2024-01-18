@@ -18,8 +18,9 @@
 
 <main>
   <div>
-    <button onclick="submitTeachersGettingForm()">Викладачі</button><br>
-    <button onclick="submitDailiesGettingForm()">Щоденні цікавинки</button><br>
+    <button onclick="submitTeachersGettingForm()"> Викладачі </button><br>
+    <button onclick="submitDailiesGettingForm()"> Щоденні цікавинки </button><br>
+    <button onclick="submitEntitiesGettingForm()"> "Хто я?" </button><br>
   </div>
 </main>
 
@@ -28,6 +29,10 @@
   <input type="hidden" th:value="${admin.password}" name="password">
 </form>
 <form id="getDailyListForm" typeof="hidden" action="/admin/getDailiesList" method="get">
+  <input type="hidden" th:value="${admin.login}" name="login">
+  <input type="hidden" th:value="${admin.password}" name="password">
+</form>
+<form id="getEntityListForm" typeof="hidden" action="/admin/getCreaturesList" method="get">
   <input type="hidden" th:value="${admin.login}" name="login">
   <input type="hidden" th:value="${admin.password}" name="password">
 </form>

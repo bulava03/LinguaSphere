@@ -11,6 +11,7 @@ public class DailyMessageDtoBytes {
 
     private Long id;
     private String language;
+    private Long languageId;
     private String text;
     private String links;
     private String file;

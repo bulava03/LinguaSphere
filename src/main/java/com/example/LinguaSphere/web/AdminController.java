@@ -1,13 +1,8 @@
 package com.example.LinguaSphere.web;
 
 
-import com.example.LinguaSphere.entity.Admin;
-import com.example.LinguaSphere.entity.DailyMessage;
-import com.example.LinguaSphere.entity.Teacher;
-import com.example.LinguaSphere.entity.TeacherLanguage;
-import com.example.LinguaSphere.entity.dto.DailyMessageDto;
-import com.example.LinguaSphere.entity.dto.DailyMessageDtoBytes;
-import com.example.LinguaSphere.entity.dto.TeacherRegistration;
+import com.example.LinguaSphere.entity.*;
+import com.example.LinguaSphere.entity.dto.*;
 import com.example.LinguaSphere.service.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
@@ -37,6 +32,8 @@ public class AdminController {
     private TeacherLanguageService teacherLanguageService;
     @Autowired
     private DailyMessageService dailyMessageService;
+    @Autowired
+    private CreatureService creatureService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -161,8 +158,6 @@ public class AdminController {
     public String addDaily(DailyMessageDto dailyMessageDto, Admin admin, Model model) throws IOException {
         DailyMessage dailyMessage = modelMapper.map(dailyMessageDto, DailyMessage.class);
         dailyMessage.setImage(dailyMessageDto.getFile().getBytes());
-        dailyMessage.setLanguageId(languageService.findByName(dailyMessageDto.getLanguage()).getId());
-        System.out.println(dailyMessage.getImage());
         dailyMessageService.save(dailyMessage);
         List<DailyMessage> list = dailyMessageService.findAll();
         List<DailyMessageDtoBytes> newList = new ArrayList<>();
@@ -195,9 +190,8 @@ public class AdminController {
     public String updateDaily(Admin admin, DailyMessageDto dailyMessageDto, Model model) throws IOException {
         DailyMessage dailyMessage = modelMapper.map(dailyMessageDto, DailyMessage.class);
         dailyMessage.setImage(dailyMessageDto.getFile().getBytes());
-        dailyMessage.setLanguageId(languageService.findByName(dailyMessageDto.getLanguage()).getId());
-        System.out.println(dailyMessage.getImage());
         dailyMessageService.save(dailyMessage);
+
         List<DailyMessage> list = dailyMessageService.findAll();
         List<DailyMessageDtoBytes> newList = new ArrayList<>();
         for (DailyMessage daily : list
@@ -227,6 +221,108 @@ public class AdminController {
         model.addAttribute("dailies", newList);
         model.addAttribute("admin", admin);
         return "admin/dailiesList";
+    }
+
+    @GetMapping("/getCreaturesList")
+    public String getCreaturesList(Admin admin, Model model) {
+        List<Creature> creaturesList = creatureService.findAll();
+        List<CreatureDtoBytes> listDto = new ArrayList<>();
+        for (Creature creature : creaturesList
+        ) {
+            CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
+            dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
+            dto.setHints(Arrays.stream(dto.getHints().get(0).split("\n")).toList());
+            dto.setFile(Base64.encodeBase64String(creature.getImage()));
+            listDto.add(dto);
+        }
+
+        model.addAttribute("creatures", listDto);
+        model.addAttribute("admin", admin);
+        return "admin/creaturesList";
+    }
+
+    @GetMapping("/addCreature")
+    public String getCreaturesAddingForm(Admin admin, Model model) {
+        model.addAttribute("languages", languageService.findAll());
+        model.addAttribute("admin", admin);
+        return "admin/addingCreaturesForm";
+    }
+
+    @PostMapping("/addCreature")
+    public String addCreature(CreatureDto creatureDtoToAdd, Admin admin, Model model) throws IOException {
+        Creature creatureToAdd = modelMapper.map(creatureDtoToAdd, Creature.class);
+        creatureToAdd.setImage(creatureDtoToAdd.getFile().getBytes());
+        creatureService.save(creatureToAdd);
+
+        List<Creature> creaturesList = creatureService.findAll();
+        List<CreatureDtoBytes> listDto = new ArrayList<>();
+        for (Creature creature : creaturesList
+        ) {
+            CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
+            dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
+            dto.setHints(Arrays.stream(dto.getHints().get(0).split("\n")).toList());
+            dto.setFile(Base64.encodeBase64String(creature.getImage()));
+            listDto.add(dto);
+        }
+
+        model.addAttribute("creatures", listDto);
+        model.addAttribute("admin", admin);
+        return "admin/creaturesList";
+    }
+
+    @GetMapping("/updateCreature")
+    public String getUpdateCreatureForm(Admin admin, Creature creature, Model model) {
+        creature = creatureService.findById(creature.getId());
+        CreatureDtoBytes creatureDto = modelMapper.map(creature, CreatureDtoBytes.class);
+        creatureDto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
+        creatureDto.setFile(Base64.encodeBase64String(creature.getImage()));
+
+        model.addAttribute("admin", admin);
+        model.addAttribute("languages", languageService.findAll());
+        model.addAttribute("creature", creatureDto);
+        return "admin/updateCreaturesForm";
+    }
+
+    @PostMapping("/updateCreature")
+    public String updateCreature(Admin admin, CreatureDto creatureUpdatedDto, Model model) throws IOException {
+        Creature creatureUpdated = modelMapper.map(creatureUpdatedDto, Creature.class);
+        creatureUpdated.setImage(creatureUpdatedDto.getFile().getBytes());
+        creatureService.save(creatureUpdated);
+
+        List<Creature> creaturesList = creatureService.findAll();
+        List<CreatureDtoBytes> listDto = new ArrayList<>();
+        for (Creature creature : creaturesList
+        ) {
+            CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
+            dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
+            dto.setHints(Arrays.stream(dto.getHints().get(0).split("\n")).toList());
+            dto.setFile(Base64.encodeBase64String(creature.getImage()));
+            listDto.add(dto);
+        }
+
+        model.addAttribute("creatures", listDto);
+        model.addAttribute("admin", admin);
+        return "admin/creaturesList";
+    }
+
+    @PostMapping("/deleteCreature")
+    public String deleteCreature(Admin admin, Creature creatureToDelete, Model model) {
+        creatureService.deleteById(creatureToDelete.getId());
+
+        List<Creature> creaturesList = creatureService.findAll();
+        List<CreatureDtoBytes> listDto = new ArrayList<>();
+        for (Creature creature : creaturesList
+        ) {
+            CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
+            dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
+            dto.setHints(Arrays.stream(dto.getHints().get(0).split("\n")).toList());
+            dto.setFile(Base64.encodeBase64String(creature.getImage()));
+            listDto.add(dto);
+        }
+
+        model.addAttribute("creatures", listDto);
+        model.addAttribute("admin", admin);
+        return "admin/creaturesList";
     }
 
 }

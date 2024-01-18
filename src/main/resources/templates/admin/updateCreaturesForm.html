@@ -7,7 +7,7 @@
     <title>LinguaSphere</title>
     <link rel="stylesheet" href="/style/shared/footerStyle.css">
     <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
-    <link rel="stylesheet" href="/style/admin/adminDailyFormStyle.css">
+    <link rel="stylesheet" href="/style/admin/adminCreatureFormStyle.css">
     <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
@@ -18,31 +18,34 @@
 
 <main>
     <div class="regTitle">
-        <h1>Додати цікавинку</h1>
+        <h1>Змінити питання для "Хто я?"</h1>
     </div>
 
     <div class="regForm">
-        <form id="regForm" action="/admin/addDaily" method="post" enctype="multipart/form-data">
+        <form id="regForm" action="/admin/updateCreature" method="post" enctype="multipart/form-data">
             <div class="regInput">
                 <fieldset>
                     <legend>Мова:</legend>
                     <div th:each="language : ${languages}">
-                        <input type="radio" th:id="${'radio-' + language.name}" th:value="${language.id}" th:name="${'languageId'}" />
+                        <input type="radio" th:id="${'radio-' + language.name}" th:value="${language.id}" th:name="${'languageId'}" th:checked="${language.id == creature.languageId}">
                         <label th:for="${'radio-' + language.name}" th:text="${language.name}"></label><br>
                     </div>
                 </fieldset><br>
 
-                <h2 class="name">Текст</h2>
-                <textarea class="field" id="text" value="" type="text" name="text"></textarea>
-                <h2 class="name">Посилання</h2>
-                <textarea class="field" id="links" value="" type="text" name="links"></textarea>
+                <h2 class="name">Назва</h2>
+                <input class="field" id="text" th:value="${creature.name}" type="text" name="name">
+                <h2 class="name">Підказки</h2>
+                <textarea class="field" id="links"
+                          th:each="hint, iterationStat : ${creature.hints}" th:text="${hint + (iterationStat.last ? '' : '\t')}"
+                          type="text" name="hints"></textarea>
                 <h2 class="name">Зображення</h2>
-                <input class="field" id="file" value="" type="file" name="file">
+                <input class="field" id="file" type="file" name="file">
 
                 <input type="hidden" th:value="${admin.login}" name="login">
                 <input type="hidden" th:value="${admin.password}" name="password">
+                <input type="hidden" th:value="${creature.id}" name="id">
 
-                <input class="button" type="submit" value="Додати цікавинку">
+                <input class="button" type="submit" value="Зберегти зміни">
                 <p class="errorText" id="errorText"></p>
                 <p class="errorText" th:text="${errorText}"></p>
             </div>
@@ -50,8 +53,11 @@
     </div>
 </main>
 
+<h2 id="imageToUploadByDefault" th:text="${creature.file}" style="display: none;"></h2>
+
 <div th:replace="~{/shared/footer}"></div>
 
 <script src="/script/dropdown.js"></script>
+<script src="/script/admin/imageUpdateDefault.js"></script>
 </body>
 </html>

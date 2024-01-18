@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+    <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+    <div th:replace="~{/shared/layout3}"></div>
+</header>
+
+<form id="updateForm" action="/admin/updateCreature" method="get">
+    <input id="idUpdate" type="hidden" value="" name="id">
+    <input type="hidden" th:value="${admin.login}" name="login">
+    <input type="hidden" th:value="${admin.password}" name="password">
+</form>
+<form id="removeForm" action="/admin/deleteCreature" method="post">
+    <input id="idRemove" type="hidden" value="" name="id">
+    <input type="hidden" th:value="${admin.login}" name="login">
+    <input type="hidden" th:value="${admin.password}" name="password">
+</form>
+
+<main>
+    <h2>Питання до "Хто я?"</h2>
+    <table id="table" th:if="${not #lists.isEmpty(creatures)}">
+        <tr>
+            <th>Назва</th>
+            <th>Підказки</th>
+            <th>Зображення</th>
+            <th>Мова</th>
+            <th class="action-column"></th>
+            <th class="action-column"></th>
+        </tr>
+        <tr th:each="creature : ${creatures}">
+            <td th:text="${creature.name}"></td>
+            <td style="display: none;" th:text="${creature.id}"></td>
+            <td>
+                <div th:each="hint, iterationStat : ${creature.hints}">
+                    <p th:text="${hint}" wrap="break-word" th:id="'hint-' + ${iterationStat.index}"></p>
+                </div>
+            </td>
+            <td>
+                <img th:src="'data:image/jpeg;base64,' + ${creature.file}" alt="Image" width="300" height="200">
+            </td>
+            <td th:text="${creature.language}"></td>
+
+            <td class="action-column" onclick="removeCreatureConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">Видалити</td>
+            <td class="action-column" onclick="updateCreatureConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">Змінити</td>
+        </tr>
+    </table>
+    <h2 id="emptyList" th:unless="${not #lists.isEmpty(creatures)}">Список питань порожній</h2>
+    <form action="/admin/addCreature" method="get">
+        <input type="hidden" th:value="${admin.login}" name="login">
+        <input type="hidden" th:value="${admin.password}" name="password">
+        <input class="button" type="submit" value="Додати питання">
+    </form>
+</main>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/admin/creaturesList.js"></script>
+<script src="/script/adminPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

@@ -12,3 +12,8 @@ function submitDailiesGettingForm() {
     var form = document.getElementById('getDailyListForm');
     form.submit();
 }
+
+function submitEntitiesGettingForm() {
+    var form = document.getElementById('getEntityListForm');
+    form.submit();
+}

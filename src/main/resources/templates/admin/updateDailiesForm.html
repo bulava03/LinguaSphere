@@ -7,7 +7,7 @@
   <title>LinguaSphere</title>
   <link rel="stylesheet" href="/style/shared/footerStyle.css">
   <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
-  <link rel="stylesheet" href="/style/adminDailyFormStyle.css">
+  <link rel="stylesheet" href="/style/admin/adminDailyFormStyle.css">
   <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
@@ -18,7 +18,7 @@
 
 <main>
   <div class="regTitle">
-    <h1>Додати цікавинку</h1>
+    <h1>Змінити цікавинку</h1>
   </div>
 
   <div class="regForm">
@@ -28,7 +28,7 @@
         <fieldset>
           <legend>Мова:</legend>
           <div th:each="language : ${languages}">
-            <input type="radio" th:id="${'radio-' + language.name}" th:value="${language.name}" th:name="${'language'}" th:checked="${language.name eq daily.language}">
+            <input type="radio" th:id="${'radio-' + language.name}" th:value="${language.id}" th:name="${'languageId'}" th:checked="${language.id == daily.languageId}">
             <label th:for="${'radio-' + language.name}" th:text="${language.name}"></label><br>
           </div>
         </fieldset><br>
