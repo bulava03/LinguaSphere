@@ -231,7 +231,6 @@ public class AdminController {
         ) {
             CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
             dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            dto.setHints(Arrays.stream(dto.getHints().get(0).split("\n")).toList());
             dto.setFile(Base64.encodeBase64String(creature.getImage()));
             listDto.add(dto);
         }
@@ -252,6 +251,16 @@ public class AdminController {
     public String addCreature(CreatureDto creatureDtoToAdd, Admin admin, Model model) throws IOException {
         Creature creatureToAdd = modelMapper.map(creatureDtoToAdd, Creature.class);
         creatureToAdd.setImage(creatureDtoToAdd.getFile().getBytes());
+        if (!creatureToAdd.getHints().isEmpty()) {
+            List<String> newHints = new ArrayList<>();
+            for (String hint : creatureToAdd.getHints()
+            ) {
+                if (!hint.equals("")) {
+                    newHints.add(hint);
+                }
+            }
+            creatureToAdd.setHints(newHints);
+        }
         creatureService.save(creatureToAdd);
 
         List<Creature> creaturesList = creatureService.findAll();
@@ -260,7 +269,6 @@ public class AdminController {
         ) {
             CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
             dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            dto.setHints(Arrays.stream(dto.getHints().get(0).split("\n")).toList());
             dto.setFile(Base64.encodeBase64String(creature.getImage()));
             listDto.add(dto);
         }
@@ -287,6 +295,16 @@ public class AdminController {
     public String updateCreature(Admin admin, CreatureDto creatureUpdatedDto, Model model) throws IOException {
         Creature creatureUpdated = modelMapper.map(creatureUpdatedDto, Creature.class);
         creatureUpdated.setImage(creatureUpdatedDto.getFile().getBytes());
+        if (!creatureUpdated.getHints().isEmpty()) {
+            List<String> newHints = new ArrayList<>();
+            for (String hint : creatureUpdated.getHints()
+                 ) {
+                if (!hint.equals("")) {
+                    newHints.add(hint);
+                }
+            }
+            creatureUpdated.setHints(newHints);
+        }
         creatureService.save(creatureUpdated);
 
         List<Creature> creaturesList = creatureService.findAll();
@@ -295,7 +313,6 @@ public class AdminController {
         ) {
             CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
             dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            dto.setHints(Arrays.stream(dto.getHints().get(0).split("\n")).toList());
             dto.setFile(Base64.encodeBase64String(creature.getImage()));
             listDto.add(dto);
         }
@@ -315,7 +332,6 @@ public class AdminController {
         ) {
             CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
             dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            dto.setHints(Arrays.stream(dto.getHints().get(0).split("\n")).toList());
             dto.setFile(Base64.encodeBase64String(creature.getImage()));
             listDto.add(dto);
         }

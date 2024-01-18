@@ -35,9 +35,10 @@
                 <h2 class="name">Назва</h2>
                 <input class="field" id="text" th:value="${creature.name}" type="text" name="name">
                 <h2 class="name">Підказки</h2>
-                <textarea class="field" id="links"
-                          th:each="hint, iterationStat : ${creature.hints}" th:text="${hint + (iterationStat.last ? '' : '\t')}"
-                          type="text" name="hints"></textarea>
+                <th:block th:each="hint, iterationStat : ${creature.hints}">
+                    <textarea class="field" id="links" th:text="${hint}" type="text" name="hints"></textarea>
+                </th:block>
+                <button type="button" class="button" onclick="addTextarea()">Додати підказку</button>
                 <h2 class="name">Зображення</h2>
                 <input class="field" id="file" type="file" name="file">
 
@@ -59,5 +60,6 @@
 
 <script src="/script/dropdown.js"></script>
 <script src="/script/admin/imageUpdateDefault.js"></script>
+<script src="/script/admin/creatureForm.js"></script>
 </body>
 </html>

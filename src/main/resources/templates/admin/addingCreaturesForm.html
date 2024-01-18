@@ -36,6 +36,7 @@
                 <input class="field" id="name" value="" type="text" name="name">
                 <h2 class="name">Підказки</h2>
                 <textarea class="field" id="hints" value="" type="text" name="hints"></textarea>
+                <button type="button" class="button" onclick="addTextarea()">Додати підказку</button>
                 <h2 class="name">Зображення</h2>
                 <input class="field" id="file" value="" type="file" name="file">
 
@@ -54,5 +55,6 @@
 <div th:replace="~{/shared/footer}"></div>
 
 <script src="/script/dropdown.js"></script>
+<script src="/script/admin/creatureForm.js"></script>
 </body>
 </html>
