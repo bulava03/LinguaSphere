@@ -53,23 +53,7 @@
 
 <h2 id="imageToUploadByDefault" th:text="${daily.file}" style="display: none;"></h2>
 
-<footer>
-  <table>
-    <tr>
-      <td>
-        <p>Контактні дані:</p>
-      </td>
-      <td>
-        <address>
-          Електронна пошта: <a href="mailto:example@example.com">example@example.com</a>     Телефон: +38-(000)-000-00-00
-        </address>
-      </td>
-      <td>
-        <p>Copyright © 2023 LinguaSphere</p>
-      </td>
-    </tr>
-  </table>
-</footer>
+<div th:replace="~{/shared/footer}"></div>
 
 <script src="/script/dropdown.js"></script>
 <script src="/script/admin/imageUpdateDefault.js"></script>

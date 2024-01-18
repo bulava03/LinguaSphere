@@ -289,7 +289,7 @@ public class UserController {
                 userService.updateUser(userFounded);
             }
 
-            if (userFounded.getDailyId() == null || dailyMessageService.findById(userFounded.getId()) == null) {
+            if (userFounded.getDailyId() == null || dailyMessageService.findById(userFounded.getDailyId()) == null) {
                 List<Lesson> lessons = lessonService.findAllByUserId(userFounded.getId());
                 List<Long> languagesIds = new ArrayList<>();
                 for (Lesson lesson : lessons
@@ -304,20 +304,25 @@ public class UserController {
                      ) {
                     variants.addAll(dailyMessageService.findAllByLanguageId(languageId));
                 }
-                System.out.println(variants.size());
-                Random random = new Random();
-                int factNumber = random.nextInt(variants.size());
-                DailyMessage dailyMessage = variants.get(factNumber);
-                userFounded.setDailyId(dailyMessage.getId());
-                userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
-                userService.updateUser(userFounded);
+                if (variants.size() > 0) {
+                    Random random = new Random();
+                    int factNumber = random.nextInt(variants.size());
+                    DailyMessage dailyMessage = variants.get(factNumber);
+                    userFounded.setDailyId(dailyMessage.getId());
+                    userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
+                    userService.updateUser(userFounded);
+                }
             }
 
-            DailyMessage dailyMessage = dailyMessageService.findById(userFounded.getId());
-            DailyMessageDtoBytes daily = modelMapper.map(dailyMessage, DailyMessageDtoBytes.class);
-            daily.setFile(Base64.encodeBase64String(dailyMessage.getImage()));
+            if (userFounded.getDailyId() != null) {
+                DailyMessage dailyMessage = dailyMessageService.findById(userFounded.getDailyId());
+                DailyMessageDtoBytes daily = modelMapper.map(dailyMessage, DailyMessageDtoBytes.class);
+                daily.setFile(Base64.encodeBase64String(dailyMessage.getImage()));
+                model.addAttribute("dailyMessage", daily);
+            } else {
+                model.addAttribute("dailyMessage", null);
+            }
 
-            model.addAttribute("dailyMessage", daily);
             model.addAttribute("user", userDto);
             model.addAttribute("token", request.getToken());
             return "user/dailyFactPage";

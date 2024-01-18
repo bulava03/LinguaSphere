@@ -51,6 +51,7 @@ public class AuthorisationController {
 
     @PostMapping("/student_authorisation")
     public String authorisationStudent(@ModelAttribute("authenticationRequest") LoginDto authenticationRequest, Model model) {
+        System.out.println(authenticationRequest);
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getEmail(), authenticationRequest.getPassword(), Collections.emptyList()));
