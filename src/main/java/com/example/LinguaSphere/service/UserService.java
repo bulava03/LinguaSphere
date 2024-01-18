@@ -8,6 +8,7 @@ public interface UserService {
 
     Object[] validateUser(User user);
     void addUser(User user);
+    void updateUser(User user);
     Optional<User> findByEmail(String email);
 
 }

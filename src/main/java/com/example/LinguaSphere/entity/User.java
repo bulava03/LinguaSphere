@@ -8,6 +8,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.internal.bytebuddy.asm.Advice;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -49,5 +50,9 @@ public class User {
     private LocalDateTime dateOfBirth;
 
     private String[] contacts;
+
+    private Long dailyId;
+
+    private LocalDateTime newDailyDate;
 
 }

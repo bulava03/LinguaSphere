@@ -2,12 +2,14 @@ package com.example.LinguaSphere.web;
 
 import com.example.LinguaSphere.config.security.JwtTokenService;
 import com.example.LinguaSphere.entity.*;
+import com.example.LinguaSphere.entity.dto.DailyMessageDtoBytes;
 import com.example.LinguaSphere.entity.dto.LessonTemplate;
 import com.example.LinguaSphere.entity.dto.RequestDto;
 import com.example.LinguaSphere.entity.dto.UserDto;
 import com.example.LinguaSphere.helper.UserHelper;
 import com.example.LinguaSphere.service.*;
 import com.example.LinguaSphere.service.impl.UserDetailsServiceImpl;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,8 +23,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/user")
@@ -38,6 +43,8 @@ public class UserController {
     private TeacherService teacherService;
     @Autowired
     private TeacherLanguageService teacherLanguageService;
+    @Autowired
+    private DailyMessageService dailyMessageService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -214,6 +221,7 @@ public class UserController {
 
             Lesson lessonToSave = lessonService.findById(lesson.getId());
             lessonToSave.setUserId(userFounded.getId());
+            lessonToSave.setLanguageId(lesson.getLanguageId());
             lessonService.save(lessonToSave);
 
             List<TeacherLanguage> teacherLanguages = teacherLanguageService.findAllByLanguageId(lesson.getLanguageId());
@@ -245,6 +253,74 @@ public class UserController {
             model.addAttribute("languageId", lesson.getLanguageId());
             model.addAttribute("token", request.getToken());
             return "user/choosingLessonPage";
+        } else {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+    }
+
+    @GetMapping("dailyFact")
+    public String getDailyFact(RequestDto request, Model model) {
+        String payload = userHelper.decodeToken(request.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+
+        User userFounded = userService.findByEmail(username).orElse(null);
+
+        if (userFounded != null) {
+            UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+            if (userFounded.getNewDailyDate() == null) {
+                userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
+                userService.updateUser(userFounded);
+            }
+
+            if (LocalDateTime.now().isAfter(userFounded.getNewDailyDate())) {
+                userFounded.setDailyId(null);
+                userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
+                userService.updateUser(userFounded);
+            }
+
+            if (userFounded.getDailyId() == null || dailyMessageService.findById(userFounded.getId()) == null) {
+                List<Lesson> lessons = lessonService.findAllByUserId(userFounded.getId());
+                List<Long> languagesIds = new ArrayList<>();
+                for (Lesson lesson : lessons
+                ) {
+                    if (!languagesIds.contains(lesson.getLanguageId())) {
+                        languagesIds.add(lesson.getLanguageId());
+                    }
+                }
+
+                List<DailyMessage> variants = new ArrayList<>();
+                for (Long languageId : languagesIds
+                     ) {
+                    variants.addAll(dailyMessageService.findAllByLanguageId(languageId));
+                }
+                System.out.println(variants.size());
+                Random random = new Random();
+                int factNumber = random.nextInt(variants.size());
+                DailyMessage dailyMessage = variants.get(factNumber);
+                userFounded.setDailyId(dailyMessage.getId());
+                userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
+                userService.updateUser(userFounded);
+            }
+
+            DailyMessage dailyMessage = dailyMessageService.findById(userFounded.getId());
+            DailyMessageDtoBytes daily = modelMapper.map(dailyMessage, DailyMessageDtoBytes.class);
+            daily.setFile(Base64.encodeBase64String(dailyMessage.getImage()));
+
+            model.addAttribute("dailyMessage", daily);
+            model.addAttribute("user", userDto);
+            model.addAttribute("token", request.getToken());
+            return "user/dailyFactPage";
         } else {
             model.addAttribute("errorText", "Помилка авторизації!");
             return "authorisation/authorisation";

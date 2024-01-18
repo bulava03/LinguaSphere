@@ -36,10 +36,10 @@
   </aside>
 
   <div>
-    <button th:attr="onclick='submitSchedule(\'' + ${token} + '\')'">Розклад занять</button><br>
+    <button onclick="submitSchedule()">Розклад занять</button><br>
     <button href="#">Навчальні матеріали</button><br>
     <button href="#">Мої досягнення</button><br>
-    <button href="#">Щоденні цікавинки</button><br>
+    <button onclick="submitDailyForm()">Щоденні цікавинки</button><br>
     <button href="#">Підтримка</button>
   </div>
 </main>
@@ -48,6 +48,9 @@
   <input type="hidden" th:value="${token}" name="token">
 </form>
 <form typeof="hidden" method="get" id="scheduleForm" action="/user/userSchedule">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="dailyForm" action="/user/dailyFact">
   <input type="hidden" th:value="${token}" name="token">
 </form>
 

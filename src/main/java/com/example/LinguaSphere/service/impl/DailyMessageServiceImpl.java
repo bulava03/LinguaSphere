@@ -25,6 +25,11 @@ public class DailyMessageServiceImpl implements DailyMessageService {
     }
 
     @Override
+    public List<DailyMessage> findAllByLanguageId(Long languageId) {
+        return dailyMessageRepository.findAllByLanguageId(languageId);
+    }
+
+    @Override
     public void save(DailyMessage dailyMessage) {
         dailyMessageRepository.save(dailyMessage);
     }
