@@ -39,7 +39,11 @@
     <tr th:each="daily : ${dailies}">
       <td th:text="${daily.text}"></td>
       <td style="display: none;" th:text="${daily.id}"></td>
-      <td th:text="${daily.links}"></td>
+      <td>
+        <div th:each="link, iterationStat : ${daily.links}">
+          <p th:text="${link}" th:id="'link-' + ${iterationStat.index}"></p>
+        </div>
+      </td>
       <td>
         <img th:src="'data:image/jpeg;base64,' + ${daily.file}" alt="Image" width="300" height="200">
       </td>

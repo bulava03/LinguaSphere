@@ -7,6 +7,7 @@
     <title>LinguaSphere</title>
     <link rel="stylesheet" href="/style/shared/footerStyle.css">
     <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/user/dailyPageAStyle.css">
     <link rel="stylesheet" href="/style/userPageStyle.css">
     <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
@@ -40,9 +41,11 @@
             <h1 th:if="${dailyMessage.text != ''}">Цікавий факт</h1>
             <h2 th:if="${dailyMessage.text != ''}" th:text="${dailyMessage.text}"></h2>
             <h2 th:if="${dailyMessage.links != ''}">Цікаві посилання</h2>
-            <h3 th:if="${dailyMessage.links != ''}" th:text="${dailyMessage.links}"></h3>
+            <th:block th:each="link, iterationStat : ${dailyMessage.links}">
+                <a th:href="${link}" th:text="${link}"></a><br><br>
+            </th:block><br>
             <img th:if="${dailyMessage.file != null}"
-                 th:src="'data:image/jpeg;base64,' + ${dailyMessage.file}" alt="Image" width="900" height="600">
+                 th:src="'data:image/jpeg;base64,' + ${dailyMessage.file}" alt="Image" width="600" height="400">
         </div>
         <h2 th:if="${dailyMessage == null}"> На жаль, цікавинок, пов'язаних з мовами, які ви вивчаєте, на сьогодні немає </h2>
 

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class DailyMessage {
     private Long id;
     private Long languageId;
     private String text;
-    private String links;
+    private List<String> links;
     private byte[] image;
 
 }

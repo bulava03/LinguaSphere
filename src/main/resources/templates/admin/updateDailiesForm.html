@@ -7,7 +7,7 @@
   <title>LinguaSphere</title>
   <link rel="stylesheet" href="/style/shared/footerStyle.css">
   <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
-  <link rel="stylesheet" href="/style/admin/adminDailyFormStyle.css">
+  <link rel="stylesheet" href="/style/admin/adminCreatureFormStyle.css">
   <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
@@ -36,7 +36,16 @@
         <h2 class="name">Текст</h2>
         <textarea class="field" id="text" th:text="${daily.text}" type="text" name="text"></textarea>
         <h2 class="name">Посилання</h2>
-        <textarea class="field" id="links" th:text="${daily.links}" type="text" name="links"></textarea>
+        <th:block th:if="${daily.links != null}">
+          <textarea th:if="${#lists.size(daily.links) == 0}" class="field" text="" type="text" name="links"></textarea>
+        </th:block>
+        <th:block th:if="${daily.links == null}">
+          <textarea class="field" text="" type="text" name="links"></textarea>
+        </th:block>
+        <th:block th:each="link, iterationStat : ${daily.links}">
+          <textarea class="field" th:text="${link}" type="text" name="links"></textarea>
+        </th:block>
+        <button type="button" class="button" onclick="addTextarea()">Додати посилання</button>
         <h2 class="name">Зображення</h2>
         <input class="field" id="file" type="file" name="file">
 
@@ -57,5 +66,6 @@
 
 <script src="/script/dropdown.js"></script>
 <script src="/script/admin/imageUpdateDefault.js"></script>
+<script src="/script/admin/dailyForm.js"></script>
 </body>
 </html>

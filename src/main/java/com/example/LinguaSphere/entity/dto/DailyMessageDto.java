@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +16,7 @@ public class DailyMessageDto {
     private String language;
     private Long languageId;
     private String text;
-    private String links;
+    private List<String> links;
     private MultipartFile file;
 
 }

@@ -158,7 +158,18 @@ public class AdminController {
     public String addDaily(DailyMessageDto dailyMessageDto, Admin admin, Model model) throws IOException {
         DailyMessage dailyMessage = modelMapper.map(dailyMessageDto, DailyMessage.class);
         dailyMessage.setImage(dailyMessageDto.getFile().getBytes());
+        if (!dailyMessage.getLinks().isEmpty()) {
+            List<String> newLinks = new ArrayList<>();
+            for (String link : dailyMessage.getLinks()
+            ) {
+                if (!link.equals("")) {
+                    newLinks.add(link);
+                }
+            }
+            dailyMessage.setLinks(newLinks);
+        }
         dailyMessageService.save(dailyMessage);
+
         List<DailyMessage> list = dailyMessageService.findAll();
         List<DailyMessageDtoBytes> newList = new ArrayList<>();
         for (DailyMessage daily : list
@@ -168,6 +179,7 @@ public class AdminController {
             dto.setFile(Base64.encodeBase64String(daily.getImage()));
             newList.add(dto);
         }
+
         model.addAttribute("dailies", newList);
         model.addAttribute("admin", admin);
         return "admin/dailiesList";
@@ -190,6 +202,16 @@ public class AdminController {
     public String updateDaily(Admin admin, DailyMessageDto dailyMessageDto, Model model) throws IOException {
         DailyMessage dailyMessage = modelMapper.map(dailyMessageDto, DailyMessage.class);
         dailyMessage.setImage(dailyMessageDto.getFile().getBytes());
+        if (!dailyMessage.getLinks().isEmpty()) {
+            List<String> newLinks = new ArrayList<>();
+            for (String link : dailyMessage.getLinks()
+            ) {
+                if (!link.equals("")) {
+                    newLinks.add(link);
+                }
+            }
+            dailyMessage.setLinks(newLinks);
+        }
         dailyMessageService.save(dailyMessage);
 
         List<DailyMessage> list = dailyMessageService.findAll();

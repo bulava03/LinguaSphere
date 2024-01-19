@@ -36,7 +36,7 @@
                 <input class="field" id="text" th:value="${creature.name}" type="text" name="name">
                 <h2 class="name">Підказки</h2>
                 <th:block th:each="hint, iterationStat : ${creature.hints}">
-                    <textarea class="field" id="links" th:text="${hint}" type="text" name="hints"></textarea>
+                    <textarea class="field" id="hints" th:text="${hint}" type="text" name="hints"></textarea>
                 </th:block>
                 <button type="button" class="button" onclick="addTextarea()">Додати підказку</button>
                 <h2 class="name">Зображення</h2>
