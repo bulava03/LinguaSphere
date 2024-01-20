@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/userPageStyle.css">
+    <link rel="stylesheet" href="/style/user/guessingPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <div th:replace="~{/user/partsOfPages/aside}"></div>
+
+    <div>
+        <div th:if="${creature != null}">
+            <h1>Гра "Хто я?"</h1>
+            <h2 th:text="'Мова гри:' + ' ' + ${#strings.toLowerCase(creature.language)}"></h2>
+
+            <div id="inputPart">
+                <h2 class="name">Введіть назву</h2>
+                <input class="field" id="userText" value="" type="text">
+            </div>
+
+            <p th:unless="${errorText == null}" th:text="${errorText}" style="color: red;"></p>
+
+            <button onclick="submitAnswerForm()"> Відповісти </button><br>
+
+            <h2 th:if="${not #lists.isEmpty(creature.hints)}">Підказки</h2>
+            <th:block th:each="hint, iterationStat : ${creature.hints}">
+                <h2 th:text="${hint}"></h2><br>
+            </th:block>
+
+            <button th:if="${creature.hintsLeft > 0}" onclick="submitHintForm()"> Отримати підказку </button>
+            <h2 th:unless="${creature.hintsLeft > 0}"> На жаль, більше підказок до цього питання немає</h2><br>
+
+            <button onclick="submitGiveUpForm()"> Здатися </button>
+        </div>
+        <h2 th:if="${creature == null}"> На жаль, для цієї мови гра "Хто я?" наразі недоступна </h2>
+
+        <button onclick="submitPageForm()">Назад</button>
+    </div>
+</main>
+
+<form th:if="${creature.hintsLeft > 0}" typeof="hidden" method="get" id="hintForm" action="/user/getHint">
+    <input type="hidden" th:value="${creature.id}" name="id">
+    <input type="hidden" th:value="${creature.hintsLeft}" name="hintsLeft">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="post" id="giveUpForm" action="/user/giveUp">
+    <input type="hidden" th:value="${creature.id}" name="id">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="post" id="creatureAnswerForm" action="/user/checkCreatureAnswerForm">
+    <input type="hidden" id="answerText" value="" name="name">
+    <input type="hidden" th:value="${creature.hintsLeft}" name="hintsLeft">
+    <input type="hidden" th:value="${creature.id}" name="id">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/user/guessingPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

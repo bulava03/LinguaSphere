@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/userPageStyle.css">
+    <link rel="stylesheet" href="/style/user/guessingPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <div th:replace="~{/user/partsOfPages/aside}"></div>
+
+    <div>
+        <div th:if="${creature != null}">
+            <h1> Гра "Хто я?" </h1>
+            <h2 th:text="'Мова гри:' + ' ' + ${#strings.toLowerCase(creature.language)}"></h2>
+
+            <h1> Правильна відповідь на питання була: </h1>
+            <h2 th:text="${creature.name}"></h2>
+            <img th:if="${creature.file != null}"
+                 th:src="'data:image/jpeg;base64,' + ${creature.file}" alt="Image" width="600" height="400">
+        </div><br><br><br>
+        <h2 th:if="${creature == null}"> Щось пішло не так </h2>
+
+        <button onclick="submitNextForm()"> Наступне питання </button><br>
+        <button onclick="submitPageForm()">На головну</button>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="nextForm" action="/user/submitChooseLanguageCreatureForm">
+    <input type="hidden" th:value="${creature.languageId}" name="languageId">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/user/creatureAnswerForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

@@ -15,33 +15,11 @@
 </header>
 
 <main style="display: flex;">
-  <aside>
-    <img src="/photo.png" width="200" height="200" alt="user photo header"><br>
-
-    <b th:text="${teacher.name + '   ' + teacher.surname}"></b><br><br>
-
-    <p>Електронна пошта:</p>
-    <p><i th:text="${teacher.email}"></i></p><br>
-
-    <p>Номер телефону:</p>
-    <p><i th:text="${teacher.phone}"></i></p><br>
-
-    <p>Додатковий контакт:</p>
-    <p><i th:text="${teacher.contacts}"></i></p><br>
-  </aside>
+  <div th:replace="~{/teacher/partsOfPages/aside}"></div>
 
   <div>
     <table>
-      <tr>
-        <th></th>
-        <th>Пн</th>
-        <th>Вт</th>
-        <th>Ср</th>
-        <th>Чт</th>
-        <th>Пт</th>
-        <th>Сб</th>
-        <th>Нд</th>
-      </tr>
+      <tr><th></th><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Нд</th></tr>
 
       <tr th:each="hour, hourStat : ${#numbers.sequence(8, 23)}">
         <th th:text="${hour} + ':00-' + (${hour + 1}) + ':00'"></th>

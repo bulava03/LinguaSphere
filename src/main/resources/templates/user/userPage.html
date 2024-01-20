@@ -17,29 +17,14 @@
 </header>
 
 <main>
-  <aside>
-    <img src="/photo.png" width="200" height="200" alt="user photo header"><br>
-
-    <b th:text="${user.name + '   ' + user.surname}"></b><br><br>
-
-    <p>Електронна пошта:</p>
-    <p><i th:text="${user.email}"></i></p><br>
-
-    <p>Номер телефону:</p>
-    <p><i th:text="${user.phone}"></i></p><br>
-
-    <p>Додатковий контакт:</p>
-    <p><i>Додаткова контактна інформація</i></p><br>
-
-    <p>День народження:</p>
-    <p><i th:text="${user.dateOfBirth}"></i></p><br>
-  </aside>
+  <div th:replace="~{/user/partsOfPages/aside}"></div>
 
   <div>
     <button onclick="submitSchedule()">Розклад занять</button><br>
     <button href="#">Навчальні матеріали</button><br>
     <button href="#">Мої досягнення</button><br>
     <button onclick="submitDailyForm()">Щоденні цікавинки</button><br>
+    <button onclick="submitCreatureListGettingForm()">"Хто я?"</button><br>
     <button href="#">Підтримка</button>
   </div>
 </main>
@@ -51,6 +36,9 @@
   <input type="hidden" th:value="${token}" name="token">
 </form>
 <form typeof="hidden" method="get" id="dailyForm" action="/user/dailyFact">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="creatureListGettingForm" action="/user/getCreatureLanguageList">
   <input type="hidden" th:value="${token}" name="token">
 </form>
 

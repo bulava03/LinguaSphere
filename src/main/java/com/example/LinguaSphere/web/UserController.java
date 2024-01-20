@@ -2,10 +2,7 @@ package com.example.LinguaSphere.web;
 
 import com.example.LinguaSphere.config.security.JwtTokenService;
 import com.example.LinguaSphere.entity.*;
-import com.example.LinguaSphere.entity.dto.DailyMessageDtoBytes;
-import com.example.LinguaSphere.entity.dto.LessonTemplate;
-import com.example.LinguaSphere.entity.dto.RequestDto;
-import com.example.LinguaSphere.entity.dto.UserDto;
+import com.example.LinguaSphere.entity.dto.*;
 import com.example.LinguaSphere.helper.UserHelper;
 import com.example.LinguaSphere.service.*;
 import com.example.LinguaSphere.service.impl.UserDetailsServiceImpl;
@@ -45,6 +42,8 @@ public class UserController {
     private TeacherLanguageService teacherLanguageService;
     @Autowired
     private DailyMessageService dailyMessageService;
+    @Autowired
+    private CreatureService creatureService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -326,6 +325,238 @@ public class UserController {
             model.addAttribute("user", userDto);
             model.addAttribute("token", request.getToken());
             return "user/dailyFactPage";
+        } else {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+    }
+
+    @GetMapping("getCreatureLanguageList")
+    public String getCreatureLanguageList(@ModelAttribute("request") RequestDto request, Model model) {
+        String payload = userHelper.decodeToken(request.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+
+        User userFounded = userService.findByEmail(username).orElse(null);
+
+        if (userFounded != null) {
+            UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+            List<Lesson> userLessons = lessonService.findAllByUserId(userFounded.getId());
+            List<Long> languagesIds = new ArrayList<>();
+            for (Lesson lesson : userLessons
+            ) {
+                if (!languagesIds.contains(lesson.getLanguageId())) {
+                    languagesIds.add(lesson.getLanguageId());
+                }
+            }
+            List<Language> languages = new ArrayList<>();
+            for (Long languageId : languagesIds
+                 ) {
+                languages.add(languageService.findById(languageId));
+            }
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("languages", languages);
+            model.addAttribute("token", request.getToken());
+            return "user/choosingLanguagePageCreature";
+        } else {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+    }
+
+    @GetMapping("submitChooseLanguageCreatureForm")
+    public String getCreatureGuessPage(LessonTemplate languageSelected, RequestDto request, Model model) {
+        String payload = userHelper.decodeToken(request.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+
+        User userFounded = userService.findByEmail(username).orElse(null);
+
+        if (userFounded != null) {
+            UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+            Language language = languageService.findById(languageSelected.getLanguageId());
+            List<Creature> creatures = creatureService.findAllByLanguageId(language.getId());
+            Creature creature = null;
+            if (creatures.size() > 0) {
+                Random random = new Random();
+                int number = random.nextInt(creatures.size());
+                creature = creatures.get(number);
+            }
+            CreatureToGuess creatureToGuess = modelMapper.map(creature, CreatureToGuess.class);
+            creatureToGuess.setLanguage(languageService.findById(creature.getLanguageId()).getName());
+            creatureToGuess.setHintsLeft(creature.getHints().size());
+            creatureToGuess.setHints(new ArrayList<>());
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("creature", creatureToGuess);
+            model.addAttribute("token", request.getToken());
+            return "user/creatureGuessingPage";
+        } else {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+    }
+
+    @GetMapping("getHint")
+    public String getHint(RequestDto request, CreatureToGuess creatureToGuess, Model model) {
+        String payload = userHelper.decodeToken(request.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+
+        User userFounded = userService.findByEmail(username).orElse(null);
+
+        if (userFounded != null) {
+            UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+            Creature creature = creatureService.findById(creatureToGuess.getId());
+            CreatureToGuess newCreatureToGuess = modelMapper.map(creature, CreatureToGuess.class);
+            newCreatureToGuess.setLanguage(languageService.findById(creature.getLanguageId()).getName());
+            newCreatureToGuess.setHintsLeft(creatureToGuess.getHintsLeft() - 1);
+            int hintsSize = creature.getHints().size();
+            int lastHintIndex = hintsSize - creatureToGuess.getHintsLeft();
+            List<String> allHints = creature.getHints();
+            List<String> newHints = new ArrayList<>();
+            for (int i = 0; i <= lastHintIndex; i++) {
+                newHints.add(allHints.get(i));
+            }
+            newCreatureToGuess.setHints(newHints);
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("creature", newCreatureToGuess);
+            model.addAttribute("token", request.getToken());
+            return "user/creatureGuessingPage";
+        } else {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+    }
+
+    @PostMapping("giveUp")
+    public String giveUp(RequestDto request, CreatureToGuess creatureToGuess, Model model) {
+        String payload = userHelper.decodeToken(request.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+
+        User userFounded = userService.findByEmail(username).orElse(null);
+
+        if (userFounded != null) {
+            UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+            userFounded.setLastGuessedCount(0);
+            userService.updateUser(userFounded);
+
+            Creature creature = creatureService.findById(creatureToGuess.getId());
+            creature.setHints(new ArrayList<>());
+            CreatureDtoBytes creatureDtoBytes = modelMapper.map(creature, CreatureDtoBytes.class);
+            creatureDtoBytes.setFile(Base64.encodeBase64String(creature.getImage()));
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("creature", creatureDtoBytes);
+            model.addAttribute("token", request.getToken());
+            return "user/creatureAnswerPage";
+        } else {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+    }
+
+    @PostMapping("checkCreatureAnswerForm")
+    public String checkCreatureAnswer(RequestDto request, CreatureToGuess creatureAnswered, Model model) {
+        String payload = userHelper.decodeToken(request.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+
+        User userFounded = userService.findByEmail(username).orElse(null);
+
+        if (userFounded != null) {
+            UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+            Creature creature = creatureService.findById(creatureAnswered.getId());
+
+            if (userFounded.getScore() == null) {
+                userFounded.setScore(0L);
+                userService.updateUser(userFounded);
+            }
+
+            if (creature.getName().equalsIgnoreCase(creatureAnswered.getName())) {
+                userFounded.setLastGuessedCount(userFounded.getLastGuessedCount() + 1);
+                userFounded.setScore(userFounded.getScore() + 1);
+                if (userFounded.getLastGuessedCount() == 10) {
+                    userFounded.setLastGuessedCount(0);
+                    userFounded.setScore(userFounded.getScore() + 10);
+                }
+                userService.updateUser(userFounded);
+
+                creature.setHints(new ArrayList<>());
+                CreatureDtoBytes creatureDtoBytes = modelMapper.map(creature, CreatureDtoBytes.class);
+                creatureDtoBytes.setFile(Base64.encodeBase64String(creature.getImage()));
+
+                model.addAttribute("user", userDto);
+                model.addAttribute("creature", creatureDtoBytes);
+                model.addAttribute("token", request.getToken());
+                return "user/creatureAnswerPage";
+            } else {
+                CreatureToGuess newCreatureToGuess = modelMapper.map(creature, CreatureToGuess.class);
+                newCreatureToGuess.setLanguage(languageService.findById(creature.getLanguageId()).getName());
+                newCreatureToGuess.setHintsLeft(creatureAnswered.getHintsLeft());
+                int hintsSize = creature.getHints().size();
+                int lastHintIndex = hintsSize - creatureAnswered.getHintsLeft();
+                List<String> allHints = creature.getHints();
+                List<String> newHints = new ArrayList<>();
+                for (int i = 0; i < lastHintIndex; i++) {
+                    newHints.add(allHints.get(i));
+                }
+                newCreatureToGuess.setHints(newHints);
+
+                model.addAttribute("errorText", "Ви не вгадали. Спробуйте ще раз!");
+                model.addAttribute("user", userDto);
+                model.addAttribute("creature", newCreatureToGuess);
+                model.addAttribute("token", request.getToken());
+                return "user/creatureGuessingPage";
+            }
         } else {
             model.addAttribute("errorText", "Помилка авторизації!");
             return "authorisation/authorisation";

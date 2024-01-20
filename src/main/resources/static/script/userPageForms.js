@@ -12,3 +12,8 @@ function submitDailyForm() {
     var form = document.getElementById('dailyForm');
     form.submit();
 }
+
+function submitCreatureListGettingForm() {
+    var form = document.getElementById('creatureListGettingForm');
+    form.submit();
+}

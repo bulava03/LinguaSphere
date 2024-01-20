@@ -1,0 +1,29 @@
+#inputPart {
+    width: 500px;
+    margin: auto;
+    padding-right: 100px;
+    margin-top: 45px;
+}
+
+.name {
+    width: 200px;
+    color: white;
+    font-size: 18px;
+    font-weight: 70;
+    text-align: left;
+}
+
+.field {
+    position: relative;
+    left: 100px;
+    top: -45px;
+    width: 420px;
+    line-height: 40px;
+    border-radius: 10px;
+    padding: 0 22px;
+    font-size: 16px;
+}
+
+button:first-of-type {
+    margin-top: 0;
+}

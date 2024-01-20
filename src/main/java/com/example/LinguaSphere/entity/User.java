@@ -55,4 +55,7 @@ public class User {
 
     private LocalDateTime newDailyDate;
 
+    private  int lastGuessedCount;
+    private Long score;
+
 }
