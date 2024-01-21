@@ -5,6 +5,7 @@ import com.example.LinguaSphere.repository.LessonRepository;
 import com.example.LinguaSphere.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    @Transactional
     public void deleteByLanguageId(Long languageId) {
         lessonRepository.deleteByLanguageId(languageId);
     }

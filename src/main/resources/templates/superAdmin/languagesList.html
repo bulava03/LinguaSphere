@@ -15,12 +15,10 @@
 </header>
 
 <form id="updateForm" action="/superAdmin/updateLanguage" method="get">
-    <input id="nameUpdate" type="hidden" value="" name="name" />
-    <input id="subNameUpdate" type="hidden" value="" name="subName" />
+    <input id="nameUpdate" type="hidden" value="" name="name">
 </form>
 <form id="removeForm" action="/superAdmin/deleteLanguage" method="post">
-    <input id="nameRemove" type="hidden" value="" name="name" />
-    <input id="subNameRemove" type="hidden" value="" name="subName" />
+    <input id="nameRemove" type="hidden" value="" name="name">
 </form>
 
 <main>
@@ -47,6 +45,7 @@
 
 <div th:replace="~{/shared/footer}"></div>
 
+<script src="/script/superAdmin/languageListPage.js"></script>
 <script src="/script/dropdown.js"></script>
 </body>
 </html>

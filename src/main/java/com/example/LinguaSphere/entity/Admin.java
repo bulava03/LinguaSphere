@@ -24,4 +24,9 @@ public class Admin {
     @Size(min = 8, message = "Пароль повинен містити від 8 до 20 символів.")
     private String password;
 
+    public Admin(String login, String password) {
+        this.setLogin(login);
+        this.setPassword(password);
+    }
+
 }

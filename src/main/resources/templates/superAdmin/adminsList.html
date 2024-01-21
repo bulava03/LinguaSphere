@@ -15,12 +15,12 @@
 </header>
 
 <form id="updateForm" action="/superAdmin/updateAdmin" method="get">
-    <input id="loginUpdate" type="hidden" value="" name="login" />
-    <input id="passwordUpdate" type="hidden" value="" name="password" />
+    <input id="loginUpdate" type="hidden" value="" name="login">
+    <input id="passwordUpdate" type="hidden" value="" name="password">
 </form>
 <form id="removeForm" action="/superAdmin/deleteAdmin" method="post">
-    <input id="loginRemove" type="hidden" value="" name="login" />
-    <input id="passwordRemove" type="hidden" value="" name="password" />
+    <input id="loginRemove" type="hidden" value="" name="login">
+    <input id="passwordRemove" type="hidden" value="" name="password">
 </form>
 
 <main>
@@ -47,6 +47,7 @@
 
 <div th:replace="~{/shared/footer}"></div>
 
+<script src="/script/superAdmin/adminListPage.js"></script>
 <script src="/script/dropdown.js"></script>
 </body>
 </html>

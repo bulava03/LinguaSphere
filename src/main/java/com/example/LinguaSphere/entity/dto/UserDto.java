@@ -15,5 +15,6 @@ public class UserDto {
     private String phone;
     private String dateOfBirth;
     private String[] contacts;
+    private Long score;
 
 }

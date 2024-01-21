@@ -20,7 +20,6 @@
 .regForm {
     background-color: rgb(1, 3, 241, 0.6);
     width: 750px;
-    height: 830px;
     margin: auto;
     border-radius: 0px 0px 15px 15px;
 }
@@ -41,7 +40,6 @@
 
 .regInput {
     width: 100%;
-    height: 760px;
 }
 
 .field {

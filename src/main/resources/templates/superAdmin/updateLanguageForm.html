@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
+    <link rel="stylesheet" href="/style/superAdmin/superAdminFormStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout4}"></div>
+</header>
+
+<main>
+    <div class="regTitle">
+        <h1>Змінити мову</h1>
+    </div>
+    <div class="regForm">
+        <form id="regForm" method="post" action="/superAdmin/updateLanguage">
+            <div class="regInput">
+                <h2 class="name">Назва</h2>
+                <input class="field" id="name" type="text" th:value="${language.name}" name="name">
+                <h2 class="name">У родовому відмінку</h2>
+                <input class="field" id="subName" type="text" th:value="${language.subName}" name="subName">
+                <input class="field" id="languageId" type="hidden" th:value="${language.id}" name="id">
+                <input class="button" type="submit" value="Зберегти">
+                <p class="errorText" id="errorText"></p>
+                <p class="errorText" th:text="${errorText}"></p>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{/shared/footer}"></div>
+
+</body>
+</html>

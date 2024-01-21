@@ -25,6 +25,8 @@
             <h1>Гра "Хто я?"</h1>
             <h2 th:text="'Мова гри:' + ' ' + ${#strings.toLowerCase(creature.language)}"></h2>
 
+            <h3 th:text="'Рахунок: ' + ${user.score}"></h3>
+
             <div id="inputPart">
                 <h2 class="name">Введіть назву</h2>
                 <input class="field" id="userText" value="" type="text">

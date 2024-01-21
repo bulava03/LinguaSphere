@@ -18,7 +18,7 @@ public class Language {
     @NotBlank(message = "Назва обов'язкова")
     @Column(unique = true)
     private String name;
-    @NotBlank(message = "Назва обов'язкова")
+    @NotBlank(message = "Назва у родовому відмінку обов'язкова")
     @Column(unique = true)
     private String subName;
 
