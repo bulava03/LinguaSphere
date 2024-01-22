@@ -85,6 +85,7 @@ public class AuthorisationController {
     @PostMapping("/teacher_authorisation")
     public String authorisationTeacher(@ModelAttribute("authenticationRequest") LoginDto authenticationRequest, Model model) {
         Teacher teacherFounded = teacherService.findByEmail(authenticationRequest.getEmail());
+        System.out.println(teacherFounded);
         if (teacherFounded != null) {
             TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
             model.addAttribute("teacher", teacherDto);

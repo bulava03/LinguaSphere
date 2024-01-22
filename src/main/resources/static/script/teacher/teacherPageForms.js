@@ -7,3 +7,8 @@ function submitSchedule() {
     var form = document.getElementById('scheduleForm');
     form.submit();
 }
+
+function submitMaterials() {
+    var form = document.getElementById('materialsForm');
+    form.submit();
+}

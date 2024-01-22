@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
+    <link rel="stylesheet" href="/style/admin/adminCreatureFormStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout5}"></div>
+</header>
+
+<main>
+    <div class="regTitle">
+        <h1>Додати навчальні матеріали</h1>
+    </div>
+
+    <div class="regForm">
+        <form id="regForm" action="/teacher/addMaterial" method="post" enctype="multipart/form-data">
+            <div class="regInput">
+                <fieldset>
+                    <legend>Мова:</legend>
+                    <div th:each="language : ${languages}">
+                        <input type="radio" th:id="${'radio-' + language.name}" th:value="${language.id}" th:name="${'languageId'}" />
+                        <label th:for="${'radio-' + language.name}" th:text="${language.name}"></label><br>
+                    </div>
+                </fieldset><br>
+
+                <h2 class="name">Текст</h2>
+                <textarea class="field" id="text" value="" type="text" name="text"></textarea>
+                <h2 class="name">Посилання</h2>
+                <textarea class="field" id="links" value="" type="text" name="links"></textarea>
+                <button type="button" class="button" onclick="addTextarea()">Додати посилання</button>
+                <h2 class="name">Зображення</h2>
+                <input class="field" id="fileImg" value="" type="file" name="fileImg">
+                <h2 class="name">Файл</h2>
+                <input class="field" id="file" value="" type="file" name="file">
+
+                <input type="hidden" th:value="${teacher.email}" name="email">
+                <input type="hidden" th:value="${teacher.password}" name="password">
+
+                <input class="button" type="submit" value="Додати">
+                <p class="errorText" id="errorText"></p>
+                <p class="errorText" th:text="${errorText}"></p>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/dropdown.js"></script>
+<script src="/script/teacher/materialForm.js"></script>
+</body>
+</html>
