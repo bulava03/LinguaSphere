@@ -20,7 +20,7 @@
 </form>
 
 <main>
-  <h2>Запис на уроки</h2>
+  <h2 th:text="'Запис на уроки ' + ${language.subName}">Запис на уроки</h2>
   <table th:if="${not #lists.isEmpty(lessons)}" id="lessonsTable">
     <tr>
       <th class="date-column" onclick="sortTable(0)" style="cursor: pointer;">Ім'я</th>
@@ -41,14 +41,18 @@
   </form>
 </main>
 
+<form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
 <form typeof="hidden" id="lessonForm" method="post" action="/user/setLesson">
   <input type="hidden" th:value="${token}" name="token">
-  <input type="hidden" th:value="${languageId}" name="languageId">
+  <input type="hidden" th:value="${language.id}" name="languageId">
   <input type="hidden" value="" id="lessonId" name="id">
 </form>
 
 <div th:replace="~{/shared/footer}"></div>
 
+<script src="/script/userPageForms.js"></script>
 <script src="/script/user/setLessonForm.js"></script>
 <script src="/script/user/sortTable.js"></script>
 <script src="/script/dropdown.js"></script>

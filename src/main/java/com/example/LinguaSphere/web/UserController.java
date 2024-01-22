@@ -190,7 +190,7 @@ public class UserController {
 
             model.addAttribute("user", userDto);
             model.addAttribute("lessons", lessonList);
-            model.addAttribute("languageId", lesson.getLanguageId());
+            model.addAttribute("language", languageService.findById(lesson.getLanguageId()));
             model.addAttribute("token", request.getToken());
             return "user/choosingLessonPage";
         } else {
