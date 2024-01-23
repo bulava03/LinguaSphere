@@ -15,6 +15,11 @@ public class MaterialServiceImpl implements MaterialsService {
     private MaterialsRepository materialsRepository;
 
     @Override
+    public Material findById(Long id) {
+        return materialsRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public List<Material> findAllById(List<Long> ids) {
         return materialsRepository.findAllById(ids);
     }
@@ -22,6 +27,11 @@ public class MaterialServiceImpl implements MaterialsService {
     @Override
     public void save(Material material) {
         materialsRepository.save(material);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        materialsRepository.deleteById(id);
     }
 
 }

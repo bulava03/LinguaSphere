@@ -403,8 +403,10 @@ public class UserController {
             }
             CreatureToGuess creatureToGuess = modelMapper.map(creature, CreatureToGuess.class);
             creatureToGuess.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            creatureToGuess.setHintsLeft(creature.getHints().size());
-            creatureToGuess.setHints(new ArrayList<>());
+            creatureToGuess.setHintsLeft(creature.getHints().size() - 1);
+            List<String> hints = new ArrayList<>();
+            hints.add(creatureToGuess.getHints().get(0));
+            creatureToGuess.setHints(hints);
 
             model.addAttribute("user", userDto);
             model.addAttribute("creature", creatureToGuess);

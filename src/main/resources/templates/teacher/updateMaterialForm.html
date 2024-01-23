@@ -18,24 +18,30 @@
 
 <main>
     <div class="regTitle">
-        <h1>Додати навчальні матеріали</h1>
+        <h1>Змінити навчальні матеріали</h1>
     </div>
 
     <div class="regForm">
-        <form id="regForm" action="/teacher/addMaterial" method="post" enctype="multipart/form-data">
+        <form id="regForm" action="/teacher/updateMaterial" method="post" enctype="multipart/form-data">
             <div class="regInput">
                 <fieldset>
                     <legend>Мова:</legend>
                     <div th:each="language : ${languages}">
-                        <input type="radio" th:id="${'radio-' + language.name}" th:value="${language.id}" th:name="${'languageId'}" />
+                        <input type="radio" th:id="${'radio-' + language.name}" th:value="${language.id}" th:name="${'languageId'}" th:checked="${language.id == material.languageId}">
                         <label th:for="${'radio-' + language.name}" th:text="${language.name}"></label><br>
                     </div>
                 </fieldset><br>
 
                 <h2 class="name">Текст</h2>
-                <textarea class="field" id="text" type="text" name="text"></textarea>
+                <textarea class="field" id="text" th:text="${material.text}" type="text" name="text"></textarea>
                 <h2 class="name">Посилання</h2>
-                <textarea class="field" id="links" type="text" name="links"></textarea>
+                <th:block th:if="${material.links != null and #lists.size(material.links) == 0}">
+                    <textarea class="field" text="" type="text" name="links"></textarea>
+                </th:block>
+                <textarea th:if="${material.links == null}" class="field" text="" type="text" name="links"></textarea>
+                <th:block th:each="link, iterationStat : ${material.links}">
+                    <textarea class="field" th:text="${link}" type="text" name="links"></textarea>
+                </th:block>
                 <button type="button" class="button" onclick="addTextarea()">Додати посилання</button>
                 <h2 class="name">Зображення</h2>
                 <input class="field" id="fileImg" value="" type="file" name="fileImg">
@@ -44,8 +50,9 @@
 
                 <input type="hidden" th:value="${teacher.email}" name="email">
                 <input type="hidden" th:value="${teacher.password}" name="password">
+                <input type="hidden" th:value="${material.id}" name="id">
 
-                <input class="button" type="submit" value="Додати">
+                <input class="button" type="submit" value="Зберегти">
                 <p class="errorText" id="errorText"></p>
                 <p class="errorText" th:text="${errorText}"></p>
             </div>
@@ -53,9 +60,14 @@
     </div>
 </main>
 
+<h2 id="imageToUploadByDefault" th:text="${material.fileImg}" style="display: none;"></h2>
+<h2 id="fileToUploadByDefault" th:text="${material.file}" style="display: none;"></h2>
+<h2 id="fileTypeByDefault" th:text="${material.fileType}" style="display: none;"></h2>
+
 <div th:replace="~{/shared/footer}"></div>
 
 <script src="/script/dropdown.js"></script>
 <script src="/script/teacher/materialForm.js"></script>
+<script src="/script/teacher/updateDefault.js"></script>
 </body>
 </html>

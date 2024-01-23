@@ -39,9 +39,7 @@
         <th:block th:if="${daily.links != null}">
           <textarea th:if="${#lists.size(daily.links) == 0}" class="field" text="" type="text" name="links"></textarea>
         </th:block>
-        <th:block th:if="${daily.links == null}">
-          <textarea class="field" text="" type="text" name="links"></textarea>
-        </th:block>
+        <textarea th:if="${daily.links == null}" class="field" text="" type="text" name="links"></textarea>
         <th:block th:each="link, iterationStat : ${daily.links}">
           <textarea class="field" th:text="${link}" type="text" name="links"></textarea>
         </th:block>

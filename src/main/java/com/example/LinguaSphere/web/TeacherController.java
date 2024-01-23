@@ -1,10 +1,7 @@
 package com.example.LinguaSphere.web;
 
 import com.example.LinguaSphere.entity.*;
-import com.example.LinguaSphere.entity.dto.DailyMessageDtoBytes;
-import com.example.LinguaSphere.entity.dto.MaterialDto;
-import com.example.LinguaSphere.entity.dto.MaterialDtoBytes;
-import com.example.LinguaSphere.entity.dto.TeacherDto;
+import com.example.LinguaSphere.entity.dto.*;
 import com.example.LinguaSphere.helper.LessonHelper;
 import com.example.LinguaSphere.service.*;
 import org.apache.tika.Tika;
@@ -231,6 +228,75 @@ public class TeacherController {
         teacherMaterial.setMaterialId(material.getId());
         teacherMaterial.setTeacherId(teacherFounded.getId());
         teacherMaterialService.save(teacherMaterial);
+
+        model.addAttribute("teacher", teacher);
+        return "redirect:/teacher/getMaterialsList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
+    }
+
+    @GetMapping("/updateMaterial")
+    public String getUpdateMaterialForm(Teacher teacher, Material material, Model model) throws IOException {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        material = materialsService.findById(material.getId());
+        MaterialDtoBytes materialDto = modelMapper.map(material, MaterialDtoBytes.class);
+        materialDto.setLanguage(languageService.findById(material.getLanguageId()).getName());
+        materialDto.setFileImg(Base64.encodeBase64String(material.getImage()));
+        materialDto.setFile(Base64.encodeBase64String(material.getStandardFile()));
+
+        byte[] decodedBytes = material.getStandardFile();
+        Path tempFile = Files.createTempFile("tempFile", null);
+        try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
+            Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+        }
+        Tika tika = new Tika();
+        materialDto.setFileType(tika.detect(tempFile));
+
+        model.addAttribute("teacher", teacherFounded);
+        model.addAttribute("languages", languageService.findAll());
+        model.addAttribute("material", materialDto);
+        return "teacher/updateMaterialForm";
+    }
+
+    @PostMapping("/updateMaterial")
+    public String updateMaterial(Teacher teacher, MaterialDto materialDto, Model model) throws IOException {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        Material materialUpdated = modelMapper.map(materialDto, Material.class);
+        materialUpdated.setImage(materialDto.getFileImg().getBytes());
+        materialUpdated.setStandardFile(materialDto.getFile().getBytes());
+        if (!materialUpdated.getLinks().isEmpty()) {
+            List<String> newLinks = new ArrayList<>();
+            for (String link : materialUpdated.getLinks()
+            ) {
+                if (!link.equals("")) {
+                    newLinks.add(link);
+                }
+            }
+            materialUpdated.setLinks(newLinks);
+        }
+        materialsService.save(materialUpdated);
+
+        model.addAttribute("teacher", teacher);
+        return "redirect:/teacher/getMaterialsList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
+    }
+
+    @PostMapping("/deleteMaterial")
+    public String deleteMaterial(Teacher teacher, Material material, Model model) {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        materialsService.deleteById(material.getId());
 
         model.addAttribute("teacher", teacher);
         return "redirect:/teacher/getMaterialsList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
