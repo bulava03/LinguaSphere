@@ -6,6 +6,7 @@ import com.example.LinguaSphere.entity.dto.*;
 import com.example.LinguaSphere.helper.UserHelper;
 import com.example.LinguaSphere.service.*;
 import com.example.LinguaSphere.service.impl.UserDetailsServiceImpl;
+import org.apache.tika.Tika;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @Controller
@@ -44,6 +52,10 @@ public class UserController {
     private DailyMessageService dailyMessageService;
     @Autowired
     private CreatureService creatureService;
+    @Autowired
+    private MaterialsService materialsService;
+    @Autowired
+    private UserMaterialService userMaterialService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -249,7 +261,7 @@ public class UserController {
 
             model.addAttribute("user", userDto);
             model.addAttribute("lessons", lessonList);
-            model.addAttribute("languageId", lesson.getLanguageId());
+            model.addAttribute("language", languageService.findById(lesson.getLanguageId()));
             model.addAttribute("token", request.getToken());
             return "user/choosingLessonPage";
         } else {
@@ -559,6 +571,106 @@ public class UserController {
                 model.addAttribute("token", request.getToken());
                 return "user/creatureGuessingPage";
             }
+        } else {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+    }
+
+    @GetMapping("/getMaterialsLanguageList")
+    public String getMaterialsLanguageForm(RequestDto request, Model model) {
+        String payload = userHelper.decodeToken(request.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+
+        User userFounded = userService.findByEmail(username).orElse(null);
+
+        if (userFounded != null) {
+            UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+            List<Lesson> userLessons = lessonService.findAllByUserId(userFounded.getId());
+            List<Long> languagesIds = new ArrayList<>();
+            for (Lesson lesson : userLessons
+            ) {
+                if (!languagesIds.contains(lesson.getLanguageId())) {
+                    languagesIds.add(lesson.getLanguageId());
+                }
+            }
+            List<Language> languages = new ArrayList<>();
+            for (Long languageId : languagesIds
+            ) {
+                languages.add(languageService.findById(languageId));
+            }
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("languages", languages);
+            model.addAttribute("token", request.getToken());
+            return "user/choosingMaterialsLanguagePage";
+        } else {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+    }
+
+    @GetMapping("/submitChooseLanguageMaterialsForm")
+    public String getMaterialsPage(RequestDto request, LessonTemplate lessonTemplate, Model model) throws IOException {
+        String payload = userHelper.decodeToken(request.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            model.addAttribute("errorText", "Помилка авторизації!");
+            return "authorisation/authorisation";
+        }
+
+        User userFounded = userService.findByEmail(username).orElse(null);
+
+        if (userFounded != null) {
+            UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+            Long languageId = lessonTemplate.getLanguageId();
+
+            List<UserMaterial> userMaterialList = userMaterialService.findAllByUserId(userFounded.getId());
+            userMaterialList.removeIf(material -> !Objects.equals(material.getLanguageId(), languageId));
+            List<Long> materialsIds = userHelper.getIdsFromUserMaterialsList(userMaterialList);
+            List<Material> materials = materialsService.findAllById(materialsIds);
+
+            List<MaterialDtoBytes> materialsDtoList = new ArrayList<>();
+            for (Material material : materials
+            ) {
+                MaterialDtoBytes dto = modelMapper.map(material, MaterialDtoBytes.class);
+                dto.setLanguage(languageService.findById(material.getLanguageId()).getName());
+                dto.setFileImg(Base64.encodeBase64String(material.getImage()));
+                dto.setFile(Base64.encodeBase64String(material.getStandardFile()));
+
+                byte[] decodedBytes = material.getStandardFile();
+                Path tempFile = Files.createTempFile("tempFile", null);
+                try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
+                    Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+                Tika tika = new Tika();
+                dto.setFileType(tika.detect(tempFile));
+
+                materialsDtoList.add(dto);
+            }
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("languageId", languageId);
+            model.addAttribute("materials", materialsDtoList);
+            model.addAttribute("languageSubName", languageService.findById(languageId).getSubName());
+            model.addAttribute("token", request.getToken());
+            return "user/materialsPage";
         } else {
             model.addAttribute("errorText", "Помилка авторизації!");
             return "authorisation/authorisation";

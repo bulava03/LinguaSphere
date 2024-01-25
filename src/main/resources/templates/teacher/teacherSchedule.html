@@ -27,7 +27,8 @@
         <td th:each="row, rowStat : ${lessons}"
             th:class="${row[__${hour - 8}__] == 0 ? 'free' : (row[__${hour - 8}__] == 1 ? 'used' : 'lesson')}"
             th:attr="onclick=${row[__${hour - 8}__] == 1 ? 'submitCellUsed(__${hour - 8}__, ' + rowStat.index + ')' :
-                    (row[__${hour - 8}__] == 0 ? 'submitCellFree(__${hour - 8}__, ' + rowStat.index + ')' : '')}"></td>
+                    (row[__${hour - 8}__] == 0 ? 'submitCellFree(__${hour - 8}__, ' + rowStat.index + ')' :
+                    'submitCellLesson(__${hour - 8}__, ' + rowStat.index + ')')}"></td>
       </tr>
     </table>
 
@@ -55,6 +56,13 @@
   <input type="hidden" th:value="${teacher.password}" name="password">
   <input id="cellSubmitDayFree" type="hidden" value="" name="day">
   <input id="cellSubmitTimeFree" type="hidden" value="" name="time">
+</form>
+
+<form id="formCellSubmitLesson" typeof="hidden" method="get" action="/teacher/submitCellLesson">
+  <input type="hidden" th:value="${teacher.email}" name="email">
+  <input type="hidden" th:value="${teacher.password}" name="password">
+  <input id="cellSubmitDayLesson" type="hidden" value="" name="day">
+  <input id="cellSubmitTimeLesson" type="hidden" value="" name="time">
 </form>
 
 <div th:replace="~{/shared/footer}"></div>

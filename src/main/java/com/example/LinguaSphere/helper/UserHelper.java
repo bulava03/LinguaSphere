@@ -2,7 +2,9 @@ package com.example.LinguaSphere.helper;
 
 import com.example.LinguaSphere.entity.Lesson;
 import com.example.LinguaSphere.entity.User;
+import com.example.LinguaSphere.entity.UserMaterial;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -44,6 +46,15 @@ public class UserHelper {
 
     public String convertIntIntoDate(int day, int time) {
         return days[day] + " " + times[time];
+    }
+
+    public List<Long> getIdsFromUserMaterialsList(List<UserMaterial> userMaterialList) {
+        List<Long> list = new ArrayList<>();
+        for (UserMaterial element : userMaterialList
+             ) {
+            list.add(element.getMaterialId());
+        }
+        return list;
     }
 
 }

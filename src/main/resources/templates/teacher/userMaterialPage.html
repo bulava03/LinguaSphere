@@ -14,32 +14,29 @@
     <div th:replace="~{/shared/layout5}"></div>
 </header>
 
-<form id="updateForm" action="/teacher/updateMaterial" method="get">
+<form id="addAccessForm" action="/teacher/addAccess" method="post">
     <input type="hidden" th:value="${teacher.email}" name="email">
     <input type="hidden" th:value="${teacher.password}" name="password">
-    <input id="idUpdate" type="hidden" value="" name="id">
+    <input type="hidden" th:value="${languageId}" name="languageId">
+    <input type="hidden" th:value="${userId}" name="userId">
+    <input id="idAddAccess" type="hidden" value="" name="materialId">
 </form>
-<form id="removeForm" action="/teacher/deleteMaterial" method="post">
-    <input id="loginRemove" type="hidden" th:value="${teacher.email}" name="email">
-    <input id="passwordRemove" type="hidden" th:value="${teacher.password}" name="password">
-    <input id="idRemove" type="hidden" value="" name="id">
+<form id="removeAccessForm" action="/teacher/removeAccess" method="post">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+    <input type="hidden" th:value="${languageId}" name="languageId">
+    <input type="hidden" th:value="${userId}" name="userId">
+    <input id="idRemoveAccess" type="hidden" value="" name="materialId">
 </form>
 
 <main>
-    <h2>Навчальні матеріали</h2>
-    <form action="/teacher/addMaterial" method="get">
-        <input type="hidden" th:value="${teacher.email}" name="email">
-        <input type="hidden" th:value="${teacher.password}" name="password">
-        <input class="button" type="submit" value="Додати">
-    </form>
+    <h2>Доступ до навчальних матеріалів для учня</h2>
     <table th:if="${not #lists.isEmpty(materials)}">
         <tr>
             <th class="date-column">Текст</th>
             <th class="complaint-column">Посилання</th>
             <th class="complaint-column">Зображення</th>
             <th class="complaint-column">Файл</th>
-            <th class="complaint-column">Мова</th>
-            <th class="action-column"></th>
             <th class="action-column"></th>
         </tr>
         <tr th:each="material : ${materials}">
@@ -61,13 +58,18 @@
                     <a th:case="*" th:href="'data:application/octet-stream;base64,' + ${material.file}" download="file">Download File</a>
                 </div>
             </td>
-            <td th:text="${material.language}"></td>
 
-            <td class="action-column" onclick="removeMaterialConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">Видалити</td>
-            <td class="action-column" onclick="updateMaterialConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">Змінити</td>
+            <td class="action-column" th:if="${not #lists.contains(available, material.id)}"
+                onclick="addAccessConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">
+                Надати доступ
+            </td>
+            <td class="action-column" th:if="${#lists.contains(available, material.id)}"
+                onclick="removeAccessConfirm(this.parentNode.getElementsByTagName('td')[1].innerText)">
+                Скасувати доступ
+            </td>
         </tr>
     </table>
-    <h2 id="emptyList" th:unless="${not #lists.isEmpty(materials)}">Список навчальних матеріалів порожній</h2>
+    <h2 id="emptyList" th:unless="${not #lists.isEmpty(materials)}">Список ваших навчальних матеріалів порожній</h2>
 </main>
 
 <form typeof="hidden" method="get" id="teacherPageForm" action="/teacher/teacherPage">
@@ -77,7 +79,7 @@
 
 <div th:replace="~{/shared/footer}"></div>
 
-<script src="/script/teacher/materialsListPage.js"></script>
+<script src="/script/teacher/userMaterialPage.js"></script>
 <script src="/script/teacher/teacherPageForms.js"></script>
 <script src="/script/dropdown.js"></script>
 </body>

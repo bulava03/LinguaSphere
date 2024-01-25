@@ -168,16 +168,18 @@ tr:last-of-type th {
 
 .free {
     background-color: #C6FFAB;
-    cursor: pointer;
 }
 
 .used {
     background-color: #FF9999;
-    cursor: pointer;
 }
 
 .lesson {
     background-color: #FFFFB3;
+}
+
+.free, .used, .lesson {
+    cursor: pointer;
 }
 
 div div {

@@ -3,6 +3,7 @@ package com.example.LinguaSphere.web;
 import com.example.LinguaSphere.entity.*;
 import com.example.LinguaSphere.entity.dto.*;
 import com.example.LinguaSphere.helper.LessonHelper;
+import com.example.LinguaSphere.helper.TeacherHelper;
 import com.example.LinguaSphere.service.*;
 import org.apache.tika.Tika;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -25,6 +26,7 @@ import java.nio.file.spi.FileTypeDetector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.data.domain.ScrollPosition.forward;
 
@@ -45,9 +47,14 @@ public class TeacherController {
     @Autowired
     private TeacherLanguageService teacherLanguageService;
     @Autowired
+    private UserMaterialService userMaterialService;
+    @Autowired
+    private UserService userService;
+    @Autowired
     private ModelMapper modelMapper;
 
     private final LessonHelper lessonHelper = new LessonHelper();
+    private final TeacherHelper teacherHelper = new TeacherHelper();
 
     @GetMapping("/teacherPage")
     public String teacherPage(Teacher teacher, Model model) {
@@ -169,6 +176,7 @@ public class TeacherController {
 
             newList.add(dto);
         }
+
         model.addAttribute("materials", newList);
         model.addAttribute("teacher", teacherFounded);
         return "teacher/materialsList";
@@ -300,6 +308,208 @@ public class TeacherController {
 
         model.addAttribute("teacher", teacher);
         return "redirect:/teacher/getMaterialsList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
+    }
+
+    @GetMapping("/submitCellLesson")
+    public String submitCellLesson(Teacher teacher, Lesson lesson, Model model) throws IOException {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        lesson.setTeacherId(teacherFounded.getId());
+        List<Lesson> lessonList = lessonService.findAllByTeacherId(teacherFounded.getId());
+        for (Lesson element : lessonList
+             ) {
+            if (element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime()) {
+                lesson = element;
+                break;
+            }
+        }
+
+        User user = userService.findById(lesson.getUserId());
+
+        if (user != null) {
+            List<Long> materialIds = teacherMaterialService.findMaterialsByTeacherId(teacherFounded.getId());
+            List<Material> materials = materialsService.findAllById(materialIds);
+            Lesson finalLesson = lesson;
+            materials.removeIf(material -> !Objects.equals(material.getLanguageId(), finalLesson.getLanguageId()));
+            List<MaterialDtoBytes> newList = new ArrayList<>();
+            for (Material material : materials
+            ) {
+                MaterialDtoBytes dto = modelMapper.map(material, MaterialDtoBytes.class);
+                dto.setLanguage(languageService.findById(material.getLanguageId()).getName());
+                dto.setFileImg(Base64.encodeBase64String(material.getImage()));
+                dto.setFile(Base64.encodeBase64String(material.getStandardFile()));
+
+                byte[] decodedBytes = material.getStandardFile();
+                Path tempFile = Files.createTempFile("tempFile", null);
+                try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
+                    Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+                Tika tika = new Tika();
+                dto.setFileType(tika.detect(tempFile));
+
+                newList.add(dto);
+            }
+
+            List<Long> availableAll = userMaterialService.findMaterialsIdsByUserId(user.getId());
+            List<Long> available = teacherHelper.removeMismatched(availableAll, materials);
+
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("languageId", lesson.getLanguageId());
+            model.addAttribute("teacher", teacher);
+            model.addAttribute("materials", newList);
+            model.addAttribute("available", available);
+            return "teacher/userMaterialPage";
+        }
+
+        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
+        model.addAttribute("teacher", teacherDto);
+
+        int[][] lessons = new int[7][16];
+        List<Lesson> list = lessonService.findAllByTeacherId(teacherFounded.getId());
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 16; j++) {
+                lessons[i][j] = lessonHelper.findLessonByDate(i, j, list);
+            }
+        }
+
+        model.addAttribute("lessons", lessons);
+        model.addAttribute("teacher", teacherDto);
+        return "teacher/teacherSchedule";
+    }
+
+    @PostMapping("/addAccess")
+    public String addAccess(Teacher teacher, UserMaterial userMaterial, Model model) throws IOException {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        User user = userService.findById(userMaterial.getUserId());
+
+        if (user != null) {
+            userMaterialService.save(userMaterial);
+
+            List<Long> materialIds = teacherMaterialService.findMaterialsByTeacherId(teacherFounded.getId());
+            List<Material> materials = materialsService.findAllById(materialIds);
+            materials.removeIf(material -> !Objects.equals(material.getLanguageId(), userMaterial.getLanguageId()));
+            List<MaterialDtoBytes> newList = new ArrayList<>();
+            for (Material material : materials
+            ) {
+                MaterialDtoBytes dto = modelMapper.map(material, MaterialDtoBytes.class);
+                dto.setLanguage(languageService.findById(material.getLanguageId()).getName());
+                dto.setFileImg(Base64.encodeBase64String(material.getImage()));
+                dto.setFile(Base64.encodeBase64String(material.getStandardFile()));
+
+                byte[] decodedBytes = material.getStandardFile();
+                Path tempFile = Files.createTempFile("tempFile", null);
+                try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
+                    Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+                Tika tika = new Tika();
+                dto.setFileType(tika.detect(tempFile));
+
+                newList.add(dto);
+            }
+
+            List<Long> availableAll = userMaterialService.findMaterialsIdsByUserId(user.getId());
+            List<Long> available = teacherHelper.removeMismatched(availableAll, materials);
+
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("languageId", userMaterial.getLanguageId());
+            model.addAttribute("teacher", teacher);
+            model.addAttribute("materials", newList);
+            model.addAttribute("available", available);
+            return "teacher/userMaterialPage";
+        }
+
+        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
+        model.addAttribute("teacher", teacherDto);
+
+        int[][] lessons = new int[7][16];
+        List<Lesson> list = lessonService.findAllByTeacherId(teacherFounded.getId());
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 16; j++) {
+                lessons[i][j] = lessonHelper.findLessonByDate(i, j, list);
+            }
+        }
+
+        model.addAttribute("lessons", lessons);
+        model.addAttribute("teacher", teacherDto);
+        return "teacher/teacherSchedule";
+    }
+
+    @PostMapping("/removeAccess")
+    public String removeAccess(Teacher teacher, UserMaterial userMaterial, Model model) throws IOException {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        User user = userService.findById(userMaterial.getUserId());
+
+        if (user != null) {
+            List<UserMaterial> userMaterialList = userMaterialService.findAllByUserId(user.getId());
+            for (UserMaterial element : userMaterialList
+                 ) {
+                if (Objects.equals(element.getMaterialId(), userMaterial.getMaterialId())) {
+                    userMaterialService.deleteById(element.getId());
+                    break;
+                }
+            }
+
+            List<Long> materialIds = teacherMaterialService.findMaterialsByTeacherId(teacherFounded.getId());
+            List<Material> materials = materialsService.findAllById(materialIds);
+            materials.removeIf(material -> !Objects.equals(material.getLanguageId(), userMaterial.getLanguageId()));
+            List<MaterialDtoBytes> newList = new ArrayList<>();
+            for (Material material : materials
+            ) {
+                MaterialDtoBytes dto = modelMapper.map(material, MaterialDtoBytes.class);
+                dto.setLanguage(languageService.findById(material.getLanguageId()).getName());
+                dto.setFileImg(Base64.encodeBase64String(material.getImage()));
+                dto.setFile(Base64.encodeBase64String(material.getStandardFile()));
+
+                byte[] decodedBytes = material.getStandardFile();
+                Path tempFile = Files.createTempFile("tempFile", null);
+                try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
+                    Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+                Tika tika = new Tika();
+                dto.setFileType(tika.detect(tempFile));
+
+                newList.add(dto);
+            }
+
+            List<Long> availableAll = userMaterialService.findMaterialsIdsByUserId(user.getId());
+            List<Long> available = teacherHelper.removeMismatched(availableAll, materials);
+
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("languageId", userMaterial.getLanguageId());
+            model.addAttribute("teacher", teacher);
+            model.addAttribute("materials", newList);
+            model.addAttribute("available", available);
+            return "teacher/userMaterialPage";
+        }
+
+        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
+        model.addAttribute("teacher", teacherDto);
+
+        int[][] lessons = new int[7][16];
+        List<Lesson> list = lessonService.findAllByTeacherId(teacherFounded.getId());
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 16; j++) {
+                lessons[i][j] = lessonHelper.findLessonByDate(i, j, list);
+            }
+        }
+
+        model.addAttribute("lessons", lessons);
+        model.addAttribute("teacher", teacherDto);
+        return "teacher/teacherSchedule";
     }
 
 }

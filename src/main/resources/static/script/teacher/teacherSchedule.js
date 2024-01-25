@@ -15,3 +15,12 @@ function submitCellFree(timeValue, dayValue) {
 
     document.getElementById('formCellSubmitFree').submit();
 }
+
+function submitCellLesson(timeValue, dayValue) {
+    var cellSubmitDayInput = document.getElementById("cellSubmitDayLesson");
+    var cellSubmitTimeInput = document.getElementById("cellSubmitTimeLesson");
+    cellSubmitDayInput.value = dayValue;
+    cellSubmitTimeInput.value = timeValue;
+
+    document.getElementById('formCellSubmitLesson').submit();
+}

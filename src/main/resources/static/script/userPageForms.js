@@ -17,3 +17,8 @@ function submitCreatureListGettingForm() {
     var form = document.getElementById('creatureListGettingForm');
     form.submit();
 }
+
+function submitGetMaterialsLanguageForm() {
+    var form = document.getElementById('getMaterialsLanguageForm');
+    form.submit();
+}
