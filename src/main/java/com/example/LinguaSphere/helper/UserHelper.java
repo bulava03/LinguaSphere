@@ -1,14 +1,21 @@
 package com.example.LinguaSphere.helper;
 
-import com.example.LinguaSphere.entity.Lesson;
-import com.example.LinguaSphere.entity.User;
-import com.example.LinguaSphere.entity.UserMaterial;
+import com.example.LinguaSphere.entity.*;
+import com.example.LinguaSphere.entity.dto.CreatureToGuess;
+import com.example.LinguaSphere.service.DailyMessageService;
+import com.example.LinguaSphere.service.LanguageService;
+import com.example.LinguaSphere.service.impl.DailyMessageServiceImpl;
+import com.example.LinguaSphere.service.impl.LanguageServiceImpl;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
 public class UserHelper {
+
+    private final ModelMapper modelMapper = new ModelMapper();
 
     public String decodeToken(String token) {
         String[] segments = token.split("\\.");
@@ -55,6 +62,17 @@ public class UserHelper {
             list.add(element.getMaterialId());
         }
         return list;
+    }
+
+    public List<Long> getLanguageIdsFromLessons(List<Lesson> userLessons) {
+        List<Long> languagesIds = new ArrayList<>();
+        for (Lesson lesson : userLessons
+        ) {
+            if (!languagesIds.contains(lesson.getLanguageId())) {
+                languagesIds.add(lesson.getLanguageId());
+            }
+        }
+        return languagesIds;
     }
 
 }
