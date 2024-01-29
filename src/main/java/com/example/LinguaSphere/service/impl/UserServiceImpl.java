@@ -61,4 +61,24 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    @Override
+    public User defaultScore(User user) {
+        if (user.getScore() == null) {
+            user.setScore(0L);
+            updateUser(user);
+        }
+        return user;
+    }
+
+    @Override
+    public void updateUserIfGuessed(User user) {
+        user.setLastGuessedCount(user.getLastGuessedCount() + 1);
+        user.setScore(user.getScore() + 1);
+        if (user.getLastGuessedCount() == 10) {
+            user.setLastGuessedCount(0);
+            user.setScore(user.getScore() + 10);
+        }
+        updateUser(user);
+    }
+
 }

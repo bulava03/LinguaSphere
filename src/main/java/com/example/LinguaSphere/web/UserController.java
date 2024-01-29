@@ -3,6 +3,7 @@ package com.example.LinguaSphere.web;
 import com.example.LinguaSphere.config.security.JwtTokenService;
 import com.example.LinguaSphere.entity.*;
 import com.example.LinguaSphere.entity.dto.*;
+import com.example.LinguaSphere.helper.CreatureHelper;
 import com.example.LinguaSphere.helper.UserHelper;
 import com.example.LinguaSphere.service.*;
 import com.example.LinguaSphere.service.impl.UserDetailsServiceImpl;
@@ -62,6 +63,7 @@ public class UserController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserHelper userHelper = new UserHelper();
+    private final CreatureHelper creatureHelper = new CreatureHelper();
 
 
     private Object[] authenticateUser(RequestDto request) {
@@ -353,17 +355,13 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-
         UserDto userDto = modelMapper.map(userFounded, UserDto.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
-
         userFounded.setLastGuessedCount(0);
         userService.updateUser(userFounded);
-
         Creature creature = creatureService.findById(creatureToGuess.getId());
-        creature.setHints(new ArrayList<>());
-        CreatureDtoBytes creatureDtoBytes = modelMapper.map(creature, CreatureDtoBytes.class);
-        creatureDtoBytes.setFile(Base64.encodeBase64String(creature.getImage()));
+        String language = languageService.findById(creature.getLanguageId()).getName();
+        CreatureDtoBytes creatureDtoBytes = creatureHelper.convertCreatureToDtoBytes(creature, language);
 
         model.addAttribute("user", userDto);
         model.addAttribute("creature", creatureDtoBytes);
@@ -379,46 +377,22 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-
         UserDto userDto = modelMapper.map(userFounded, UserDto.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
-
+        userFounded = userService.defaultScore(userFounded);
         Creature creature = creatureService.findById(creatureAnswered.getId());
 
-        if (userFounded.getScore() == null) {
-            userFounded.setScore(0L);
-            userService.updateUser(userFounded);
-        }
-
         if (creature.getName().equalsIgnoreCase(creatureAnswered.getName())) {
-            userFounded.setLastGuessedCount(userFounded.getLastGuessedCount() + 1);
-            userFounded.setScore(userFounded.getScore() + 1);
-            if (userFounded.getLastGuessedCount() == 10) {
-                userFounded.setLastGuessedCount(0);
-                userFounded.setScore(userFounded.getScore() + 10);
-            }
-            userService.updateUser(userFounded);
-
-            creature.setHints(new ArrayList<>());
-            CreatureDtoBytes creatureDtoBytes = modelMapper.map(creature, CreatureDtoBytes.class);
-            creatureDtoBytes.setFile(Base64.encodeBase64String(creature.getImage()));
+            userService.updateUserIfGuessed(userFounded);
+            String language = languageService.findById(creature.getLanguageId()).getName();
 
             model.addAttribute("user", userDto);
-            model.addAttribute("creature", creatureDtoBytes);
+            model.addAttribute("creature", creatureHelper.convertCreatureToDtoBytes(creature, language));
             model.addAttribute("token", request.getToken());
             return "user/creatureAnswerPage";
         } else {
-            CreatureToGuess newCreatureToGuess = modelMapper.map(creature, CreatureToGuess.class);
-            newCreatureToGuess.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            newCreatureToGuess.setHintsLeft(creatureAnswered.getHintsLeft());
-            int hintsSize = creature.getHints().size();
-            int lastHintIndex = hintsSize - creatureAnswered.getHintsLeft();
-            List<String> allHints = creature.getHints();
-            List<String> newHints = new ArrayList<>();
-            for (int i = 0; i < lastHintIndex; i++) {
-                newHints.add(allHints.get(i));
-            }
-            newCreatureToGuess.setHints(newHints);
+            CreatureToGuess newCreatureToGuess = creatureHelper.getCreatureIfAnsweredIncorrect(
+                    creature, creatureAnswered, languageService.findById(creature.getLanguageId()).getName());
 
             model.addAttribute("errorText", "Ви не вгадали. Спробуйте ще раз!");
             model.addAttribute("user", userDto);

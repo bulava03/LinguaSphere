@@ -11,5 +11,7 @@ public interface UserService {
     void updateUser(User user);
     Optional<User> findByEmail(String email);
     User findById(Long id);
+    User defaultScore(User user);
+    void updateUserIfGuessed(User user);
 
 }

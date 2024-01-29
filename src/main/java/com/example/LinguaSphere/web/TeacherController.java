@@ -56,6 +56,7 @@ public class TeacherController {
     private final LessonHelper lessonHelper = new LessonHelper();
     private final TeacherHelper teacherHelper = new TeacherHelper();
 
+
     @GetMapping("/teacherPage")
     public String teacherPage(Teacher teacher, Model model) {
         Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
@@ -109,18 +110,7 @@ public class TeacherController {
             }
         }
 
-        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
-        int[][] lessons = new int[7][16];
-        list = lessonService.findAllByTeacherId(teacherFounded.getId());
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 16; j++) {
-                lessons[i][j] = lessonHelper.findLessonByDate(i, j, list);
-            }
-        }
-
-        model.addAttribute("lessons", lessons);
-        model.addAttribute("teacher", teacherDto);
-        return "teacher/teacherSchedule";
+        return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
     @PostMapping("/submitCellFree")
@@ -134,18 +124,7 @@ public class TeacherController {
         lesson.setTeacherId(teacherFounded.getId());
         lessonService.save(lesson);
 
-        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
-        int[][] lessons = new int[7][16];
-        List<Lesson> list = lessonService.findAllByTeacherId(teacherFounded.getId());
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 16; j++) {
-                lessons[i][j] = lessonHelper.findLessonByDate(i, j, list);
-            }
-        }
-
-        model.addAttribute("lessons", lessons);
-        model.addAttribute("teacher", teacherDto);
-        return "teacher/teacherSchedule";
+        return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
     @GetMapping("/getMaterialsList")
@@ -292,7 +271,6 @@ public class TeacherController {
         }
         materialsService.save(materialUpdated);
 
-        model.addAttribute("teacher", teacher);
         return "redirect:/teacher/getMaterialsList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
@@ -306,7 +284,6 @@ public class TeacherController {
 
         materialsService.deleteById(material.getId());
 
-        model.addAttribute("teacher", teacher);
         return "redirect:/teacher/getMaterialsList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
@@ -382,7 +359,7 @@ public class TeacherController {
     }
 
     @PostMapping("/addAccess")
-    public String addAccess(Teacher teacher, UserMaterial userMaterial, Model model) throws IOException {
+    public String addAccess(Teacher teacher, UserMaterial userMaterial, Model model) {
         Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
         if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
             model.addAttribute("errorText", "Такого користувача не існує!");
@@ -394,57 +371,23 @@ public class TeacherController {
         if (user != null) {
             userMaterialService.save(userMaterial);
 
-            List<Long> materialIds = teacherMaterialService.findMaterialsByTeacherId(teacherFounded.getId());
-            List<Material> materials = materialsService.findAllById(materialIds);
-            materials.removeIf(material -> !Objects.equals(material.getLanguageId(), userMaterial.getLanguageId()));
-            List<MaterialDtoBytes> newList = new ArrayList<>();
-            for (Material material : materials
-            ) {
-                MaterialDtoBytes dto = modelMapper.map(material, MaterialDtoBytes.class);
-                dto.setLanguage(languageService.findById(material.getLanguageId()).getName());
-                dto.setFileImg(Base64.encodeBase64String(material.getImage()));
-                dto.setFile(Base64.encodeBase64String(material.getStandardFile()));
-
-                byte[] decodedBytes = material.getStandardFile();
-                Path tempFile = Files.createTempFile("tempFile", null);
-                try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
-                    Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            List<Lesson> lessonList = lessonService.findAllByUserId(userMaterial.getUserId());
+            for (Lesson lesson : lessonList
+                 ) {
+                if (Objects.equals(lesson.getTeacherId(), teacherFounded.getId()) &&
+                        Objects.equals(lesson.getLanguageId(), userMaterial.getLanguageId())) {
+                    return "redirect:/teacher/submitCellLesson?email=" + teacher.getEmail() + "&password=" + teacher.getPassword()
+                            + "&day=" + lesson.getDay() + "&time=" + lesson.getTime();
                 }
-                Tika tika = new Tika();
-                dto.setFileType(tika.detect(tempFile));
-
-                newList.add(dto);
-            }
-
-            List<Long> availableAll = userMaterialService.findMaterialsIdsByUserId(user.getId());
-            List<Long> available = teacherHelper.removeMismatched(availableAll, materials);
-
-            model.addAttribute("userId", user.getId());
-            model.addAttribute("languageId", userMaterial.getLanguageId());
-            model.addAttribute("teacher", teacher);
-            model.addAttribute("materials", newList);
-            model.addAttribute("available", available);
-            return "teacher/userMaterialPage";
-        }
-
-        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
-        model.addAttribute("teacher", teacherDto);
-
-        int[][] lessons = new int[7][16];
-        List<Lesson> list = lessonService.findAllByTeacherId(teacherFounded.getId());
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 16; j++) {
-                lessons[i][j] = lessonHelper.findLessonByDate(i, j, list);
+                return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
             }
         }
 
-        model.addAttribute("lessons", lessons);
-        model.addAttribute("teacher", teacherDto);
-        return "teacher/teacherSchedule";
+        return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
     @PostMapping("/removeAccess")
-    public String removeAccess(Teacher teacher, UserMaterial userMaterial, Model model) throws IOException {
+    public String removeAccess(Teacher teacher, UserMaterial userMaterial, Model model) {
         Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
         if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
             model.addAttribute("errorText", "Такого користувача не існує!");
@@ -463,53 +406,19 @@ public class TeacherController {
                 }
             }
 
-            List<Long> materialIds = teacherMaterialService.findMaterialsByTeacherId(teacherFounded.getId());
-            List<Material> materials = materialsService.findAllById(materialIds);
-            materials.removeIf(material -> !Objects.equals(material.getLanguageId(), userMaterial.getLanguageId()));
-            List<MaterialDtoBytes> newList = new ArrayList<>();
-            for (Material material : materials
+            List<Lesson> lessonList = lessonService.findAllByUserId(userMaterial.getUserId());
+            for (Lesson lesson : lessonList
             ) {
-                MaterialDtoBytes dto = modelMapper.map(material, MaterialDtoBytes.class);
-                dto.setLanguage(languageService.findById(material.getLanguageId()).getName());
-                dto.setFileImg(Base64.encodeBase64String(material.getImage()));
-                dto.setFile(Base64.encodeBase64String(material.getStandardFile()));
-
-                byte[] decodedBytes = material.getStandardFile();
-                Path tempFile = Files.createTempFile("tempFile", null);
-                try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
-                    Files.copy(is, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                if (Objects.equals(lesson.getTeacherId(), teacherFounded.getId()) &&
+                        Objects.equals(lesson.getLanguageId(), userMaterial.getLanguageId())) {
+                    return "redirect:/teacher/submitCellLesson?email=" + teacher.getEmail() + "&password=" + teacher.getPassword()
+                            + "&day=" + lesson.getDay() + "&time=" + lesson.getTime();
                 }
-                Tika tika = new Tika();
-                dto.setFileType(tika.detect(tempFile));
-
-                newList.add(dto);
-            }
-
-            List<Long> availableAll = userMaterialService.findMaterialsIdsByUserId(user.getId());
-            List<Long> available = teacherHelper.removeMismatched(availableAll, materials);
-
-            model.addAttribute("userId", user.getId());
-            model.addAttribute("languageId", userMaterial.getLanguageId());
-            model.addAttribute("teacher", teacher);
-            model.addAttribute("materials", newList);
-            model.addAttribute("available", available);
-            return "teacher/userMaterialPage";
-        }
-
-        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
-        model.addAttribute("teacher", teacherDto);
-
-        int[][] lessons = new int[7][16];
-        List<Lesson> list = lessonService.findAllByTeacherId(teacherFounded.getId());
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 16; j++) {
-                lessons[i][j] = lessonHelper.findLessonByDate(i, j, list);
+                return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
             }
         }
 
-        model.addAttribute("lessons", lessons);
-        model.addAttribute("teacher", teacherDto);
-        return "teacher/teacherSchedule";
+        return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
 }
