@@ -195,35 +195,7 @@ public class UserController {
         lessonToSave.setLanguageId(lesson.getLanguageId());
         lessonService.save(lessonToSave);
 
-        List<TeacherLanguage> teacherLanguages = teacherLanguageService.findAllByLanguageId(lesson.getLanguageId());
-        List<Long> list = new ArrayList<>();
-        for (TeacherLanguage element : teacherLanguages
-        ) {
-            list.add(element.getTeacherId());
-        }
-        List<Lesson> lessons = lessonService.findAllByTeacherIds(list);
-        List<Lesson> usersLessons = lessonService.findAllByUserId(userFounded.getId());
-        lessons.removeIf(element -> element.getUserId() != null);
-        for (Lesson element : usersLessons
-        ) {
-            lessons.removeIf(elem -> elem.getDay() == element.getDay() && elem.getTime() == element.getTime());
-        }
-
-        List<LessonTemplate> lessonList = new ArrayList<>();
-        for (Lesson element : lessons
-        ) {
-            Teacher teacherTemp = teacherService.findById(element.getTeacherId());
-            String teacherName = teacherTemp.getName() + " " + teacherTemp.getSurname();
-            String date = userHelper.convertIntIntoDate(element.getDay(), element.getTime());
-            lessonList.add(new LessonTemplate(element.getId(), lesson.getLanguageId(), element.getTeacherId(),
-                    teacherName, date));
-        }
-
-        model.addAttribute("user", userDto);
-        model.addAttribute("lessons", lessonList);
-        model.addAttribute("language", languageService.findById(lesson.getLanguageId()));
-        model.addAttribute("token", request.getToken());
-        return "user/choosingLessonPage";
+        return "redirect:/user/submitChooseLanguageForm?token=" + request.getToken() + "&languageId=" + lesson.getLanguageId();
     }
 
     @GetMapping("dailyFact")

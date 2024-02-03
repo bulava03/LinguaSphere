@@ -68,26 +68,14 @@ public class AuthorisationController {
         String header = new String(decoder.decode(segments[0]));
         String payload = new String(decoder.decode(segments[1]));*/
 
-        User userFounded = userService.findByEmail(authenticationRequest.getEmail()).orElse(null);
-
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
-        String day = String.valueOf(userFounded.getDateOfBirth().getDayOfMonth() + 1);
-        String month = ConvertHelper.monthToStringUserPage(userFounded.getDateOfBirth().getMonthValue());
-        String year = String.valueOf(userFounded.getDateOfBirth().getYear());
-        String date = day + " " + month + " " + year;
-        userDto.setDateOfBirth(date);
-        model.addAttribute("user", userDto);
-        model.addAttribute("token", token);
-        return "user/userPage";
+        return "redirect:/user/userPage?token=" + token;
     }
 
     @PostMapping("/teacher_authorisation")
     public String authorisationTeacher(@ModelAttribute("authenticationRequest") LoginDto authenticationRequest, Model model) {
         Teacher teacherFounded = teacherService.findByEmail(authenticationRequest.getEmail());
         if (teacherFounded != null) {
-            TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
-            model.addAttribute("teacher", teacherDto);
-            return "teacher/teacherPage";
+            return "redirect:/teacher/teacherPage?email=" + teacherFounded.getEmail() + "&password=" + teacherFounded.getPassword();
         } else {
             model.addAttribute("errorText", "Такого користувача не існує!");
             return "authorisation/authorisation";
