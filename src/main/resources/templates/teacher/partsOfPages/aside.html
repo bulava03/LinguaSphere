@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
     <aside>
-        <img src="/photo.png" width="200" height="200" alt="user photo header"><br>
+        <img class="imageAside" th:if="${teacher.file == null}" src="/photo.png"
+             width="200" height="200" alt="user photo header">
+        <img class="imageAside" th:unless="${teacher.file == null}"
+             th:src="'data:image/jpeg;base64,' + ${teacher.file}" alt="Image" width="200" height="200"><br>
 
         <b th:text="${teacher.name + '   ' + teacher.surname}"></b><br><br>
 

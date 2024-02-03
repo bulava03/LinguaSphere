@@ -33,8 +33,9 @@ header {
 
 header img {
     float: right;
-    padding-right: 30px;
+    margin-right: 30px;
     cursor: pointer;
+    border-radius: 25px;
 }
 
 nav {

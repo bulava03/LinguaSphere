@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,13 +21,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.spi.FileTypeDetector;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import static org.springframework.data.domain.ScrollPosition.forward;
 
 @Controller
 @RequestMapping("/teacher")
@@ -64,7 +59,8 @@ public class TeacherController {
             model.addAttribute("errorText", "Такого користувача не існує!");
             return "authorisation/authorisation";
         } else {
-            TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
+            TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+            teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
             model.addAttribute("teacher", teacherDto);
             return "teacher/teacherPage";
         }
@@ -78,9 +74,6 @@ public class TeacherController {
             return "authorisation/authorisation";
         }
 
-        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
-        model.addAttribute("teacher", teacherDto);
-
         int[][] lessons = new int[7][16];
         List<Lesson> list = lessonService.findAllByTeacherId(teacherFounded.getId());
         for (int i = 0; i < 7; i++) {
@@ -89,8 +82,11 @@ public class TeacherController {
             }
         }
 
+        TeacherDtoBytes teacherDtoBytes = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+        teacherDtoBytes.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
+
         model.addAttribute("lessons", lessons);
-        model.addAttribute("teacher", teacherDto);
+        model.addAttribute("teacher", teacherDtoBytes);
         return "teacher/teacherSchedule";
     }
 
@@ -156,8 +152,11 @@ public class TeacherController {
             newList.add(dto);
         }
 
+        TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+        teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
+
         model.addAttribute("materials", newList);
-        model.addAttribute("teacher", teacherFounded);
+        model.addAttribute("teacher", teacherDto);
         return "teacher/materialsList";
     }
 
@@ -183,8 +182,11 @@ public class TeacherController {
             languages.add(languageService.findById((id)));
         }
 
+        TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+        teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
+
         model.addAttribute("languages", languages);
-        model.addAttribute("teacher", teacherFounded);
+        model.addAttribute("teacher", teacherDto);
         return "teacher/addingMaterialForm";
     }
 
@@ -242,7 +244,10 @@ public class TeacherController {
         Tika tika = new Tika();
         materialDto.setFileType(tika.detect(tempFile));
 
-        model.addAttribute("teacher", teacherFounded);
+        TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+        teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
+
+        model.addAttribute("teacher", teacherDto);
         model.addAttribute("languages", languageService.findAll());
         model.addAttribute("material", materialDto);
         return "teacher/updateMaterialForm";
@@ -334,28 +339,18 @@ public class TeacherController {
             List<Long> availableAll = userMaterialService.findMaterialsIdsByUserId(user.getId());
             List<Long> available = teacherHelper.removeMismatched(availableAll, materials);
 
+            TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+            teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
+
             model.addAttribute("userId", user.getId());
             model.addAttribute("languageId", lesson.getLanguageId());
-            model.addAttribute("teacher", teacher);
+            model.addAttribute("teacher", teacherDto);
             model.addAttribute("materials", newList);
             model.addAttribute("available", available);
             return "teacher/userMaterialPage";
         }
 
-        TeacherDto teacherDto = modelMapper.map(teacherFounded, TeacherDto.class);
-        model.addAttribute("teacher", teacherDto);
-
-        int[][] lessons = new int[7][16];
-        List<Lesson> list = lessonService.findAllByTeacherId(teacherFounded.getId());
-        for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 16; j++) {
-                lessons[i][j] = lessonHelper.findLessonByDate(i, j, list);
-            }
-        }
-
-        model.addAttribute("lessons", lessons);
-        model.addAttribute("teacher", teacherDto);
-        return "teacher/teacherSchedule";
+        return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
     @PostMapping("/addAccess")
@@ -419,6 +414,47 @@ public class TeacherController {
         }
 
         return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
+    }
+
+    @GetMapping("/personalInformation")
+    public String getPersonalInformationForm(Teacher teacher, Model model) {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+        teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
+
+        model.addAttribute("teacher", teacherDto);
+        return "teacher/personalInformationPage";
+    }
+
+    @PostMapping("/updatePersonalInformation")
+    public String updateTeacherInformation(TeacherDto teacherUpdated, Model model) throws IOException {
+        Teacher teacherFounded = teacherService.findByEmail(teacherUpdated.getEmailOld());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacherUpdated.getPasswordOld())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        Teacher teacher = modelMapper.map(teacherUpdated, Teacher.class);
+        teacher.setImage(teacherUpdated.getFile().getBytes());
+        if (!teacher.getContacts().isEmpty()) {
+            List<String> newContacts = new ArrayList<>();
+            for (String link : teacher.getContacts()
+            ) {
+                if (!link.equals("")) {
+                    newContacts.add(link);
+                }
+            }
+            teacher.setContacts(newContacts);
+        }
+        teacher.setId(teacherFounded.getId());
+        teacherService.save(teacher);
+
+        return "redirect:/teacher/teacherPage?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
 }

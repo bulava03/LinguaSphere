@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
-<a id="logo" th:attr="onclick='submitTeacherPageForm()'">LinguaSphere</a>
-<img onclick="dropdownUser()" id="userIcon" src="/photo.png" width="50" height="50" alt="user photo header">
+<a id="logo" th:attr="onclick='submitPageForm()'">LinguaSphere</a>
+<img th:if="${teacher.file == null}" onclick="dropdownUser()" id="userIcon" src="/photo.png"
+     width="50" height="50" alt="user photo header">
+<img th:unless="${teacher.file == null}" onclick="dropdownUser()" id="userIcon"
+     th:src="'data:image/jpeg;base64,' + ${teacher.file}" alt="Image"  width="50" height="50">
+
 
 <div id="dropdown" class="dropdown">
   <a href="#" onclick="personalInformation()">Особиста інформація</a>
   <a href="/">Вийти</a>
 </div>
 
-<form id="formPersonalInfo" typeof="hidden" method="get" action="#">
+<form id="formPersonalInfo" typeof="hidden" method="get" action="/teacher/personalInformation">
   <input type="hidden" th:value="${teacher.email}" name="email">
   <input type="hidden" th:value="${teacher.password}" name="password">
 </form>

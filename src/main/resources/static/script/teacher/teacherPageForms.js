@@ -1,4 +1,4 @@
-function submitTeacherPageForm() {
+function submitPageForm() {
     var form = document.getElementById('teacherPageForm');
     form.submit();
 }

@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -23,6 +25,8 @@ public class Teacher {
     @NotBlank(message = "Пароль обов'язковий.")
     @Size(min = 8, message = "Пароль повинен містити від 8 до 20 символів.")
     private String password;
+
+    private byte[] image;
 
     @NotBlank(message = "Ім'я обов'язкове.")
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Ім'я може містити тільки літери.")
@@ -42,6 +46,8 @@ public class Teacher {
     @Size(max = 20, message = "Номер телефону повинен містити не більше 20 символів.")
     private String phone;
 
-    private String[] contacts;
+    private String aboutMe;
+
+    private List<String> contacts;
 
 }

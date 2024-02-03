@@ -67,3 +67,7 @@ button:first-of-type {
 button:last-of-type {
     margin-bottom: 50px;
 }
+
+.imageAside {
+    border-radius: 100px;
+}

@@ -42,7 +42,6 @@ public class TeacherRegistration {
     @Size(max = 20, message = "Номер телефону повинен містити не більше 20 символів.")
     private String phone;
 
-    private String[] contacts;
     private String[] languages;
 
 }

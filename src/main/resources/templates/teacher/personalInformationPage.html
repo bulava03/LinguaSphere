@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
+    <link rel="stylesheet" href="/style/admin/adminCreatureFormStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout5}"></div>
+</header>
+
+<main>
+    <div class="regTitle">
+        <h1>Про мене</h1>
+    </div>
+
+    <div class="regForm">
+        <form id="regForm" action="/teacher/updatePersonalInformation" method="post" enctype="multipart/form-data">
+            <div class="regInput">
+                <h2 class="name">Фото</h2>
+                <input class="field" id="file" value="" type="file" name="file">
+                <h2 class="name">Ім'я</h2>
+                <input class="field" id="name" th:value="${teacher.name}" type="text" name="name">
+                <h2 class="name">Прізвище</h2>
+                <input class="field" id="surname" th:value="${teacher.surname}" type="text" name="surname">
+                <h2 class="name">Електронна пошта</h2>
+                <input class="field" id="email" th:value="${teacher.email}" type="text" name="email">
+                <h2 class="name">Пароль</h2>
+                <input class="field" id="password" th:value="${teacher.password}" type="text" name="password">
+                <h2 class="name">Номер телефону</h2>
+                <input class="field" id="phone" th:value="${teacher.phone}" type="text" name="phone">
+                <h2 class="name">Про мене</h2>
+                <textarea class="field" id="aboutMe" th:text="${teacher.aboutMe}" name="aboutMe"></textarea>
+                <h2 class="name">Контакти</h2>
+                <th:block th:if="${teacher.contacts != null}">
+                    <textarea th:if="${#lists.size(teacher.contacts) == 0}" class="field" name="contacts"></textarea>
+                </th:block>
+                <textarea th:if="${teacher.contacts == null}" class="field" name="contacts"></textarea>
+                <th:block th:each="contact, iterationStat : ${teacher.contacts}">
+                    <textarea class="field" th:text="${contact}" name="contacts"></textarea>
+                </th:block>
+                <button type="button" class="button" onclick="addTextarea()">Додати контакт</button>
+
+                <input type="hidden" th:value="${teacher.email}" name="emailOld">
+                <input type="hidden" th:value="${teacher.password}" name="passwordOld">
+
+                <input class="button" type="submit" value="Зберегти">
+                <p class="errorText" id="errorText"></p>
+                <p class="errorText" th:text="${errorText}"></p>
+            </div>
+        </form>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="teacherPageForm" action="/teacher/teacherPage">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+</form>
+
+<h2 id="imageToUploadByDefault" th:text="${teacher.file}" style="display: none;"></h2>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/dropdown.js"></script>
+<script src="/script/teacher/teacherPageForms.js"></script>
+<script src="/script/teacher/personalInformationForm.js"></script>
+<script src="/script/admin/imageUpdateDefault.js"></script>
+</body>
+</html>
