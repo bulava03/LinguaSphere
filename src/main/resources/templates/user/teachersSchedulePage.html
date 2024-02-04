@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/teacher/teacherScheduleStyle.css">
+    <link rel="stylesheet" href="/style/user/teacherScheduleStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main style="display: flex;">
+    <div th:replace="~{/user/partsOfPages/aside}"></div>
+
+    <div>
+        <table>
+            <tr><th></th><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Нд</th></tr>
+
+            <tr th:each="hour, hourStat : ${#numbers.sequence(8, 23)}">
+                <th th:text="${hour} + ':00-' + (${hour + 1}) + ':00'"></th>
+
+                <td th:each="row, rowStat : ${lessons}"
+                    th:class="${row[__${hour - 8}__] == 0 ? 'used' : (row[__${hour - 8}__] == 1 ? 'free' : 'lesson')}"
+                    th:attr="onclick=${row[__${hour - 8}__] == 1 ? 'setLessonConfirm(__${hour - 8}__, ' + rowStat.index + ')' :
+                    (row[__${hour - 8}__] == 0 ? '' :
+                    'removeLessonConfirm(__${hour - 8}__, ' + rowStat.index + ')')}"></td>
+            </tr>
+        </table>
+
+
+        <div>
+            <button th:attr="onclick='submitLanguage(\'' + ${languageId} + '\')'">Назад</button>
+        </div>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="chooseLanguageForm" action="/user/submitChooseLanguageForm">
+    <input type="hidden" th:value="${token}" name="token">
+    <input type="hidden" id="languageIdInput" value="" name="languageId">
+</form>
+<form typeof="hidden" id="setLessonForm" method="post" action="/user/setLesson">
+    <input type="hidden" th:value="${token}" name="token">
+    <input type="hidden" th:value="${languageId}" name="languageId">
+    <input type="hidden" th:value="${teacherEmail}" name="teacherEmail">
+    <input id="setLessonDay" type="hidden" value="" name="day">
+    <input id="setLessonTime" type="hidden" value="" name="time">
+</form>
+<form typeof="hidden" id="removeLessonForm" method="post" action="/user/removeLesson">
+    <input type="hidden" th:value="${token}" name="token">
+    <input type="hidden" th:value="${languageId}" name="languageId">
+    <input type="hidden" th:value="${teacherEmail}" name="teacherEmail">
+    <input id="removeLessonDay" type="hidden" value="" name="day">
+    <input id="removeLessonTime" type="hidden" value="" name="time">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/userPageForms.js"></script>
+<script src="/script/user/languageChoosingForm.js"></script>
+<script src="/script/user/choosingLessonForm.js"></script>
+<script src="/script/dropdown.js"></script>
+<script src="/script/userSchedule.js"></script>
+</body>
+</html>

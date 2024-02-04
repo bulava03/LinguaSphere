@@ -143,7 +143,6 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-
         UserDto userDto = modelMapper.map(userFounded, UserDto.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
 
@@ -153,29 +152,58 @@ public class UserController {
         ) {
             list.add(element.getTeacherId());
         }
-        List<Lesson> lessons = lessonService.findAllByTeacherIds(list);
-        List<Lesson> usersLessons = lessonService.findAllByUserId(userFounded.getId());
-        lessons.removeIf(element -> element.getUserId() != null);
-        for (Lesson element : usersLessons
-        ) {
-            lessons.removeIf(elem -> elem.getDay() == element.getDay() && elem.getTime() == element.getTime());
-        }
 
-        List<LessonTemplate> lessonList = new ArrayList<>();
-        for (Lesson element : lessons
-        ) {
-            Teacher teacherTemp = teacherService.findById(element.getTeacherId());
-            String teacherName = teacherTemp.getName() + " " + teacherTemp.getSurname();
-            String date = userHelper.convertIntIntoDate(element.getDay(), element.getTime());
-            lessonList.add(new LessonTemplate(element.getId(), lesson.getLanguageId(), element.getTeacherId(),
-                    teacherName, date));
+        List<TeacherDtoBytes> teacherList = new ArrayList<>();
+        for (Long id : list
+             ) {
+            List<Lesson> lessonList = lessonService.findAllByTeacherId(id);
+            lessonList.removeIf(lessonElement -> lessonElement.getUserId() != null);
+
+            if (lessonList.size() > 0) {
+                Teacher teacherElement = teacherService.findById(id);
+                TeacherDtoBytes teacherDtoBytes = modelMapper.map(teacherElement, TeacherDtoBytes.class);
+                teacherDtoBytes.setFile(Base64.encodeBase64String(teacherElement.getImage()));
+                teacherList.add(teacherDtoBytes);
+            }
         }
 
         model.addAttribute("user", userDto);
-        model.addAttribute("lessons", lessonList);
-        model.addAttribute("language", languageService.findById(lesson.getLanguageId()));
+        model.addAttribute("teachers", teacherList);
+        model.addAttribute("languageId", lesson.getLanguageId());
         model.addAttribute("token", request.getToken());
-        return "user/choosingLessonPage";
+        return "user/teachersListPage";
+    }
+
+    @GetMapping("teacherSchedulePage")
+    public String getTeacherSchedulePage(RequestDto request, LessonTemplate lesson, Model model) {
+        Object[] authResult = authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+
+        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+        Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
+        if (teacherFounded != null) {
+            List<Lesson> lessons = lessonService.findAllByTeacherId(teacherFounded.getId());
+            lessons.removeIf(element -> element.getUserId() != null);
+            List<Lesson> usersLessons = lessonService.findAllByUserId(userFounded.getId());
+            List<Lesson> lessonsWithThisTeacher = usersLessons;
+            lessonsWithThisTeacher.removeIf(element -> !Objects.equals(element.getUserId(), userFounded.getId()));
+
+            int[][] lessonsArray = userHelper.getTeachersSchedule(lessons, usersLessons, lessonsWithThisTeacher);
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("lessons", lessonsArray);
+            model.addAttribute("languageId", lesson.getLanguageId());
+            model.addAttribute("teacherEmail", lesson.getTeacherEmail());
+            model.addAttribute("token", request.getToken());
+            return "user/teachersSchedulePage";
+        } else {
+            return "redirect:/user/teacherSchedulePage?token=" + request.getToken();
+        }
     }
 
     @PostMapping("setLesson")
@@ -186,16 +214,62 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
+        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        userDto.setDateOfBirth(userHelper.formDate(userFounded));
+
+        Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
+        if (teacherFounded != null) {
+            List<Lesson> teachersLessons = lessonService.findAllByTeacherId(teacherFounded.getId());
+            Lesson lessonToSave = new Lesson();
+            for (Lesson element : teachersLessons
+            ) {
+                if (element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime()) {
+                    lessonToSave = element;
+                    break;
+                }
+            }
+
+            lessonToSave.setUserId(userFounded.getId());
+            lessonToSave.setLanguageId(lesson.getLanguageId());
+            lessonService.save(lessonToSave);
+        }
+
+        return "redirect:/user/teacherSchedulePage?token=" + request.getToken() +
+                "&languageId=" + lesson.getLanguageId() +
+                "&teacherEmail=" + lesson.getTeacherEmail();
+    }
+
+    @PostMapping("removeLesson")
+    public String removeLesson(RequestDto request, LessonTemplate lesson, Model model) {
+        Object[] authResult = authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
         UserDto userDto = modelMapper.map(userFounded, UserDto.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
 
-        Lesson lessonToSave = lessonService.findById(lesson.getId());
-        lessonToSave.setUserId(userFounded.getId());
-        lessonToSave.setLanguageId(lesson.getLanguageId());
-        lessonService.save(lessonToSave);
+        Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
+        if (teacherFounded != null) {
+            List<Lesson> teachersLessons = lessonService.findAllByTeacherId(teacherFounded.getId());
+            Lesson lessonToSave = new Lesson();
+            for (Lesson element : teachersLessons
+            ) {
+                if (element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime()) {
+                    lessonToSave = element;
+                    break;
+                }
+            }
 
-        return "redirect:/user/submitChooseLanguageForm?token=" + request.getToken() + "&languageId=" + lesson.getLanguageId();
+            lessonToSave.setUserId(null);
+            lessonToSave.setLanguageId(null);
+            lessonService.save(lessonToSave);
+        }
+
+        return "redirect:/user/teacherSchedulePage?token=" + request.getToken() +
+                "&languageId=" + lesson.getLanguageId() +
+                "&teacherEmail=" + lesson.getTeacherEmail();
     }
 
     @GetMapping("dailyFact")

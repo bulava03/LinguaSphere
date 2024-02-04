@@ -1,0 +1,59 @@
+.table-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 15px;
+}
+
+.table-wrapper {
+    width: 20%;
+    margin: 15px;
+}
+
+.table-title {
+    margin-top: 0;
+    text-align: center;
+}
+.teacherTable {
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.6);
+    margin: 0;
+    width: 100%
+}
+
+.teacherTable:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.teacherTable td {
+    padding: 30px;
+    border: none;
+}
+
+.photo-cell {
+    text-align: center;
+}
+
+.aboutMe-cell {
+    vertical-align: top;
+}
+
+.aboutMe-cell div {
+    text-align: left;
+}
+
+.photo-cell img {
+    border-radius: 50px;
+    margin-bottom: 30px;
+}
+
+.content-row {
+    height: 300px;
+}
+
+.content-cell {
+    color: white;
+    background-color: transparent;
+}

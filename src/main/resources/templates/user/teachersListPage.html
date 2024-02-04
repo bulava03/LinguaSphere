@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/userPageStyle.css">
+    <link rel="stylesheet" href="/style/user/teachersListPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <div th:replace="~{/user/partsOfPages/aside}"></div>
+
+    <div>
+        <div class="table-container" th:each="elem : ${teachers}">
+            <div class="table-wrapper">
+                <table class="teacherTable" th:attr="onclick='submitTeacher(\'' + ${elem.email} + '\')'">
+                    <tr>
+                        <td class="photo-cell" style="width: 30%;">
+                            <img th:if="${elem.file == null}"
+                                 src="/photo.png" width="100" height="100" alt="teacher photo">
+                            <img th:unless="${elem.file == null}"
+                                 th:src="'data:image/jpeg;base64,' + ${elem.file}" alt="Image"  width="100" height="100">
+
+                            <div class="content-cell"><b th:text="${elem.name}"></b></div>
+                            <div class="content-cell"><b th:text="${elem.surname}"></b></div><br>
+                            <div class="content-cell" th:text="'Електронна пошта: ' + ${elem.email}"></div>
+                            <div class="content-cell" th:if="${elem.phone != null}" th:text="'Номер телефону: ' + ${elem.phone}"></div><br>
+                            <div th:if="${not #lists.isEmpty(elem.contacts)}" class="content-cell" th:text="'Контакти: '"></div>
+                            <th:block th:each="contact, iterationStat : ${elem.contacts}">
+                                <div class="content-cell" th:text="${contact}"></div>
+                            </th:block>
+                        </td>
+                        <td class="aboutMe-cell" style="width: 70%;">
+                            <div class="content-cell"><b th:text="'Про мене:'"></b></div><br>
+                            <div class="content-cell" th:text="${elem.aboutMe}"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <button onclick="submitPageForm()">На головну</button>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="teacherScheduleForm" action="/user/teacherSchedulePage">
+    <input type="hidden" th:value="${languageId}" name="languageId">
+    <input id="teacherEmailInput" type="hidden" value="" name="teacherEmail">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/user/teacherListPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 public class UserHelper {
 
@@ -43,6 +44,32 @@ public class UserHelper {
                 }
             }
         }
+        return lessons;
+    }
+
+    public int[][] getTeachersSchedule(List<Lesson> teachersLessons, List<Lesson> usersLessons, List<Lesson> lessonsWithThisTeacher) {
+        int[][] lessons = new int[7][16];
+
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 16; j++) {
+                lessons[i][j] = 0;
+            }
+        }
+
+        for (Lesson lesson : usersLessons
+        ) {
+            if (lessonsWithThisTeacher.stream().anyMatch(element -> (element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime()))) {
+                lessons[lesson.getDay()][lesson.getTime()] = 2;
+            }
+        }
+
+        for (Lesson lesson : teachersLessons
+        ) {
+            if (lessons[lesson.getDay()][lesson.getTime()] == 0) {
+                lessons[lesson.getDay()][lesson.getTime()] = 1;
+            }
+        }
+
         return lessons;
     }
 

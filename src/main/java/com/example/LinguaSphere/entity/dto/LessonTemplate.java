@@ -11,6 +11,8 @@ public class LessonTemplate {
     private Long id;
     private Long languageId;
     private Long teacherId;
+    private String teacherEmail;
     private String name;
-    private String time;
+    private int day;
+    private int time;
 }
