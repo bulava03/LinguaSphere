@@ -1,7 +1,11 @@
 package com.example.LinguaSphere.service.impl;
 
+import com.example.LinguaSphere.entity.DailyMessage;
+import com.example.LinguaSphere.entity.Lesson;
 import com.example.LinguaSphere.entity.User;
 import com.example.LinguaSphere.repository.UserRepository;
+import com.example.LinguaSphere.service.DailyMessageService;
+import com.example.LinguaSphere.service.LessonService;
 import com.example.LinguaSphere.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +14,11 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -19,6 +26,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private DailyMessageService dailyMessageService;
+    @Autowired
+    private LessonService lessonService;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -79,6 +90,43 @@ public class UserServiceImpl implements UserService {
             user.setScore(user.getScore() + 10);
         }
         updateUser(user);
+    }
+
+    public User setNewDailyDate(User user) {
+        if (user.getNewDailyDate() == null) {
+            user.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
+            updateUser(user);
+        }
+
+        if (LocalDateTime.now().isAfter(user.getNewDailyDate())) {
+            user.setDailyId(null);
+            user.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
+            updateUser(user);
+        }
+
+        return user;
+    }
+
+    public User setNewDaily(User user) {
+        if (user.getDailyId() == null || dailyMessageService.findById(user.getDailyId()) == null) {
+            List<Lesson> lessons = lessonService.findAllByUserId(user.getId());
+            List<DailyMessage> variants = dailyMessageService.getDailyMessagesFromUserLessons(lessons);
+            if (variants.size() > 0) {
+                Random random = new Random();
+                int factNumber = random.nextInt(variants.size());
+                DailyMessage dailyMessage = variants.get(factNumber);
+                user.setDailyId(dailyMessage.getId());
+                user.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
+                updateUser(user);
+            }
+        }
+        return user;
+    }
+
+    @Override
+    public User setDailyDateAndId(User user) {
+        user = setNewDailyDate(user);
+        return setNewDaily(user);
     }
 
 }

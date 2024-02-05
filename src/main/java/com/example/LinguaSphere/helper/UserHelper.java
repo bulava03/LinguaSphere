@@ -2,6 +2,7 @@ package com.example.LinguaSphere.helper;
 
 import com.example.LinguaSphere.entity.*;
 import com.example.LinguaSphere.entity.dto.CreatureToGuess;
+import com.example.LinguaSphere.entity.dto.UserDtoBytes;
 import com.example.LinguaSphere.service.DailyMessageService;
 import com.example.LinguaSphere.service.LanguageService;
 import com.example.LinguaSphere.service.impl.DailyMessageServiceImpl;
@@ -100,6 +101,13 @@ public class UserHelper {
             }
         }
         return languagesIds;
+    }
+
+    public UserDtoBytes getUserDtoBytes(User user) {
+        UserDtoBytes userDto = modelMapper.map(user, UserDtoBytes.class);
+        userDto.setDateOfBirth(formDate(user));
+        userDto.setFile(org.apache.tomcat.util.codec.binary.Base64.encodeBase64String(user.getImage()));
+        return userDto;
     }
 
 }

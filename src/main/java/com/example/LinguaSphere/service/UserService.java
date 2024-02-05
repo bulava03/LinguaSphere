@@ -13,5 +13,6 @@ public interface UserService {
     User findById(Long id);
     User defaultScore(User user);
     void updateUserIfGuessed(User user);
+    User setDailyDateAndId(User user);
 
 }

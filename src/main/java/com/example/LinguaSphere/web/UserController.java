@@ -109,10 +109,8 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
         int[][] lessons = userHelper.getUsersLessons(lessonService.findAllByUserId(userFounded.getId()));
 
         model.addAttribute("user", userDto);
@@ -128,10 +126,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         model.addAttribute("user", userDto);
         model.addAttribute("languages", languageService.findAll());
@@ -146,10 +141,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         List<TeacherLanguage> teacherLanguages = teacherLanguageService.findAllByLanguageId(lesson.getLanguageId());
         List<Long> list = new ArrayList<>();
@@ -186,10 +178,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
         if (teacherFounded != null) {
@@ -219,10 +208,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
         if (teacherFounded != null) {
@@ -253,10 +239,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
         if (teacherFounded != null) {
@@ -287,35 +270,9 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
-
-        if (userFounded.getNewDailyDate() == null) {
-            userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
-            userService.updateUser(userFounded);
-        }
-
-        if (LocalDateTime.now().isAfter(userFounded.getNewDailyDate())) {
-            userFounded.setDailyId(null);
-            userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
-            userService.updateUser(userFounded);
-        }
-
-        if (userFounded.getDailyId() == null || dailyMessageService.findById(userFounded.getDailyId()) == null) {
-            List<Lesson> lessons = lessonService.findAllByUserId(userFounded.getId());
-            List<DailyMessage> variants = dailyMessageService.getDailyMessagesFromUserLessons(lessons);
-            if (variants.size() > 0) {
-                Random random = new Random();
-                int factNumber = random.nextInt(variants.size());
-                DailyMessage dailyMessage = variants.get(factNumber);
-                userFounded.setDailyId(dailyMessage.getId());
-                userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
-                userService.updateUser(userFounded);
-            }
-        }
+        userFounded = userService.setDailyDateAndId(userFounded);
 
         if (userFounded.getDailyId() != null) {
             DailyMessage dailyMessage = dailyMessageService.findById(userFounded.getDailyId());
@@ -338,10 +295,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         List<Lesson> userLessons = lessonService.findAllByUserId(userFounded.getId());
         List<Language> languages = languageService.getLanguagesFromUserLessons(userLessons);
@@ -359,11 +313,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         Language language = languageService.findById(languageSelected.getLanguageId());
         List<Creature> creatures = creatureService.findAllByLanguageId(language.getId());
@@ -393,10 +343,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         Creature creature = creatureService.findById(creatureToGuess.getId());
         CreatureToGuess newCreatureToGuess = languageService.getNewCreatureToGuess(creature, creatureToGuess);
@@ -414,10 +361,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         userFounded.setLastGuessedCount(0);
         userService.updateUser(userFounded);
@@ -438,10 +382,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         userFounded = userService.defaultScore(userFounded);
         Creature creature = creatureService.findById(creatureAnswered.getId());
@@ -473,10 +414,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         List<Lesson> userLessons = lessonService.findAllByUserId(userFounded.getId());
         List<Language> languages = languageService.getLanguagesFromUserLessons(userLessons);
@@ -494,10 +432,7 @@ public class UserController {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         Long languageId = lessonTemplate.getLanguageId();
 
@@ -523,9 +458,7 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
-        userDto.setDateOfBirth(userHelper.formDate(userFounded));
-        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
         userDto.setDay(userFounded.getDateOfBirth().getDayOfMonth());
         userDto.setMonth(ConvertHelper.monthToString(userFounded.getDateOfBirth().getMonthValue()));
         userDto.setYear(userFounded.getDateOfBirth().getYear());
