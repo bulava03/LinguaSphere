@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class UserForm {
+
     private String password;
     private String name;
     private String surname;
@@ -16,4 +17,5 @@ public class UserForm {
     private int day;
     private String month;
     private int year;
+
 }

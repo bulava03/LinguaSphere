@@ -25,7 +25,7 @@ public class UserHelper {
     }
 
     public String formDate(User userFounded) {
-        String day = String.valueOf(userFounded.getDateOfBirth().getDayOfMonth() + 1);
+        String day = String.valueOf(userFounded.getDateOfBirth().getDayOfMonth());
         String month = ConvertHelper.monthToStringUserPage(userFounded.getDateOfBirth().getMonthValue());
         String year = String.valueOf(userFounded.getDateOfBirth().getYear());
         return day + " " + month + " " + year;

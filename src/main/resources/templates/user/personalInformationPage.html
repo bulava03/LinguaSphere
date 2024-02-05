@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
+    <link rel="stylesheet" href="/style/admin/adminCreatureFormStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <div class="regTitle">
+        <h1>Про мене</h1>
+    </div>
+
+    <div class="regForm">
+        <form id="regForm" action="/user/updatePersonalInformation" method="post" enctype="multipart/form-data">
+            <div class="regInput">
+                <h2 class="name">Фото</h2>
+                <input class="field" id="file" value="" type="file" name="file">
+                <h2 class="name">Ім'я</h2>
+                <input class="field" id="name" th:value="${user.name}" type="text" name="name">
+                <h2 class="name">Прізвище</h2>
+                <input class="field" id="surname" th:value="${user.surname}" type="text" name="surname">
+                <h2 class="name">Електронна пошта</h2>
+                <input class="field" id="email" th:value="${user.email}" type="text" name="email">
+                <h2 class="name">День народження</h2>
+                <input class="field" id="dob-day" th:value="${user.year != -1 ? user.day : ''}" type="text" name="day">
+                <h2 class="name">Місяць народження</h2>
+                <select id="dob-month" name="month">
+                    <option value="" th:selected="${user.month == null}" th:disabled="${user.month == null}">Місяць</option>
+                    <option value="1" th:selected="${user.month == 'Січень'}">Січень</option>
+                    <option value="2" th:selected="${user.month == 'Лютий'}">Лютий</option>
+                    <option value="3" th:selected="${user.month == 'Березень'}">Березень</option>
+                    <option value="4" th:selected="${user.month == 'Квітень'}">Квітень</option>
+                    <option value="5" th:selected="${user.month == 'Травень'}">Травень</option>
+                    <option value="6" th:selected="${user.month == 'Червень'}">Червень</option>
+                    <option value="7" th:selected="${user.month == 'Липень'}">Липень</option>
+                    <option value="8" th:selected="${user.month == 'Серпень'}">Серпень</option>
+                    <option value="9" th:selected="${user.month == 'Вересень'}">Вересень</option>
+                    <option value="10" th:selected="${user.month == 'Жовтень'}">Жовтень</option>
+                    <option value="11" th:selected="${user.month == 'Листопад'}">Листопад</option>
+                    <option value="12" th:selected="${user.month == 'Грудень'}">Грудень</option>
+                </select>
+                <h2 class="name">Рік народження</h2>
+                <select id="dob-year" name="year">
+                    <option th:value="${user.year != 0 && user.year != -1 ? user.year : ''}"
+                            th:selected="${user.year != 0 && user.year != -1}"
+                            th:disabled="${user.year == 0 || user.year == -1}"
+                            th:text="${user.year != 0 && user.year != -1 ? user.year : 'Рік'}"></option>
+                </select>
+                <input type="hidden" id="dateOfBirth" name="dateOfBirth" value="">
+                <h2 class="name">Номер телефону</h2>
+                <input class="field" id="phone" th:value="${user.phone}" type="text" name="phone">
+                <h2 class="name">Контакти</h2>
+                <th:block th:if="${user.contacts != null}">
+                    <textarea th:if="${#lists.size(user.contacts) == 0}" class="field" name="contacts"></textarea>
+                </th:block>
+                <textarea th:if="${user.contacts == null}" class="field" name="contacts"></textarea>
+                <th:block th:each="contact, iterationStat : ${user.contacts}">
+                    <textarea class="field" th:text="${contact}" name="contacts"></textarea>
+                </th:block>
+                <button type="button" class="button" onclick="addTextarea()">Додати контакт</button>
+
+                <input type="hidden" th:value="${token}" name="token">
+
+                <input class="button" type="submit" value="Зберегти">
+                <p class="errorText" id="errorText"></p>
+                <p class="errorText" th:text="${errorText}"></p>
+            </div>
+        </form>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<h2 id="imageToUploadByDefault" th:text="${user.file}" style="display: none;"></h2>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/dropdown.js"></script>
+<script src="/script/generateYears.js"></script>
+<script src="/script/dateValidation.js"></script>
+<script src="/script/userPageForms.js"></script>
+<script src="/script/user/personalInformationForm.js"></script>
+<script src="/script/admin/imageUpdateDefault.js"></script>
+</body>
+</html>

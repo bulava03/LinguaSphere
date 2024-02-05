@@ -12,6 +12,7 @@ import org.modelmapper.internal.bytebuddy.asm.Advice;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -26,6 +27,8 @@ public class User {
     @NotBlank(message = "Пароль обов'язковий.")
     @Size(min = 8, message = "Пароль повинен містити від 8 до 20 символів.")
     private String password;
+
+    private byte[] image;
 
     @NotBlank(message = "Ім'я обов'язкове.")
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Ім'я може містити тільки літери.")
@@ -49,7 +52,7 @@ public class User {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime dateOfBirth;
 
-    private String[] contacts;
+    private List<String> contacts;
 
     private Long dailyId;
 

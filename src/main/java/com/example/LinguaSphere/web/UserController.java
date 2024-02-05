@@ -3,6 +3,7 @@ package com.example.LinguaSphere.web;
 import com.example.LinguaSphere.config.security.JwtTokenService;
 import com.example.LinguaSphere.entity.*;
 import com.example.LinguaSphere.entity.dto.*;
+import com.example.LinguaSphere.helper.ConvertHelper;
 import com.example.LinguaSphere.helper.CreatureHelper;
 import com.example.LinguaSphere.helper.UserHelper;
 import com.example.LinguaSphere.service.*;
@@ -93,8 +94,9 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
         model.addAttribute("user", userDto);
         model.addAttribute("token", request.getToken());
         return "user/userPage";
@@ -108,8 +110,9 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
         int[][] lessons = userHelper.getUsersLessons(lessonService.findAllByUserId(userFounded.getId()));
 
         model.addAttribute("user", userDto);
@@ -126,8 +129,9 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
 
         model.addAttribute("user", userDto);
         model.addAttribute("languages", languageService.findAll());
@@ -143,8 +147,9 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
 
         List<TeacherLanguage> teacherLanguages = teacherLanguageService.findAllByLanguageId(lesson.getLanguageId());
         List<Long> list = new ArrayList<>();
@@ -182,8 +187,9 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
 
         Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
         if (teacherFounded != null) {
@@ -214,8 +220,9 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
 
         Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
         if (teacherFounded != null) {
@@ -247,8 +254,9 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
 
         Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
         if (teacherFounded != null) {
@@ -281,8 +289,9 @@ public class UserController {
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
 
         if (userFounded.getNewDailyDate() == null) {
             userFounded.setNewDailyDate(LocalDateTime.now().with(LocalTime.MIN).plusDays(1));
@@ -330,8 +339,10 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+
         List<Lesson> userLessons = lessonService.findAllByUserId(userFounded.getId());
         List<Language> languages = languageService.getLanguagesFromUserLessons(userLessons);
 
@@ -350,8 +361,9 @@ public class UserController {
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
 
         Language language = languageService.findById(languageSelected.getLanguageId());
         List<Creature> creatures = creatureService.findAllByLanguageId(language.getId());
@@ -382,8 +394,10 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+
         Creature creature = creatureService.findById(creatureToGuess.getId());
         CreatureToGuess newCreatureToGuess = languageService.getNewCreatureToGuess(creature, creatureToGuess);
 
@@ -401,8 +415,10 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+
         userFounded.setLastGuessedCount(0);
         userService.updateUser(userFounded);
         Creature creature = creatureService.findById(creatureToGuess.getId());
@@ -423,8 +439,10 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+
         userFounded = userService.defaultScore(userFounded);
         Creature creature = creatureService.findById(creatureAnswered.getId());
 
@@ -456,8 +474,10 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+
         List<Lesson> userLessons = lessonService.findAllByUserId(userFounded.getId());
         List<Language> languages = languageService.getLanguagesFromUserLessons(userLessons);
 
@@ -475,9 +495,9 @@ public class UserController {
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-
-        UserDto userDto = modelMapper.map(userFounded, UserDto.class);
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
 
         Long languageId = lessonTemplate.getLanguageId();
 
@@ -493,6 +513,90 @@ public class UserController {
         model.addAttribute("languageSubName", languageService.findById(languageId).getSubName());
         model.addAttribute("token", request.getToken());
         return "user/materialsPage";
+    }
+
+    @GetMapping("/personalInformation")
+    public String getPersonalInformationForm(RequestDto request, Model model) throws IOException {
+        Object[] authResult = authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+
+        UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
+        userDto.setDateOfBirth(userHelper.formDate(userFounded));
+        userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+        userDto.setDay(userFounded.getDateOfBirth().getDayOfMonth());
+        userDto.setMonth(ConvertHelper.monthToString(userFounded.getDateOfBirth().getMonthValue()));
+        userDto.setYear(userFounded.getDateOfBirth().getYear());
+
+        model.addAttribute("user", userDto);
+        model.addAttribute("token", request.getToken());
+        return "user/personalInformationPage";
+    }
+
+    @PostMapping("/updatePersonalInformation")
+    public String updatePersonalInformation(RequestDto request, UserDtoForm userUpdated, Model model) throws IOException {
+        Object[] authResult = authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+
+        User user = modelMapper.map(userUpdated, User.class);
+        user.setId(userFounded.getId());
+        user.setPassword(userFounded.getPassword());
+        user.setScore(userFounded.getScore());
+        user.setDailyId(userFounded.getDailyId());
+        user.setLastGuessedCount(userFounded.getLastGuessedCount());
+        user.setNewDailyDate(userFounded.getNewDailyDate());
+        user.setDateOfBirth(LocalDateTime.of(
+                userUpdated.getYear(), userUpdated.getMonth(), userUpdated.getDay(), 0, 0, 0));
+        user.setImage(userUpdated.getFile().getBytes());
+
+        Object[] validation = userService.validateUser(user);
+        if (!(boolean) validation[0]) {
+            UserDtoBytes userDto = modelMapper.map(user, UserDtoBytes.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+            userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+            userDto.setDay(userFounded.getDateOfBirth().getDayOfMonth());
+            userDto.setMonth(ConvertHelper.monthToString(userFounded.getDateOfBirth().getMonthValue()));
+            userDto.setYear(userFounded.getDateOfBirth().getYear());
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("errorText", validation[1].toString().replaceAll("Optional\\[|\\]", ""));
+            model.addAttribute("token", request.getToken());
+            return "user/personalInformationPage";
+        }
+
+        User userTest = userService.findByEmail(user.getEmail()).orElse(null);
+        if (userTest != null && userTest.getId() != user.getId()) {
+            UserDtoBytes userDto = modelMapper.map(user, UserDtoBytes.class);
+            userDto.setDateOfBirth(userHelper.formDate(userFounded));
+            userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+            userDto.setDay(userFounded.getDateOfBirth().getDayOfMonth());
+            userDto.setMonth(ConvertHelper.monthToString(userFounded.getDateOfBirth().getMonthValue()));
+            userDto.setYear(userFounded.getDateOfBirth().getYear());
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("errorText", "Таку електронну пошту вже зайнято!");
+            model.addAttribute("token", request.getToken());
+            return "user/personalInformationPage";
+        }
+
+        if (!user.getContacts().isEmpty()) {
+            List<String> newContacts = new ArrayList<>();
+            for (String link : user.getContacts()
+            ) {
+                if (!link.equals("")) {
+                    newContacts.add(link);
+                }
+            }
+            user.setContacts(newContacts);
+        }
+        userService.updateUser(user);
+
+        return "redirect:/user/userPage?token=" + request.getToken();
     }
 
 }
