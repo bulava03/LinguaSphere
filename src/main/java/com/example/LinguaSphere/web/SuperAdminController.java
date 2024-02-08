@@ -56,8 +56,7 @@ public class SuperAdminController {
             return "superAdmin/addingLanguageForm";
         } else {
             languageService.save(language);
-            model.addAttribute("languages", languageService.findAll());
-            return "superAdmin/languagesList";
+            return "redirect:/superAdmin/getLanguagesList";
         }
     }
 
@@ -74,8 +73,7 @@ public class SuperAdminController {
             return "superAdmin/addingAdminForm";
         } else {
             adminService.save(admin);
-            model.addAttribute("admins", adminService.findAll());
-            return "superAdmin/adminsList";
+            return "redirect:/superAdmin/getAdminsList";
         }
     }
 
@@ -86,8 +84,7 @@ public class SuperAdminController {
             adminService.deleteById(adminRemove.getId());
         }
 
-        model.addAttribute("admins", adminService.findAll());
-        return "superAdmin/adminsList";
+        return "redirect:/superAdmin/getAdminsList";
     }
 
     @GetMapping("/updateAdmin")
@@ -98,8 +95,7 @@ public class SuperAdminController {
             return "superAdmin/updateAdminForm";
         }
 
-        model.addAttribute("admins", adminService.findAll());
-        return "superAdmin/adminsList";
+        return "redirect:/superAdmin/getAdminsList";
     }
 
     @PostMapping("/updateAdmin")
@@ -120,8 +116,7 @@ public class SuperAdminController {
             }
         }
 
-        model.addAttribute("admins", adminService.findAll());
-        return "superAdmin/adminsList";
+        return "redirect:/superAdmin/getAdminsList";
     }
 
     @PostMapping("/deleteLanguage")
@@ -131,8 +126,7 @@ public class SuperAdminController {
             languageService.deleteById(languageRemove.getId());
         }
 
-        model.addAttribute("languages", languageService.findAll());
-        return "superAdmin/languagesList";
+        return "redirect:/superAdmin/getLanguagesList";
     }
 
     @GetMapping("/updateLanguage")
@@ -143,8 +137,7 @@ public class SuperAdminController {
             return "superAdmin/updateLanguageForm";
         }
 
-        model.addAttribute("languages", languageService.findAll());
-        return "superAdmin/languagesList";
+        return "redirect:/superAdmin/getLanguagesList";
     }
 
     @PostMapping("/updateLanguage")
@@ -156,8 +149,7 @@ public class SuperAdminController {
             return "superAdmin/updateLanguageForm";
         } else {
             languageService.save(language);
-            model.addAttribute("languages", languageService.findAll());
-            return "superAdmin/languagesList";
+            return "redirect:/superAdmin/getLanguagesList";
         }
     }
 

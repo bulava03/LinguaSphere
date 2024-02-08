@@ -374,7 +374,6 @@ public class TeacherController {
                     return "redirect:/teacher/submitCellLesson?email=" + teacher.getEmail() + "&password=" + teacher.getPassword()
                             + "&day=" + lesson.getDay() + "&time=" + lesson.getTime();
                 }
-                return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
             }
         }
 
@@ -409,7 +408,6 @@ public class TeacherController {
                     return "redirect:/teacher/submitCellLesson?email=" + teacher.getEmail() + "&password=" + teacher.getPassword()
                             + "&day=" + lesson.getDay() + "&time=" + lesson.getTime();
                 }
-                return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
             }
         }
 

@@ -38,7 +38,7 @@ public class AdminController {
     private ModelMapper modelMapper;
 
     @GetMapping()
-    public String getAdminLogin() {
+    public String getAdminLoginPage() {
         return "admin/loginPage";
     }
 
@@ -126,8 +126,7 @@ public class AdminController {
             }
             model.addAttribute("teachers", list);
 
-            model.addAttribute("admin", admin);
-            return "admin/teachersList";
+            return "redirect:/admin/getTeachersList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
         }
     }
 
@@ -170,19 +169,7 @@ public class AdminController {
         }
         dailyMessageService.save(dailyMessage);
 
-        List<DailyMessage> list = dailyMessageService.findAll();
-        List<DailyMessageDtoBytes> newList = new ArrayList<>();
-        for (DailyMessage daily : list
-        ) {
-            DailyMessageDtoBytes dto = modelMapper.map(daily, DailyMessageDtoBytes.class);
-            dto.setLanguage(languageService.findById(daily.getLanguageId()).getName());
-            dto.setFile(Base64.encodeBase64String(daily.getImage()));
-            newList.add(dto);
-        }
-
-        model.addAttribute("dailies", newList);
-        model.addAttribute("admin", admin);
-        return "admin/dailiesList";
+        return "redirect:/admin/getDailiesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
 
     @GetMapping("/updateDaily")
@@ -214,35 +201,13 @@ public class AdminController {
         }
         dailyMessageService.save(dailyMessage);
 
-        List<DailyMessage> list = dailyMessageService.findAll();
-        List<DailyMessageDtoBytes> newList = new ArrayList<>();
-        for (DailyMessage daily : list
-        ) {
-            DailyMessageDtoBytes dto = modelMapper.map(daily, DailyMessageDtoBytes.class);
-            dto.setLanguage(languageService.findById(daily.getLanguageId()).getName());
-            dto.setFile(Base64.encodeBase64String(daily.getImage()));
-            newList.add(dto);
-        }
-        model.addAttribute("dailies", newList);
-        model.addAttribute("admin", admin);
-        return "admin/dailiesList";
+        return "redirect:/admin/getDailiesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
 
     @PostMapping("/deleteDaily")
     public String deleteDaily(Admin admin, DailyMessageDto dailyMessageDto, Model model) {
         dailyMessageService.deleteById(dailyMessageDto.getId());
-        List<DailyMessage> list = dailyMessageService.findAll();
-        List<DailyMessageDtoBytes> newList = new ArrayList<>();
-        for (DailyMessage daily : list
-        ) {
-            DailyMessageDtoBytes dto = modelMapper.map(daily, DailyMessageDtoBytes.class);
-            dto.setLanguage(languageService.findById(daily.getLanguageId()).getName());
-            dto.setFile(Base64.encodeBase64String(daily.getImage()));
-            newList.add(dto);
-        }
-        model.addAttribute("dailies", newList);
-        model.addAttribute("admin", admin);
-        return "admin/dailiesList";
+        return "redirect:/admin/getDailiesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
 
     @GetMapping("/getCreaturesList")
@@ -285,19 +250,7 @@ public class AdminController {
         }
         creatureService.save(creatureToAdd);
 
-        List<Creature> creaturesList = creatureService.findAll();
-        List<CreatureDtoBytes> listDto = new ArrayList<>();
-        for (Creature creature : creaturesList
-        ) {
-            CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
-            dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            dto.setFile(Base64.encodeBase64String(creature.getImage()));
-            listDto.add(dto);
-        }
-
-        model.addAttribute("creatures", listDto);
-        model.addAttribute("admin", admin);
-        return "admin/creaturesList";
+        return "redirect:/admin/getCreaturesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
 
     @GetMapping("/updateCreature")
@@ -329,38 +282,13 @@ public class AdminController {
         }
         creatureService.save(creatureUpdated);
 
-        List<Creature> creaturesList = creatureService.findAll();
-        List<CreatureDtoBytes> listDto = new ArrayList<>();
-        for (Creature creature : creaturesList
-        ) {
-            CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
-            dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            dto.setFile(Base64.encodeBase64String(creature.getImage()));
-            listDto.add(dto);
-        }
-
-        model.addAttribute("creatures", listDto);
-        model.addAttribute("admin", admin);
-        return "admin/creaturesList";
+        return "redirect:/admin/getCreaturesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
 
     @PostMapping("/deleteCreature")
     public String deleteCreature(Admin admin, Creature creatureToDelete, Model model) {
         creatureService.deleteById(creatureToDelete.getId());
-
-        List<Creature> creaturesList = creatureService.findAll();
-        List<CreatureDtoBytes> listDto = new ArrayList<>();
-        for (Creature creature : creaturesList
-        ) {
-            CreatureDtoBytes dto = modelMapper.map(creature, CreatureDtoBytes.class);
-            dto.setLanguage(languageService.findById(creature.getLanguageId()).getName());
-            dto.setFile(Base64.encodeBase64String(creature.getImage()));
-            listDto.add(dto);
-        }
-
-        model.addAttribute("creatures", listDto);
-        model.addAttribute("admin", admin);
-        return "admin/creaturesList";
+        return "redirect:/admin/getCreaturesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
 
 }
