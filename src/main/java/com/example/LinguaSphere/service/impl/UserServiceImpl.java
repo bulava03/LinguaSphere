@@ -3,10 +3,14 @@ package com.example.LinguaSphere.service.impl;
 import com.example.LinguaSphere.entity.DailyMessage;
 import com.example.LinguaSphere.entity.Lesson;
 import com.example.LinguaSphere.entity.User;
+import com.example.LinguaSphere.entity.dto.RequestDto;
+import com.example.LinguaSphere.helper.UserHelper;
 import com.example.LinguaSphere.repository.UserRepository;
 import com.example.LinguaSphere.service.DailyMessageService;
 import com.example.LinguaSphere.service.LessonService;
 import com.example.LinguaSphere.service.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +41,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private Validator validator;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final UserHelper userHelper = new UserHelper();
+
+
     @Override
     public Object[] validateUser(User user) {
         Set<ConstraintViolation<User>> violations = validator.validate(user);
@@ -48,6 +56,26 @@ public class UserServiceImpl implements UserService {
         } else {
             return new Object[] { true, "" };
         }
+    }
+
+    @Override
+    public Object[] authenticateUser(RequestDto requestDto) {
+        String payload = userHelper.decodeToken(requestDto.getToken());
+        JsonNode node;
+        String username;
+        try {
+            node = objectMapper.readTree(payload);
+            username = node.get("sub").asText();
+        } catch (Exception ex) {
+            return new Object[] { false, "authorisation/authorisation" };
+        }
+
+        User userFounded = findByEmail(username).orElse(null);
+        if (userFounded == null) {
+            return new Object[] { false, "authorisation/authorisation" };
+        }
+
+        return new Object[] { true, username };
     }
 
     @Override

@@ -1,6 +1,10 @@
 package com.example.LinguaSphere.service.impl;
 
 import com.example.LinguaSphere.entity.Lesson;
+import com.example.LinguaSphere.entity.Teacher;
+import com.example.LinguaSphere.entity.TeacherLanguage;
+import com.example.LinguaSphere.entity.User;
+import com.example.LinguaSphere.entity.dto.LessonTemplate;
 import com.example.LinguaSphere.repository.LessonRepository;
 import com.example.LinguaSphere.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +84,30 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void deleteAll(List<Lesson> list) {
         lessonRepository.deleteAll(list);
+    }
+
+    @Override
+    public void setLessonForUser(Long userId, Teacher teacher, LessonTemplate lesson) {
+        if (teacher != null) {
+            List<Lesson> teachersLessons = findAllByTeacherId(teacher.getId());
+            Lesson lessonToSave = new Lesson();
+            for (Lesson element : teachersLessons
+            ) {
+                if (element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime()) {
+                    lessonToSave = element;
+                    break;
+                }
+            }
+
+            if (userId != null) {
+                lessonToSave.setLanguageId(lesson.getLanguageId());
+            } else {
+                lessonToSave.setLanguageId(null);
+            }
+
+            lessonToSave.setUserId(userId);
+            save(lessonToSave);
+        }
     }
 
 }

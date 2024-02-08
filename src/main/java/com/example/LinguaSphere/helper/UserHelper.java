@@ -3,6 +3,7 @@ package com.example.LinguaSphere.helper;
 import com.example.LinguaSphere.entity.*;
 import com.example.LinguaSphere.entity.dto.CreatureToGuess;
 import com.example.LinguaSphere.entity.dto.UserDtoBytes;
+import com.example.LinguaSphere.entity.dto.UserDtoForm;
 import com.example.LinguaSphere.service.DailyMessageService;
 import com.example.LinguaSphere.service.LanguageService;
 import com.example.LinguaSphere.service.impl.DailyMessageServiceImpl;
@@ -10,6 +11,8 @@ import com.example.LinguaSphere.service.impl.LanguageServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -74,15 +77,6 @@ public class UserHelper {
         return lessons;
     }
 
-    String[] days = { "пн", "вт", "ср", "чт", "пт", "сб", "нд" };
-    String[] times = { "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00",
-            "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00",
-            "17:00-18:00", "18:00-19:00", "19:00-20:00", "20:00-21:00", "21:00-22:00", "22:00-23:00", "23:00-24:00" };
-
-    public String convertIntIntoDate(int day, int time) {
-        return days[day] + " " + times[time];
-    }
-
     public List<Long> getIdsFromUserMaterialsList(List<UserMaterial> userMaterialList) {
         List<Long> list = new ArrayList<>();
         for (UserMaterial element : userMaterialList
@@ -108,6 +102,28 @@ public class UserHelper {
         userDto.setDateOfBirth(formDate(user));
         userDto.setFile(org.apache.tomcat.util.codec.binary.Base64.encodeBase64String(user.getImage()));
         return userDto;
+    }
+
+    public UserDtoBytes getUserDtoBytesWithDate(User user) {
+        UserDtoBytes userDto = getUserDtoBytes(user);
+        userDto.setDay(user.getDateOfBirth().getDayOfMonth());
+        userDto.setMonth(ConvertHelper.monthToString(user.getDateOfBirth().getMonthValue()));
+        userDto.setYear(user.getDateOfBirth().getYear());
+        return userDto;
+    }
+
+    public User convertUserDtoFormToUser(UserDtoForm userDtoForm, User userFounded) throws IOException {
+        User user = modelMapper.map(userDtoForm, User.class);
+        user.setId(userFounded.getId());
+        user.setPassword(userFounded.getPassword());
+        user.setScore(userFounded.getScore());
+        user.setDailyId(userFounded.getDailyId());
+        user.setLastGuessedCount(userFounded.getLastGuessedCount());
+        user.setNewDailyDate(userFounded.getNewDailyDate());
+        user.setDateOfBirth(LocalDateTime.of(
+                userDtoForm.getYear(), userDtoForm.getMonth(), userDtoForm.getDay(), 0, 0, 0));
+        user.setImage(userDtoForm.getFile().getBytes());
+        return user;
     }
 
 }

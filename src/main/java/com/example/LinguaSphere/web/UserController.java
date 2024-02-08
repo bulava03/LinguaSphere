@@ -62,41 +62,21 @@ public class UserController {
     @Autowired
     private JwtTokenService jwtTokenService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserHelper userHelper = new UserHelper();
     private final CreatureHelper creatureHelper = new CreatureHelper();
 
 
-    private Object[] authenticateUser(RequestDto request) {
-        String payload = userHelper.decodeToken(request.getToken());
-        JsonNode node;
-        String username;
-        try {
-            node = objectMapper.readTree(payload);
-            username = node.get("sub").asText();
-        } catch (Exception ex) {
-            return new Object[] { false, "authorisation/authorisation" };
-        }
-
-        User userFounded = userService.findByEmail(username).orElse(null);
-        if (userFounded == null) {
-            return new Object[] { false, "authorisation/authorisation" };
-        }
-
-        return new Object[] { true, username };
-    }
-
     @GetMapping("userPage")
     public String userPage(@ModelAttribute("request") RequestDto request, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
         UserDtoBytes userDto = modelMapper.map(userFounded, UserDtoBytes.class);
         userDto.setDateOfBirth(userHelper.formDate(userFounded));
         userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
+
         model.addAttribute("user", userDto);
         model.addAttribute("token", request.getToken());
         return "user/userPage";
@@ -104,7 +84,7 @@ public class UserController {
 
     @GetMapping("userSchedule")
     public String getUserSchedule(@ModelAttribute("request") RequestDto request, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -121,7 +101,7 @@ public class UserController {
 
     @GetMapping("getLanguageChoosingPage")
     public String getLanguageChoosingPage(@ModelAttribute("request") RequestDto request, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -136,7 +116,7 @@ public class UserController {
 
     @GetMapping("submitChooseLanguageForm")
     public String submitChooseLanguageForm(RequestDto request, LessonTemplate lesson, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -173,7 +153,7 @@ public class UserController {
 
     @GetMapping("teacherSchedulePage")
     public String getTeacherSchedulePage(RequestDto request, LessonTemplate lesson, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -185,7 +165,7 @@ public class UserController {
             List<Lesson> lessons = lessonService.findAllByTeacherId(teacherFounded.getId());
             lessons.removeIf(element -> element.getUserId() != null);
             List<Lesson> usersLessons = lessonService.findAllByUserId(userFounded.getId());
-            List<Lesson> lessonsWithThisTeacher = usersLessons;
+            List<Lesson> lessonsWithThisTeacher = new ArrayList<>(List.copyOf(usersLessons));
             lessonsWithThisTeacher.removeIf(element -> !Objects.equals(element.getUserId(), userFounded.getId()));
 
             int[][] lessonsArray = userHelper.getTeachersSchedule(lessons, usersLessons, lessonsWithThisTeacher);
@@ -203,29 +183,14 @@ public class UserController {
 
     @PostMapping("setLesson")
     public String setLesson(RequestDto request, LessonTemplate lesson, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
-        if (teacherFounded != null) {
-            List<Lesson> teachersLessons = lessonService.findAllByTeacherId(teacherFounded.getId());
-            Lesson lessonToSave = new Lesson();
-            for (Lesson element : teachersLessons
-            ) {
-                if (element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime()) {
-                    lessonToSave = element;
-                    break;
-                }
-            }
-
-            lessonToSave.setUserId(userFounded.getId());
-            lessonToSave.setLanguageId(lesson.getLanguageId());
-            lessonService.save(lessonToSave);
-        }
+        lessonService.setLessonForUser(userFounded.getId(), teacherFounded, lesson);
 
         return "redirect:/user/teacherSchedulePage?token=" + request.getToken() +
                 "&languageId=" + lesson.getLanguageId() +
@@ -234,29 +199,13 @@ public class UserController {
 
     @PostMapping("removeLesson")
     public String removeLesson(RequestDto request, LessonTemplate lesson, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
-        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
 
         Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
-        if (teacherFounded != null) {
-            List<Lesson> teachersLessons = lessonService.findAllByTeacherId(teacherFounded.getId());
-            Lesson lessonToSave = new Lesson();
-            for (Lesson element : teachersLessons
-            ) {
-                if (element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime()) {
-                    lessonToSave = element;
-                    break;
-                }
-            }
-
-            lessonToSave.setUserId(null);
-            lessonToSave.setLanguageId(null);
-            lessonService.save(lessonToSave);
-        }
+        lessonService.setLessonForUser(null, teacherFounded, lesson);
 
         return "redirect:/user/teacherSchedulePage?token=" + request.getToken() +
                 "&languageId=" + lesson.getLanguageId() +
@@ -265,7 +214,7 @@ public class UserController {
 
     @GetMapping("dailyFact")
     public String getDailyFact(RequestDto request, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -290,7 +239,7 @@ public class UserController {
 
     @GetMapping("getCreatureLanguageList")
     public String getCreatureLanguageList(@ModelAttribute("request") RequestDto request, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -308,7 +257,7 @@ public class UserController {
 
     @GetMapping("submitChooseLanguageCreatureForm")
     public String getCreatureGuessPage(LessonTemplate languageSelected, RequestDto request, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -338,7 +287,7 @@ public class UserController {
 
     @GetMapping("getHint")
     public String getHint(RequestDto request, CreatureToGuess creatureToGuess, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -356,7 +305,7 @@ public class UserController {
 
     @PostMapping("giveUp")
     public String giveUp(RequestDto request, CreatureToGuess creatureToGuess, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -377,7 +326,7 @@ public class UserController {
 
     @PostMapping("checkCreatureAnswerForm")
     public String checkCreatureAnswer(RequestDto request, CreatureToGuess creatureAnswered, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -409,7 +358,7 @@ public class UserController {
 
     @GetMapping("/getMaterialsLanguageList")
     public String getMaterialsLanguageForm(RequestDto request, Model model) {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -427,7 +376,7 @@ public class UserController {
 
     @GetMapping("/submitChooseLanguageMaterialsForm")
     public String getMaterialsPage(RequestDto request, LessonTemplate lessonTemplate, Model model) throws IOException {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
@@ -452,16 +401,13 @@ public class UserController {
 
     @GetMapping("/personalInformation")
     public String getPersonalInformationForm(RequestDto request, Model model) throws IOException {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
-        userDto.setDay(userFounded.getDateOfBirth().getDayOfMonth());
-        userDto.setMonth(ConvertHelper.monthToString(userFounded.getDateOfBirth().getMonthValue()));
-        userDto.setYear(userFounded.getDateOfBirth().getYear());
+        UserDtoBytes userDto = userHelper.getUserDtoBytesWithDate(userFounded);
 
         model.addAttribute("user", userDto);
         model.addAttribute("token", request.getToken());
@@ -470,32 +416,17 @@ public class UserController {
 
     @PostMapping("/updatePersonalInformation")
     public String updatePersonalInformation(RequestDto request, UserDtoForm userUpdated, Model model) throws IOException {
-        Object[] authResult = authenticateUser(request);
+        Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";
         }
         User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
 
-        User user = modelMapper.map(userUpdated, User.class);
-        user.setId(userFounded.getId());
-        user.setPassword(userFounded.getPassword());
-        user.setScore(userFounded.getScore());
-        user.setDailyId(userFounded.getDailyId());
-        user.setLastGuessedCount(userFounded.getLastGuessedCount());
-        user.setNewDailyDate(userFounded.getNewDailyDate());
-        user.setDateOfBirth(LocalDateTime.of(
-                userUpdated.getYear(), userUpdated.getMonth(), userUpdated.getDay(), 0, 0, 0));
-        user.setImage(userUpdated.getFile().getBytes());
+        User user = userHelper.convertUserDtoFormToUser(userUpdated, userFounded);
 
         Object[] validation = userService.validateUser(user);
         if (!(boolean) validation[0]) {
-            UserDtoBytes userDto = modelMapper.map(user, UserDtoBytes.class);
-            userDto.setDateOfBirth(userHelper.formDate(userFounded));
-            userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
-            userDto.setDay(userFounded.getDateOfBirth().getDayOfMonth());
-            userDto.setMonth(ConvertHelper.monthToString(userFounded.getDateOfBirth().getMonthValue()));
-            userDto.setYear(userFounded.getDateOfBirth().getYear());
-
+            UserDtoBytes userDto = userHelper.getUserDtoBytesWithDate(userFounded);
             model.addAttribute("user", userDto);
             model.addAttribute("errorText", validation[1].toString().replaceAll("Optional\\[|\\]", ""));
             model.addAttribute("token", request.getToken());
@@ -503,14 +434,8 @@ public class UserController {
         }
 
         User userTest = userService.findByEmail(user.getEmail()).orElse(null);
-        if (userTest != null && userTest.getId() != user.getId()) {
-            UserDtoBytes userDto = modelMapper.map(user, UserDtoBytes.class);
-            userDto.setDateOfBirth(userHelper.formDate(userFounded));
-            userDto.setFile(Base64.encodeBase64String(userFounded.getImage()));
-            userDto.setDay(userFounded.getDateOfBirth().getDayOfMonth());
-            userDto.setMonth(ConvertHelper.monthToString(userFounded.getDateOfBirth().getMonthValue()));
-            userDto.setYear(userFounded.getDateOfBirth().getYear());
-
+        if (userTest != null && !Objects.equals(userTest.getId(), user.getId())) {
+            UserDtoBytes userDto = userHelper.getUserDtoBytesWithDate(userFounded);
             model.addAttribute("user", userDto);
             model.addAttribute("errorText", "Таку електронну пошту вже зайнято!");
             model.addAttribute("token", request.getToken());

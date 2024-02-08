@@ -5,8 +5,10 @@ import java.util.Map;
 
 public class ConvertHelper {
 
-    public static String monthToString(int month) {
-        Map<Integer, String> months = new HashMap<>();
+    private static final Map<Integer, String> months = new HashMap<>();
+    private static final Map<Integer, String> monthsForAside = new HashMap<>();
+
+    static {
         months.put(1, "Січень");
         months.put(2, "Лютий");
         months.put(3, "Березень");
@@ -20,6 +22,21 @@ public class ConvertHelper {
         months.put(11, "Листопад");
         months.put(12, "Грудень");
 
+        monthsForAside.put(1, "січня");
+        monthsForAside.put(2, "лютого");
+        monthsForAside.put(3, "березня");
+        monthsForAside.put(4, "квітня");
+        monthsForAside.put(5, "травня");
+        monthsForAside.put(6, "червня");
+        monthsForAside.put(7, "липня");
+        monthsForAside.put(8, "серпня");
+        monthsForAside.put(9, "вересня");
+        monthsForAside.put(10, "жовтня");
+        monthsForAside.put(11, "листопада");
+        monthsForAside.put(12, "грудня");
+    }
+
+    public static String monthToString(int month) {
         if (months.containsKey(month)) {
             return months.get(month);
         } else {
@@ -28,22 +45,8 @@ public class ConvertHelper {
     }
 
     public static String monthToStringUserPage(int month) {
-        Map<Integer, String> months = new HashMap<>();
-        months.put(1, "січня");
-        months.put(2, "лютого");
-        months.put(3, "березня");
-        months.put(4, "квітня");
-        months.put(5, "травня");
-        months.put(6, "червня");
-        months.put(7, "липня");
-        months.put(8, "серпня");
-        months.put(9, "вересня");
-        months.put(10, "жовтня");
-        months.put(11, "листопада");
-        months.put(12, "грудня");
-
-        if (months.containsKey(month)) {
-            return months.get(month);
+        if (monthsForAside.containsKey(month)) {
+            return monthsForAside.get(month);
         } else {
             throw new IllegalArgumentException("Невірне значення місяця.");
         }
