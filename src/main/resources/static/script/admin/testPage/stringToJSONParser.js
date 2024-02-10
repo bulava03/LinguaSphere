@@ -2,6 +2,7 @@ function parseStringToObject(element) {
     var regex = /(\w+)\s*=\s*([^,]+)(?=,|$)/g;
     var result = {};
     var match;
+
     var filePart = element.substring(element.lastIndexOf("file="));
     element = element.substring(0, element.lastIndexOf("file="));
     while (match = regex.exec(filePart)) {

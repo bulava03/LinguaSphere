@@ -81,7 +81,7 @@ function createAnswerTableHeader(answerTable) {
     });
 }
 
-function createAnswerTableContentRow(answerTable, answer, index, correctAnswer) {
+function createAnswerTableContentRow(answerTable, answer, index, correctAnswers) {
     let answerRow = answerTable.insertRow();
     let answerTextCell = answerRow.insertCell();
     answerTextCell.textContent = answer.text;
@@ -107,7 +107,9 @@ function createAnswerTableContentRow(answerTable, answer, index, correctAnswer) 
     let correctCell = answerRow.insertCell();
     let correctCheckbox = document.createElement('input');
     correctCheckbox.type = "checkbox";
-    correctCheckbox.checked = (index + 1 === correctAnswer);
+    correctCheckbox.checked = correctAnswers.includes(answer.id);
+    correctCheckbox.id = 'answer' + answer.id;
+    correctCheckbox.setAttribute("onclick", "changeAnswerCorrectness(" + answer.id + ", '" + correctCheckbox.id + "')");
     correctCell.appendChild(correctCheckbox);
     let deleteAnswerCell = answerRow.insertCell();
     deleteAnswerCell.textContent = "Видалити відповідь";
@@ -119,7 +121,7 @@ function createAnswerTableContentRow(answerTable, answer, index, correctAnswer) 
     deleteAnswerCell.classList.add('deleteCell');
 }
 
-function createAnswerTable(questionId, value, correctAnswer) {
+function createAnswerTable(questionId, value, correctAnswers) {
     var container = document.getElementById('testQuestionsContainer');
     var buttonElement = container.getElementsByTagName('button')[1];
 
@@ -130,7 +132,7 @@ function createAnswerTable(questionId, value, correctAnswer) {
     createAnswerTableHeader(answerTable);
 
     value.forEach((answer, index) => {
-        createAnswerTableContentRow(answerTable, answer, index, correctAnswer);
+        createAnswerTableContentRow(answerTable, answer, index, correctAnswers);
     });
 
     let addAnswerRow = answerTable.insertRow();
@@ -146,8 +148,11 @@ function createAnswerTable(questionId, value, correctAnswer) {
 function createTables(data) {
     Object.keys(data).forEach(key => {
         let element = data[key];
-        key = parseStringToObject(key);
+        key = JSON.parse(key);
         createQuestionTable(key);
-        createAnswerTable(key.id, element, key.correctAnswer);
+        if (key.correctAnswers === null) {
+            key.correctAnswers = [];
+        }
+        createAnswerTable(key.id, element, key.correctAnswers);
     });
 }

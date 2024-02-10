@@ -14,7 +14,7 @@ public class TestQuestionDtoBytes {
     private Long id;
     private String text;
     private String file;
-    private List<Integer> correctAnswer;
+    private List<Long> correctAnswers;
     private int level;
     private Long languageId;
 

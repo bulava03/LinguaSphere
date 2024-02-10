@@ -8,6 +8,7 @@ import com.example.LinguaSphere.entity.dto.TestQuestionDtoBytes;
 import com.example.LinguaSphere.service.TestAnswerService;
 import com.example.LinguaSphere.service.TestQuestionAnswerService;
 import com.example.LinguaSphere.service.TestQuestionService;
+import com.google.gson.Gson;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,10 @@ public class TestController {
     private ModelMapper modelMapper;
 
     @GetMapping("/getTestQuestions")
-    public Map<TestQuestionDtoBytes, List<TestAnswerDtoBytes>> getTestQuestions(Long languageId) {
+    public Map<String, List<TestAnswerDtoBytes>> getTestQuestions(Long languageId) {
         List<TestQuestion> testQuestionList = testQuestionService.findAllByLanguageId(languageId);
 
-        Map<TestQuestionDtoBytes, List<TestAnswerDtoBytes>> testQuestions = new HashMap<>();
+        Map<String, List<TestAnswerDtoBytes>> testQuestions = new HashMap<>();
         for (TestQuestion testQuestion : testQuestionList
              ) {
             TestQuestionDtoBytes testQuestionDtoBytes = modelMapper.map(testQuestion, TestQuestionDtoBytes.class);
@@ -56,7 +57,8 @@ public class TestController {
                 testAnswerDtoBytes.setFile(Base64.encodeBase64String(testAnswer.getImage()));
                 testAnswersDtoBytes.add(testAnswerDtoBytes);
             }
-            testQuestions.put(testQuestionDtoBytes, testAnswersDtoBytes);
+            Gson gson = new Gson();
+            testQuestions.put(gson.toJson(testQuestionDtoBytes), testAnswersDtoBytes);
         }
 
         return testQuestions;
@@ -148,6 +150,36 @@ public class TestController {
         TestAnswer testAnswer = testAnswerService.findById(answerId);
         testAnswer.setImage(null);
         testAnswerService.save(testAnswer);
+    }
+
+    @PostMapping("/setAnswerCorrect")
+    public void setAnswerCorrect(Long answerId) {
+        TestQuestionAnswer testQuestionAnswer = testQuestionAnswerService.findByAnswerId(answerId);
+        TestQuestion testQuestion = testQuestionService.findById(testQuestionAnswer.getQuestionId());
+        List<Long> answerIds = testQuestion.getCorrectAnswers();
+        if (answerIds == null) {
+            answerIds = new ArrayList<>();
+        }
+        if (!answerIds.contains(answerId)) {
+            answerIds.add(answerId);
+            testQuestion.setCorrectAnswers(answerIds);
+            testQuestionService.save(testQuestion);
+        }
+    }
+
+    @PostMapping("/setAnswerIncorrect")
+    public void setAnswerIncorrect(Long answerId) {
+        TestQuestionAnswer testQuestionAnswer = testQuestionAnswerService.findByAnswerId(answerId);
+        TestQuestion testQuestion = testQuestionService.findById(testQuestionAnswer.getQuestionId());
+        List<Long> answerIds = testQuestion.getCorrectAnswers();
+        if (answerIds == null) {
+            answerIds = new ArrayList<>();
+        }
+        if (answerIds.contains(answerId)) {
+            answerIds.remove(answerId);
+            testQuestion.setCorrectAnswers(answerIds);
+            testQuestionService.save(testQuestion);
+        }
     }
 
 }

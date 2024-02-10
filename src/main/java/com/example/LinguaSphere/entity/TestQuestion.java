@@ -22,7 +22,7 @@ public class TestQuestion {
 
     private String text;
     private byte[] image;
-    private List<Integer> correctAnswer;
+    private List<Long> correctAnswers;
     private int level;
     private Long languageId;
 
