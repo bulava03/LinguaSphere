@@ -1,0 +1,153 @@
+.contentTable {
+    width: calc(100% - 60px);
+    margin: 30px;
+}
+
+.contentTable tr:last-of-type td:first-of-type {
+    border-radius: 0 0 0 20px;
+}
+
+.contentTable tr:last-of-type td:last-of-type {
+    border-radius: 0 0 20px 0;
+}
+
+.contentTable th {
+    border: 1px solid black;
+}
+
+.contentTable th {
+    border-top: none;
+}
+
+.contentTable th:first-of-type {
+    border-left: none;
+}
+
+.contentTable th:last-of-type {
+    border-right: none;
+}
+
+.contentTable td {
+    border: 1px solid black;
+}
+
+.contentTable td:first-of-type {
+    border-left: none;
+}
+
+.contentTable td:last-of-type {
+    border-right: none;
+}
+
+.contentTable tr:last-of-type td {
+    border-bottom: none;
+}
+
+table.contentTable tr:last-of-type td:first-of-type.addAnswerCell {
+    border-radius: 0 0 20px 20px;
+    background-color: #F69809;
+}
+
+table.contentTable tr:last-of-type td:first-of-type.addAnswerCell:hover {
+    background-color: #fda41c;
+    cursor: pointer;
+}
+
+.contentTable tr:first-of-type th:first-of-type {
+    border-radius: 20px 0 0 0;
+}
+
+.contentTable tr:first-of-type th:last-of-type {
+    border-radius: 0 20px 0 0;
+}
+
+.contentTable td, .contentTable th {
+    text-align: center;
+    height: 50px;
+}
+
+.textCell {
+    width: 40%;
+}
+
+.imageCell {
+    width: 40%;
+}
+
+.checkboxCell {
+    width: 5%;
+}
+
+.deleteCell {
+    width: 15%;
+}
+
+.contentTable:first-of-type .textCell {
+    width: 37.5%;
+}
+
+.contentTable:first-of-type .imageCell {
+    width: 37.5%;
+}
+
+.levelCell {
+    width: 5%;
+}
+
+.contentTable:first-of-type .checkboxCell {
+    width: 5%;
+}
+
+.contentTable:first-of-type .deleteCell {
+    width: 15%;
+}
+
+.textCell, .imageCell, .checkboxCell, .levelCell {
+    background-color: #2184c2;
+}
+
+tr:not(:first-of-type) .textCell:hover,
+tr:not(:first-of-type) .imageCell:hover,
+tr:not(:first-of-type) .levelCell:hover {
+    background-color: #1995e3;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
+}
+
+input[type="checkbox"]:hover {
+    cursor: pointer;
+}
+
+.deleteCell {
+    background-color: #3baf9f;
+}
+
+tr:not(:first-of-type) .deleteCell:hover {
+    background-color: #38d1bc;
+    cursor: pointer;
+}
+
+input[type="file"] {
+    color: red;
+    font-weight: bold;
+    width: 270px;
+}
+
+input[type="file"]::file-selector-button {
+    font-style: italic;
+    color: white;
+    width: 150px;
+    height: 40px;
+    background-color: blue;
+    border-radius: 20px;
+    border: 0;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #2828fc;
+    cursor: pointer;
+}

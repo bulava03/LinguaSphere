@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/adminPageStyle.css">
+    <link rel="stylesheet" href="/style/admin/testPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout3}"></div>
+</header>
+
+<main>
+    <div id="testQuestionsContainer" th:attr="languageId=${language.id}">
+        <button onclick="addQuestion()" >Додати питання</button>
+
+        <h1 th:text="'Питання до тесту з ' + ${language.subName} + ' мови'"></h1>
+
+        <button onclick="submitTestLanguageGettingForm()">Назад</button>
+    </div>
+</main>
+
+<form id="getTestLanguageForm" typeof="hidden" action="/admin/getTestLanguageList" method="get">
+    <input type="hidden" th:value="${admin.login}" name="login">
+    <input type="hidden" th:value="${admin.password}" name="password">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/adminPageForms.js"></script>
+<script src="/script/admin/testPage/testPageGettingQuestions.js"></script>
+<script src="/script/admin/testPage/testPageGenerateTables.js"></script>
+<script src="/script/admin/testPage/stringToJSONParser.js"></script>
+<script src="/script/admin/testPage/testPageMainRequests.js"></script>
+<script src="/script/admin/testPage/darkenScreen.js"></script>
+<script src="/script/admin/testPage/addQuestionTextEditForm.js"></script>
+<script src="/script/admin/testPage/questionEditingRequests.js"></script>
+<script src="/script/admin/testPage/addQuestionFileEditForm.js"></script>
+<script src="/script/admin/testPage/addQuestionLevelEditForm.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

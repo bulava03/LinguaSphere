@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,6 +44,7 @@ public class TeacherRegistration {
     @Size(max = 20, message = "Номер телефону повинен містити не більше 20 символів.")
     private String phone;
 
+    private List<String> contacts;
     private String[] languages;
 
 }

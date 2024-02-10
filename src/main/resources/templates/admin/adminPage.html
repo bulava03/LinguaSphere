@@ -19,12 +19,17 @@
 <main>
   <div>
     <button onclick="submitTeachersGettingForm()"> Викладачі </button><br>
+    <button onclick="submitTestLanguageGettingForm()"> Тести </button><br>
     <button onclick="submitDailiesGettingForm()"> Щоденні цікавинки </button><br>
     <button onclick="submitEntitiesGettingForm()"> "Хто я?" </button><br>
   </div>
 </main>
 
 <form id="getTeachersListForm" typeof="hidden" action="/admin/getTeachersList" method="get">
+  <input type="hidden" th:value="${admin.login}" name="login">
+  <input type="hidden" th:value="${admin.password}" name="password">
+</form>
+<form id="getTestLanguageForm" typeof="hidden" action="/admin/getTestLanguageList" method="get">
   <input type="hidden" th:value="${admin.login}" name="login">
   <input type="hidden" th:value="${admin.password}" name="password">
 </form>

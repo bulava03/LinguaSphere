@@ -8,6 +8,12 @@ function submitTeachersGettingForm() {
         form.submit();
 }
 
+function submitTestLanguageGettingForm() {
+    var form = document.getElementById('getTestLanguageForm');
+        form.submit();
+}
+
+
 function submitDailiesGettingForm() {
     var form = document.getElementById('getDailyListForm');
     form.submit();

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/adminPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout3}"></div>
+</header>
+
+<main>
+    <div>
+        <th:block th:each="language : ${languages}">
+            <button th:attr="onclick='submitLanguage(\'' + ${language.id} + '\')'"
+                    th:text="${language.name}"></button><br>
+        </th:block>
+
+        <button onclick="submitAdminPageForm()">Назад</button>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="chooseLanguageForm" action="/admin/getTestPage">
+    <input type="hidden" th:value="${admin.login}" name="login">
+    <input type="hidden" th:value="${admin.password}" name="password">
+    <input type="hidden" id="languageIdInput" value="" name="languageId">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/adminPageForms.js"></script>
+<script src="/script/admin/testLanguagesListPage.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

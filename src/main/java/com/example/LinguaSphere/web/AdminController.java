@@ -35,6 +35,12 @@ public class AdminController {
     @Autowired
     private CreatureService creatureService;
     @Autowired
+    private TestQuestionService testQuestionService;
+    @Autowired
+    private TestAnswerService testAnswerService;
+    @Autowired
+    private TestQuestionAnswerService testQuestionAnswerService;
+    @Autowired
     private ModelMapper modelMapper;
 
     @GetMapping()
@@ -289,6 +295,20 @@ public class AdminController {
     public String deleteCreature(Admin admin, Creature creatureToDelete, Model model) {
         creatureService.deleteById(creatureToDelete.getId());
         return "redirect:/admin/getCreaturesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
+    }
+
+    @GetMapping("/getTestLanguageList")
+    public String getTestLanguageList(Admin admin, Model model) {
+        model.addAttribute("languages", languageService.findAll());
+        model.addAttribute("admin", admin);
+        return "admin/testLanguagesList";
+    }
+
+    @GetMapping("/getTestPage")
+    public String getTestPage(Admin admin, Long languageId, Model model) {
+        model.addAttribute("language", languageService.findById(languageId));
+        model.addAttribute("admin", admin);
+        return "admin/testPage";
     }
 
 }
