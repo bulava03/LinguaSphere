@@ -1,4 +1,4 @@
-function addInsideTextQuestionFormStyles(textarea, button) {
+function addInsideTextAnswerFormStyles(textarea, button) {
     textarea.style.borderRadius = '20px';
     textarea.style.height = '300px';
     textarea.style.width = '500px';
@@ -14,18 +14,18 @@ function addInsideTextQuestionFormStyles(textarea, button) {
     button.style.fontSize = '16px';
 }
 
-function displayTextQuestionForm(questionId, areaText) {
+function displayTextAnswerForm(answerId, areaText) {
     var formContainer = document.createElement('div');
     formContainer.classList.add('form-container');
 
     var textarea = document.createElement('textarea');
     textarea.setAttribute('placeholder', 'Введіть текст питання');
     textarea.value = areaText;
-    textarea.id = 'textQuestionArea';
+    textarea.id = 'textAnswerArea';
 
     var button = document.createElement('button');
     button.textContent = 'Зберегти';
-    button.setAttribute("onclick", "editQuestionText(" + questionId + ")");
+    button.setAttribute("onclick", "editAnswerText(" + answerId + ")");
 
     formContainer.appendChild(textarea);
     formContainer.appendChild(button);
@@ -36,6 +36,6 @@ function displayTextQuestionForm(questionId, areaText) {
     overlay.classList.add('overlay');
     document.body.appendChild(overlay);
 
-    addInsideTextQuestionFormStyles(textarea, button);
+    addInsideTextAnswerFormStyles(textarea, button);
     darkenScreen(overlay, formContainer, button);
 }

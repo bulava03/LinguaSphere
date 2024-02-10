@@ -85,7 +85,13 @@ function createAnswerTableContentRow(answerTable, answer, index, correctAnswer) 
     let answerRow = answerTable.insertRow();
     let answerTextCell = answerRow.insertCell();
     answerTextCell.textContent = answer.text;
+    answerTextCell.setAttribute("onclick", "displayTextAnswerForm(" + answer.id + ", '" + answer.text + "')");
     let answerImageCell = answerRow.insertCell();
+    if (answer.file === null) {
+        answerImageCell.setAttribute("onclick", "displayFileAnswerForm(" + answer.id + ", null)");
+    } else {
+        answerImageCell.setAttribute("onclick", "displayFileAnswerForm(" + answer.id + ", '" + answer.file + "')");
+    }
 
     if (answer.file != null) {
         let answerImage = document.createElement('img');

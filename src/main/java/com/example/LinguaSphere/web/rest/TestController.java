@@ -129,4 +129,25 @@ public class TestController {
         testQuestionService.save(testQuestion);
     }
 
+    @PostMapping("/editAnswerText")
+    public void editAnswerText(Long answerId, String text) {
+        TestAnswer testAnswer = testAnswerService.findById(answerId);
+        testAnswer.setText(text);
+        testAnswerService.save(testAnswer);
+    }
+
+    @PostMapping("/editAnswerFile")
+    public void editAnswerFile(Long answerId, MultipartFile file) throws IOException {
+        TestAnswer testAnswer = testAnswerService.findById(answerId);
+        testAnswer.setImage(file.getBytes());
+        testAnswerService.save(testAnswer);
+    }
+
+    @PostMapping("/deleteAnswerFile")
+    public void deleteAnswerFile(Long answerId) {
+        TestAnswer testAnswer = testAnswerService.findById(answerId);
+        testAnswer.setImage(null);
+        testAnswerService.save(testAnswer);
+    }
+
 }

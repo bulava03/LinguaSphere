@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -20,7 +22,7 @@ public class TestQuestion {
 
     private String text;
     private byte[] image;
-    private int correctAnswer;
+    private List<Integer> correctAnswer;
     private int level;
     private Long languageId;
 

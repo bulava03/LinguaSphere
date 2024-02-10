@@ -20,7 +20,7 @@ function editQuestionText(questionId) {
         }
     })
     .catch(error => {
-        console.error('There was a problem with adding answer operation.');
+        console.error('There was a problem with editing question text operation.');
     });
 }
 
@@ -48,7 +48,7 @@ function editQuestionFile(questionId) {
             }
         })
         .catch(error => {
-            console.error('There was a problem with adding answer operation.');
+            console.error('There was a problem with adding question file operation.');
         });
     }
 }
@@ -72,7 +72,7 @@ function deleteQuestionFile(questionId) {
         }
     })
     .catch(error => {
-        console.error('There was a problem with adding answer operation.');
+        console.error('There was a problem with deleting question file operation.');
     });
 }
 
@@ -98,6 +98,6 @@ function editQuestionLevel(questionId) {
         }
     })
     .catch(error => {
-        console.error('There was a problem with adding answer operation.');
+        console.error('There was a problem with editing question level operation.');
     });
 }
