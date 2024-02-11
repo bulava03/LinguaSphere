@@ -182,4 +182,18 @@ public class TestController {
         }
     }
 
+    @PostMapping("/setQuestionAvailable")
+    public void setQuestionAvailable(Long questionId) {
+        TestQuestion testQuestion = testQuestionService.findById(questionId);
+        testQuestion.setAvailable(true);
+        testQuestionService.save(testQuestion);
+    }
+
+    @PostMapping("/setQuestionUnavailable")
+    public void setQuestionUnavailable(Long questionId) {
+        TestQuestion testQuestion = testQuestionService.findById(questionId);
+        testQuestion.setAvailable(false);
+        testQuestionService.save(testQuestion);
+    }
+
 }

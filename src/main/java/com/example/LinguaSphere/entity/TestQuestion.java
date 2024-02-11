@@ -25,5 +25,6 @@ public class TestQuestion {
     private List<Long> correctAnswers;
     private int level;
     private Long languageId;
+    private boolean isAvailable;
 
 }
