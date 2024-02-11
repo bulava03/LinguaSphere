@@ -27,8 +27,10 @@
                 <th th:text="${hour} + ':00-' + (${hour + 1}) + ':00'"></th>
 
                 <td th:each="row, rowStat : ${lessons}"
+                    th:id="${'lesson_' + __${hour - 8}__ + '_' + rowStat.index}"
                     th:class="${row[__${hour - 8}__] == 0 ? 'used' : (row[__${hour - 8}__] == 1 ? 'free' : 'lesson')}"
-                    th:attr="onclick=${row[__${hour - 8}__] == 1 ? 'setLessonConfirm(__${hour - 8}__, ' + rowStat.index + ')' :
+                    th:attr="onclick=${row[__${hour - 8}__] == 1 ?
+                    'setLessonConfirm(__${hour - 8}__, ' + rowStat.index + ')' :
                     (row[__${hour - 8}__] == 0 ? '' :
                     'removeLessonConfirm(__${hour - 8}__, ' + rowStat.index + ')')}"></td>
             </tr>
@@ -48,26 +50,20 @@
     <input type="hidden" th:value="${token}" name="token">
     <input type="hidden" id="languageIdInput" value="" name="languageId">
 </form>
-<form typeof="hidden" id="setLessonForm" method="post" action="/user/setLesson">
+
+<form typeof="hidden" id="defaultDataForm">
     <input type="hidden" th:value="${token}" name="token">
     <input type="hidden" th:value="${languageId}" name="languageId">
     <input type="hidden" th:value="${teacherEmail}" name="teacherEmail">
-    <input id="setLessonDay" type="hidden" value="" name="day">
-    <input id="setLessonTime" type="hidden" value="" name="time">
-</form>
-<form typeof="hidden" id="removeLessonForm" method="post" action="/user/removeLesson">
-    <input type="hidden" th:value="${token}" name="token">
-    <input type="hidden" th:value="${languageId}" name="languageId">
-    <input type="hidden" th:value="${teacherEmail}" name="teacherEmail">
-    <input id="removeLessonDay" type="hidden" value="" name="day">
-    <input id="removeLessonTime" type="hidden" value="" name="time">
 </form>
 
 <div th:replace="~{/shared/footer}"></div>
 
 <script src="/script/userPageForms.js"></script>
 <script src="/script/user/languageChoosingForm.js"></script>
-<script src="/script/user/choosingLessonForm.js"></script>
+<script src="/script/user/lessonsRequests/defaultFormData.js"></script>
+<script src="/script/user/lessonsRequests/setLesson.js"></script>
+<script src="/script/user/lessonsRequests/removeLesson.js"></script>
 <script src="/script/dropdown.js"></script>
 <script src="/script/userSchedule.js"></script>
 </body>
