@@ -1,0 +1,106 @@
+main {
+    background-color: #0038FF;
+    border-radius: 20px;
+    margin: 20px 2px 20px 2px;
+    text-align: center;
+    padding: 30px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+#questionDiv {
+    background-color: #329DFF;
+    border-radius: 20px;
+    padding: 30px;
+}
+
+#questionDiv h1 {
+    margin: 0;
+}
+
+input[type="submit"],
+#backQuestionButton,
+#leaveTestButton,
+#nextQuestionButton,
+#endTestButton,
+#mainPageButton {
+    background-color: #F69809;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    margin: 30px;
+    margin-bottom: 0;
+    text-align: center;
+    border: 0;
+    border-radius: 20px;
+    width: 500px;
+    height: 100px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover,
+#backQuestionButton:hover,
+#leaveTestButton:hover,
+#nextQuestionButton:hover,
+#endTestButton:hover,
+#mainPageButton:hover {
+    background-color: #fda41c;
+}
+
+#questionDiv table {
+    margin: 30px auto 0;
+}
+
+#questionDiv tr:first-of-type td:first-of-type {
+    border-radius: 20px 0 0 0;
+}
+
+#questionDiv tr:first-of-type td:last-of-type {
+    border-radius: 0 20px 0 0;
+}
+
+#questionDiv tr:last-of-type td:first-of-type {
+    border-radius: 0 0 0 20px;
+}
+
+#questionDiv tr:last-of-type td:last-of-type {
+    border-radius: 0 0 20px 0;
+}
+
+#questionDiv tr:first-of-type:last-of-type td:first-of-type {
+    border-radius: 20px 0 0 20px;
+}
+
+#questionDiv td:first-of-type {
+    border-right: 1px solid black;
+}
+
+#questionDiv tr:not(:last-of-type) td {
+    border-bottom: 1px solid black;
+}
+
+#questionDiv tr:first-of-type:last-of-type td:last-of-type {
+    border-radius: 0 20px 20px 0;
+}
+
+#questionDiv tr td {
+    background-color: #F69809;
+    padding: 10px;
+    text-align: center;
+}
+#questionDiv tr td p {
+    font-size: 20px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
+}
+
+input[type="radio"]:hover, input[type="checkbox"]:hover {
+    cursor: pointer;
+}
+
+main table tr td:first-of-type {
+    width: 5%;
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/user/testPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <div id="questionDiv" th:attr="languageId=${languageId}"></div>
+
+    <form typeof="get" action="/user/submitChooseLanguageForm">
+        <input type="hidden" th:value="${token}" name="token">
+        <input type="hidden" th:value="${languageId}" name="languageId">
+        <button id="mainPageButton" onclick="event.preventDefault(); submitPageForm();">На головну</button>
+        <input type="submit" value="До вибору викладачів">
+    </form>
+</main>
+
+<form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/userPageForms.js"></script>
+<script src="/script/user/testPage/getTestRequest.js"></script>
+<script src="/script/user/testPage/displayMethods/displayTestQuestions.js"></script>
+<script src="/script/user/testPage/displayMethods/displayQuestionMainPart.js"></script>
+<script src="/script/user/testPage/displayMethods/displayQuestionAnswers.js"></script>
+<script src="/script/user/testPage/displayMethods/displayQuestionButtons.js"></script>
+<script src="/script/user/testPage/submitTestControlButtons.js"></script>
+<script src="/script/user/testPage/countingMethods/countQuestionPoints.js"></script>
+<script src="/script/user/testPage/displayMethods/clearQuestionDiv.js"></script>
+<script src="/script/user/testPage/countingMethods/countTestPoints.js"></script>
+<script src="/script/user/testPage/displayMethods/displayTestResult.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

@@ -181,37 +181,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("setLesson")
-    public String setLesson(RequestDto request, LessonTemplate lesson, Model model) {
-        Object[] authResult = userService.authenticateUser(request);
-        if (!(boolean) authResult[0]) {
-            return "authorisation/authorisation";
-        }
-        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
-
-        Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
-        lessonService.setLessonForUser(userFounded.getId(), teacherFounded, lesson);
-
-        return "redirect:/user/teacherSchedulePage?token=" + request.getToken() +
-                "&languageId=" + lesson.getLanguageId() +
-                "&teacherEmail=" + lesson.getTeacherEmail();
-    }
-
-    @PostMapping("removeLesson")
-    public String removeLesson(RequestDto request, LessonTemplate lesson, Model model) {
-        Object[] authResult = userService.authenticateUser(request);
-        if (!(boolean) authResult[0]) {
-            return "authorisation/authorisation";
-        }
-
-        Teacher teacherFounded = teacherService.findByEmail(lesson.getTeacherEmail());
-        lessonService.setLessonForUser(null, teacherFounded, lesson);
-
-        return "redirect:/user/teacherSchedulePage?token=" + request.getToken() +
-                "&languageId=" + lesson.getLanguageId() +
-                "&teacherEmail=" + lesson.getTeacherEmail();
-    }
-
     @GetMapping("dailyFact")
     public String getDailyFact(RequestDto request, Model model) {
         Object[] authResult = userService.authenticateUser(request);
@@ -455,6 +424,21 @@ public class UserController {
         userService.updateUser(user);
 
         return "redirect:/user/userPage?token=" + request.getToken();
+    }
+
+    @GetMapping("/getTestPage")
+    public String getTestPage(RequestDto request, Long languageId, Model model) {
+        Object[] authResult = userService.authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
+
+        model.addAttribute("languageId", languageId);
+        model.addAttribute("user", userDto);
+        model.addAttribute("token", request.getToken());
+        return "user/testPage";
     }
 
 }

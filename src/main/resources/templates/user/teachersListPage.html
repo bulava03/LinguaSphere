@@ -21,6 +21,13 @@
     <div th:replace="~{/user/partsOfPages/aside}"></div>
 
     <div>
+        <h2>Не впевнені, який у вас рівень знань?</h2>
+        <form method="get" action="/user/getTestPage">
+            <input type="hidden" th:value="${token}" name="token">
+            <input type="hidden" th:value="${languageId}" name="languageId">
+            <input type="submit" class="button" value="Пройдіть тест тут">
+        </form>
+
         <div class="table-container" th:each="elem : ${teachers}">
             <div class="table-wrapper">
                 <table class="teacherTable" th:attr="onclick='submitTeacher(\'' + ${elem.email} + '\')'">

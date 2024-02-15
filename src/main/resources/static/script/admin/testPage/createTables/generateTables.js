@@ -3,7 +3,7 @@ function createTables(data) {
         let element = data[key];
         key = JSON.parse(key);
         createQuestionTable(key);
-        if (key.correctAnswers === null) {
+        if (key.correctAnswers === null || key.correctAnswers === undefined) {
             key.correctAnswers = [];
         }
         createAnswerTable(key.id, element, key.correctAnswers);

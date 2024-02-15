@@ -17,5 +17,6 @@ public class TestQuestionDtoBytes {
     private List<Long> correctAnswers;
     private int level;
     private Long languageId;
+    private boolean isAvailable;
 
 }
