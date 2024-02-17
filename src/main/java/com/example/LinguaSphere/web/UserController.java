@@ -140,6 +140,11 @@ public class UserController {
                 Teacher teacherElement = teacherService.findById(id);
                 TeacherDtoBytes teacherDtoBytes = modelMapper.map(teacherElement, TeacherDtoBytes.class);
                 teacherDtoBytes.setFile(Base64.encodeBase64String(teacherElement.getImage()));
+
+                TeacherLanguage teacherLanguage = teacherLanguageService.findByTeacherIdAndLanguageId(
+                        teacherElement.getId(), lesson.getLanguageId());
+                teacherDtoBytes.setPrice(teacherLanguage.getPrice());
+
                 teacherList.add(teacherDtoBytes);
             }
         }

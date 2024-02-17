@@ -19,5 +19,6 @@ public class TeacherDtoBytes {
     private String password;
     private String aboutMe;
     private String file;
+    private double price;
 
 }

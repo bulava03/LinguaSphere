@@ -32,7 +32,7 @@
             <div class="table-wrapper">
                 <table class="teacherTable" th:attr="onclick='submitTeacher(\'' + ${elem.email} + '\')'">
                     <tr>
-                        <td class="photo-cell" style="width: 30%;">
+                        <td class="photo-cell" rowspan="2" style="width: 30%;">
                             <img th:if="${elem.file == null}"
                                  src="/photo.png" width="100" height="100" alt="teacher photo">
                             <img th:unless="${elem.file == null}"
@@ -47,10 +47,18 @@
                                 <div class="content-cell" th:text="${contact}"></div>
                             </th:block>
                         </td>
-                        <td class="aboutMe-cell" style="width: 70%;">
+                        <td class="aboutMe-cell" rowspan="2" style="width: 50%;">
                             <div class="content-cell"><b th:text="'Про мене:'"></b></div><br>
                             <div class="content-cell" th:text="${elem.aboutMe}"></div>
                         </td>
+                        <td style="font-size: 24px; text-align: center;
+                            vertical-align: bottom; padding-bottom: 10px; width: 20%;">
+                            Ціна, грн:</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 32px; font-weight: bold;
+                            text-align: center; vertical-align: top; padding-top: 10px;  width: 20%;"
+                            th:text="${elem.price}"></td>
                     </tr>
                 </table>
             </div>

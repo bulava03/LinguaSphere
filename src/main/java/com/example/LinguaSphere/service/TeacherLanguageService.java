@@ -11,4 +11,5 @@ public interface TeacherLanguageService {
     List<TeacherLanguage> findAllByTeacherId(Long teacherId);
     List<TeacherLanguage> findAllByLanguageId(Long id);
     List<TeacherLanguageDto> getPricesByLanguages(Long teacherId);
+    TeacherLanguage findByTeacherIdAndLanguageId(Long teacherId, Long languageId);
 }

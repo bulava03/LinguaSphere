@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TeacherLanguageServiceImpl implements TeacherLanguageService {
@@ -56,6 +57,18 @@ public class TeacherLanguageServiceImpl implements TeacherLanguageService {
             teacherLanguageDtoList.add(teacherLanguageDto);
         }
         return teacherLanguageDtoList;
+    }
+
+    @Override
+    public TeacherLanguage findByTeacherIdAndLanguageId(Long teacherId, Long languageId) {
+        List<TeacherLanguage> teacherLanguages = findAllByTeacherId(teacherId);
+        for (TeacherLanguage teacherLanguage : teacherLanguages
+             ) {
+            if (Objects.equals(teacherLanguage.getLanguageId(), languageId)) {
+                return teacherLanguage;
+            }
+        }
+        return null;
     }
 
 }
