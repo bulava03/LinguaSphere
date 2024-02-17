@@ -20,22 +20,15 @@
   <div th:replace="~{/teacher/partsOfPages/aside}"></div>
 
   <div>
-    <button onclick="submitSchedule()">Розклад занять</button><br>
-    <button onclick="submitMaterials()">Навчальні матеріали</button><br>
+    <button onclick="submitPageForm('/teacher/teacherSchedule')">Розклад занять</button><br>
+    <button onclick="submitPageForm('/teacher/getMaterialsList')">Навчальні матеріали</button><br>
+    <button onclick="submitPageForm('/teacher/getPricesPage')">Ціни</button><br>
     <button href="#">Щоденні цікавинки</button><br>
     <button href="#">Підтримка</button>
   </div>
 </main>
 
 <form typeof="hidden" method="get" id="teacherPageForm" action="/teacher/teacherPage">
-  <input type="hidden" th:value="${teacher.email}" name="email">
-  <input type="hidden" th:value="${teacher.password}" name="password">
-</form>
-<form typeof="hidden" method="get" id="scheduleForm" action="/teacher/teacherSchedule">
-  <input type="hidden" th:value="${teacher.email}" name="email">
-  <input type="hidden" th:value="${teacher.password}" name="password">
-</form>
-<form typeof="hidden" method="get" id="materialsForm" action="/teacher/getMaterialsList">
   <input type="hidden" th:value="${teacher.email}" name="email">
   <input type="hidden" th:value="${teacher.password}" name="password">
 </form>

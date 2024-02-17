@@ -1,10 +1,8 @@
-/* Main Styles */
 main {
     display: flex;
     margin-top: 20px;
 }
 
-/* Aside Styles */
 aside {
     width: 360px;
     text-align: center;
@@ -31,7 +29,6 @@ aside p {
     font-weight: semi bold;
 }
 
-/* Div Styles */
 div {
     background-color: #0038FF;
     border: none;
@@ -40,7 +37,6 @@ div {
     flex: 1 1 auto;
 }
 
-/* Button Styles */
 button {
     background-color: #F69809;
     color: white;

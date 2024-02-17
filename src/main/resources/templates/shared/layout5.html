@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
-<a id="logo" th:attr="onclick='submitPageForm()'">LinguaSphere</a>
+<a id="logo" onclick="submitPageForm('/teacher/teacherPage')">LinguaSphere</a>
 <img th:if="${teacher.file == null}" onclick="dropdownUser()" id="userIcon" src="/photo.png"
      width="50" height="50" alt="user photo header">
 <img th:unless="${teacher.file == null}" onclick="dropdownUser()" id="userIcon"

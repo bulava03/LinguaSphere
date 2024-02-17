@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/userPageStyle.css">
+    <link rel="stylesheet" href="/style/teacher/pricesPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout5}"></div>
+</header>
+
+<main>
+    <div th:replace="~{/teacher/partsOfPages/aside}"></div>
+
+    <div>
+        <table id="pricesTable" th:attr="teacherEmail=${teacher.email}, teacherPassword=${teacher.password}">
+            <tr><th>Мова</th><th class="action-column">Ціна</th></tr>
+            <tr th:each="lang : ${languages}">
+                <td th:text="${lang.language}"></td>
+                <td th:if="${lang.price != 0}" th:text="${lang.price}" class="action-column"
+                    th:id="'languageId_' + ${lang.languageId}"
+                    th:onclick="'displayPriceForm(' + ${lang.languageId} + ', ' + ${lang.price} + ')'"></td>
+                <td th:if="${lang.price == 0}" class="action-column"
+                    th:id="'languageId_' + ${lang.languageId}"
+                    th:onclick="'displayPriceForm(' + ${lang.languageId} + ', null)'">Не встановлено</td>
+            </tr>
+        </table>
+
+        <button onclick="submitPageForm('/teacher/teacherPage')">Назад</button>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="teacherPageForm" action="/teacher/teacherPage">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/teacher/teacherPageForms.js"></script>
+<script src="/script/teacher/pricePage/getPriceSettingForm.js"></script>
+<script src="/script/teacher/pricePage/darkenScreen.js"></script>
+<script src="/script/teacher/pricePage/editPrice.js"></script>
+<script src="/script/teacher/pricePage/priceChangingRequests.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

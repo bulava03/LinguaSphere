@@ -455,4 +455,22 @@ public class TeacherController {
         return "redirect:/teacher/teacherPage?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
+    @GetMapping("/getPricesPage")
+    public String getPricesPage(Teacher teacher, Model model) {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+        teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
+
+        List<TeacherLanguageDto> teacherLanguages = teacherLanguageService.getPricesByLanguages(teacherFounded.getId());
+
+        model.addAttribute("languages", teacherLanguages);
+        model.addAttribute("teacher", teacherDto);
+        return "teacher/pricesPage";
+    }
+
 }

@@ -113,7 +113,7 @@ public class AdminController {
             List<String> teachersSubjects = Arrays.stream(teacherRegistration.getLanguages()).toList();
             for (String subject : teachersSubjects
             ) {
-                subjects.add(new TeacherLanguage(null, teacher.getId(), (languageService.findByName(subject)).getId()));
+                subjects.add(new TeacherLanguage(teacher.getId(), languageService.findByName(subject).getId()));
             }
             teacherLanguageService.saveAll(subjects);
 

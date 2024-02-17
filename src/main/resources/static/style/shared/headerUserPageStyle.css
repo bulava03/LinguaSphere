@@ -7,7 +7,7 @@ header {
     border: 0;
     border-radius: 20px;
     background-color: #F69809;
-    margin: 10px 2px 10px 2px;
+    margin: 10px 0 10px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;

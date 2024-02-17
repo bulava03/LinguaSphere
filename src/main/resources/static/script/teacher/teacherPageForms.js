@@ -1,14 +1,5 @@
-function submitPageForm() {
+function submitPageForm(action) {
     var form = document.getElementById('teacherPageForm');
-    form.submit();
-}
-
-function submitSchedule() {
-    var form = document.getElementById('scheduleForm');
-    form.submit();
-}
-
-function submitMaterials() {
-    var form = document.getElementById('materialsForm');
+    form.action = action;
     form.submit();
 }

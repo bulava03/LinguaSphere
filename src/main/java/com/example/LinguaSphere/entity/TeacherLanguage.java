@@ -1,5 +1,6 @@
 package com.example.LinguaSphere.entity;
 
+import com.example.LinguaSphere.entity.dto.TeacherLanguageDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,4 +20,11 @@ public class TeacherLanguage {
     private Long Id;
     private Long teacherId;
     private Long languageId;
+    private double price;
+
+    public TeacherLanguage(Long teacherId, Long languageId) {
+        this.teacherId = teacherId;
+        this.languageId = languageId;
+    }
+
 }
