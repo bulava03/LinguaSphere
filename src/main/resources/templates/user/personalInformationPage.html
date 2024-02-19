@@ -80,10 +80,6 @@
     </div>
 </main>
 
-<form typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
-    <input type="hidden" th:value="${token}" name="token">
-</form>
-
 <h2 id="imageToUploadByDefault" th:text="${user.file}" style="display: none;"></h2>
 
 <div th:replace="~{/shared/footer}"></div>

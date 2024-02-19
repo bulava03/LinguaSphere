@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="uk" xmlns:th="http://www.thymeleaf.org">
-  <a id="logo" onclick="submitPageForm()">LinguaSphere</a>
-  <img th:if="${user.file == null}" onclick="dropdownUser()" id="userIcon" src="/photo.png"
-       width="50" height="50" alt="user photo header">
-  <img th:unless="${user.file == null}" onclick="dropdownUser()" id="userIcon"
-       th:src="'data:image/jpeg;base64,' + ${user.file}" alt="Image"  width="50" height="50">
+<a id="logo" onclick="submitPageForm()">LinguaSphere</a>
+<img th:if="${user.file == null}" onclick="dropdownUser()" id="userIcon" src="/photo.png"
+     width="50" height="50" alt="user photo header">
+<img th:unless="${user.file == null}" onclick="dropdownUser()" id="userIcon"
+     th:src="'data:image/jpeg;base64,' + ${user.file}" alt="Image"  width="50" height="50">
 
-  <div id="dropdown" class="dropdown">
-    <a href="#" onclick="personalInformation()">Особиста інформація</a>
-    <a href="/">Вийти</a>
-  </div>
+<div id="dropdown" class="dropdown">
+  <a href="#" onclick="personalInformation()">Особиста інформація</a>
+  <a href="/">Вийти</a>
+</div>
 
-  <form id="formPersonalInfo" typeof="hidden" method="get" action="/user/personalInformation">
-    <input type="hidden" th:value="${token}" name="token">
-  </form>
+<form id="formPersonalInfo" typeof="hidden" method="get" action="/user/personalInformation">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+<form style="display: none;" typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
 </html>

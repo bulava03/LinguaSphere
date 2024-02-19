@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -41,6 +43,8 @@ public class AdminController {
     @Autowired
     private TestQuestionAnswerService testQuestionAnswerService;
     @Autowired
+    private LessonService lessonService;
+    @Autowired
     private ModelMapper modelMapper;
 
     @GetMapping()
@@ -48,7 +52,7 @@ public class AdminController {
         return "admin/loginPage";
     }
 
-    @PostMapping("/alogin")
+    @GetMapping("/alogin")
     public String getAdminPage(Admin admin, Model model) {
         if (adminService.findByLogin(admin.getLogin()) == null) {
             model.addAttribute("errorText", "Такого адміністратора не існує");
@@ -117,21 +121,6 @@ public class AdminController {
             }
             teacherLanguageService.saveAll(subjects);
 
-            List<TeacherRegistration> list = new ArrayList<>();
-            for (Teacher element : teacherService.findAll()
-            ) {
-                TeacherRegistration temp = modelMapper.map(element, TeacherRegistration.class);
-                List<TeacherLanguage> temporaryList = teacherLanguageService.findAllByTeacherId(temp.getId());
-                List<String> subjectList = new ArrayList<>();
-                for (TeacherLanguage elem : temporaryList
-                ) {
-                    subjectList.add(languageService.findById(elem.getLanguageId()).getName());
-                }
-                temp.setLanguages(subjectList.toArray(String[]::new));
-                list.add(temp);
-            }
-            model.addAttribute("teachers", list);
-
             return "redirect:/admin/getTeachersList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
         }
     }
@@ -160,7 +149,7 @@ public class AdminController {
     }
 
     @PostMapping("/addDaily")
-    public String addDaily(DailyMessageDto dailyMessageDto, Admin admin, Model model) throws IOException {
+    public String addDaily(DailyMessageDto dailyMessageDto, Admin admin) throws IOException {
         DailyMessage dailyMessage = modelMapper.map(dailyMessageDto, DailyMessage.class);
         dailyMessage.setImage(dailyMessageDto.getFile().getBytes());
         if (!dailyMessage.getLinks().isEmpty()) {
@@ -192,7 +181,7 @@ public class AdminController {
     }
 
     @PostMapping("/updateDaily")
-    public String updateDaily(Admin admin, DailyMessageDto dailyMessageDto, Model model) throws IOException {
+    public String updateDaily(Admin admin, DailyMessageDto dailyMessageDto) throws IOException {
         DailyMessage dailyMessage = modelMapper.map(dailyMessageDto, DailyMessage.class);
         dailyMessage.setImage(dailyMessageDto.getFile().getBytes());
         if (!dailyMessage.getLinks().isEmpty()) {
@@ -211,7 +200,7 @@ public class AdminController {
     }
 
     @PostMapping("/deleteDaily")
-    public String deleteDaily(Admin admin, DailyMessageDto dailyMessageDto, Model model) {
+    public String deleteDaily(Admin admin, DailyMessageDto dailyMessageDto) {
         dailyMessageService.deleteById(dailyMessageDto.getId());
         return "redirect:/admin/getDailiesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
@@ -241,7 +230,7 @@ public class AdminController {
     }
 
     @PostMapping("/addCreature")
-    public String addCreature(CreatureDto creatureDtoToAdd, Admin admin, Model model) throws IOException {
+    public String addCreature(CreatureDto creatureDtoToAdd, Admin admin) throws IOException {
         Creature creatureToAdd = modelMapper.map(creatureDtoToAdd, Creature.class);
         creatureToAdd.setImage(creatureDtoToAdd.getFile().getBytes());
         if (!creatureToAdd.getHints().isEmpty()) {
@@ -273,7 +262,7 @@ public class AdminController {
     }
 
     @PostMapping("/updateCreature")
-    public String updateCreature(Admin admin, CreatureDto creatureUpdatedDto, Model model) throws IOException {
+    public String updateCreature(Admin admin, CreatureDto creatureUpdatedDto) throws IOException {
         Creature creatureUpdated = modelMapper.map(creatureUpdatedDto, Creature.class);
         creatureUpdated.setImage(creatureUpdatedDto.getFile().getBytes());
         if (!creatureUpdated.getHints().isEmpty()) {
@@ -292,7 +281,7 @@ public class AdminController {
     }
 
     @PostMapping("/deleteCreature")
-    public String deleteCreature(Admin admin, Creature creatureToDelete, Model model) {
+    public String deleteCreature(Admin admin, Creature creatureToDelete) {
         creatureService.deleteById(creatureToDelete.getId());
         return "redirect:/admin/getCreaturesList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
@@ -309,6 +298,84 @@ public class AdminController {
         model.addAttribute("language", languageService.findById(languageId));
         model.addAttribute("admin", admin);
         return "admin/testPage";
+    }
+
+    @PostMapping("/deleteTeacher")
+    public String deleteTeacher(Admin admin, String teacherEmail) {
+        Long teacherId = teacherService.findByEmail(teacherEmail).getId();
+        teacherService.deleteById(teacherId);
+        return "redirect:/admin/getTeachersList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
+    }
+
+    @GetMapping("/updateTeacher")
+    public String getUpdateTeacherForm(Admin admin, String teacherEmail, Model model) {
+        Teacher teacherFounded = teacherService.findByEmail(teacherEmail);
+        if (teacherFounded == null) {
+            return "redirect:/admin/getTeachersList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
+        }
+        List<TeacherLanguage> teacherLanguagesList = teacherLanguageService.findAllByTeacherId(teacherFounded.getId());
+        List<Language> teacherLanguages = new ArrayList<>();
+        for (TeacherLanguage teacherLanguage : teacherLanguagesList
+             ) {
+            Long teacherLanguageId = teacherLanguage.getLanguageId();
+            Language language = languageService.findById(teacherLanguageId);
+            teacherLanguages.add(language);
+        }
+
+        model.addAttribute("admin", admin);
+        model.addAttribute("teacher", teacherFounded);
+        model.addAttribute("languages", languageService.findAll());
+        model.addAttribute("teacherLanguages", teacherLanguages);
+        return "admin/updateTeacherForm";
+    }
+
+    @PostMapping("/updateTeacher")
+    public String updateTeacher(Admin admin, TeacherRegistration teacherUpdated, Model model) {
+        Teacher teacherFounded = teacherService.findByEmail(teacherUpdated.getEmailOld());
+
+        if (teacherFounded == null) {
+            return "redirect:/admin/getTeachersList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
+        }
+
+        Teacher teacher = modelMapper.map(teacherUpdated, Teacher.class);
+        teacher.setId(teacherFounded.getId());
+        teacher.setImage(teacherFounded.getImage());
+        teacher.setContacts(teacherFounded.getContacts());
+        teacher.setAboutMe(teacherFounded.getAboutMe());
+
+        String[] parts = teacher.getPassword().split(",");
+        if (parts.length > 1) {
+            admin.setPassword(parts[1]);
+            teacher.setPassword(parts[0]);
+        }
+
+        Object[] validation = teacherService.validateTeacher(teacher);
+        if (!(boolean) validation[0]) {
+            return getUpdateTeacherForm(admin, teacherFounded.getEmail(), model);
+        } else {
+            teacherService.save(teacher);
+            List<TeacherLanguage> subjects = new ArrayList<>();
+            List<String> teachersSubjects = Arrays.stream(teacherUpdated.getLanguages()).toList();
+            for (String subject : teachersSubjects
+            ) {
+                subjects.add(new TeacherLanguage(teacher.getId(), languageService.findByName(subject).getId()));
+            }
+
+            List<Long> finalList1 = teacherLanguageService.getTeachersLessonsByLanguages(teacher, subjects);
+            subjects = teacherLanguageService.deleteRemovedLanguageFromTeacher(teacher, subjects);
+            subjects = teacherLanguageService.addAddedLanguageToTeacher(teacher, subjects);
+
+            List<Lesson> lessons = lessonService.findAllByTeacherId(teacher.getId());
+            lessons.stream()
+                    .filter(lesson -> finalList1.contains(lesson.getLanguageId()))
+                    .forEach(lesson -> {
+                        lesson.setUserId(null);
+                        lesson.setLanguageId(null);
+                        lessonService.save(lesson);
+                    });
+
+            return "redirect:/admin/getTeachersList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
+        }
     }
 
 }

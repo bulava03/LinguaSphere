@@ -15,13 +15,15 @@
   <div th:replace="~{/shared/layout3}"></div>
 </header>
 
-<form id="updateForm" action="/admin/updateTeacher" method="get">
-  <input id="emailUpdate" type="hidden" value="" name="email" />
-  <input id="passwordUpdate" type="hidden" value="" name="password" />
+<form id="updateForm" method="get" action="/admin/updateTeacher">
+  <input type="hidden" th:value="${admin.login}" name="login">
+  <input type="hidden" th:value="${admin.password}" name="password">
+  <input id="teacherEmailUpdate" type="hidden" name="teacherEmail">
 </form>
-<form id="removeForm" action="/admin/deleteTeacher" method="post">
-  <input id="emailRemove" type="hidden" value="" name="email" />
-  <input id="passwordRemove" type="hidden" value="" name="password" />
+<form id="removeForm" method="post" action="/admin/deleteTeacher">
+  <input type="hidden" th:value="${admin.login}" name="login">
+  <input type="hidden" th:value="${admin.password}" name="password">
+  <input id="teacherEmailRemove" type="hidden" name="teacherEmail">
 </form>
 
 <main>
@@ -56,8 +58,8 @@
           <span th:if="${!iterationStat.last}"> </span>
         </span>
       </td>
-      <td class="action-column" onclick="removeLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Видалити</td>
-      <td class="action-column" onclick="updateLanguageConfirm(this.parentNode.getElementsByTagName('td')[0].innerText)">Змінити</td>
+      <td class="action-column" th:attr="onclick='removeLanguageConfirm(\'' + ${teacher.email} + '\')'">Видалити</td>
+      <td class="action-column" th:attr="onclick='updateLanguageConfirm(\'' + ${teacher.email} + '\')'">Змінити</td>
     </tr>
   </table>
   <h2 id="emptyList" th:unless="${not #lists.isEmpty(teachers)}">Список викладачів порожній</h2>
@@ -70,7 +72,8 @@
 
 <div th:replace="~{/shared/footer}"></div>
 
-<script src="/script/adminPageForms.js"></script>
+<script src="/script/admin/adminPageForms.js"></script>
+<script src="/script/admin/teachersListPage.js"></script>
 <script src="/script/dropdown.js"></script>
 </body>
 </html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaSphere</title>
+  <link rel="stylesheet" href="/style/shared/footerStyle.css">
+  <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
+  <link rel="stylesheet" href="/style/adminTeacherFormStyle.css">
+  <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+  <div th:replace="~{/shared/layout3}"></div>
+</header>
+
+<main>
+  <div class="regTitle">
+    <h1>Змінити інформацію про викладача</h1>
+  </div>
+
+  <div class="regForm">
+    <form id="regForm" action="/admin/updateTeacher" method="post">
+      <div class="regInput">
+        <h2 class="name">Ім'я</h2>
+        <input class="field" id="name" th:value="${teacher.name}" type="text" name="name">
+        <h2 class="name">Прізвище</h2>
+        <input class="field" id="surname" th:value="${teacher.surname}" type="text" name="surname">
+        <h2 class="name">Електронна пошта</h2>
+        <input class="field" id="email" th:value="${teacher.email}" type="text" name="email">
+        <h2 class="name">Пароль</h2>
+        <input class="field" id="password" th:value="${teacher.password}" type="text" name="password">
+        <h2 class="name">Номер телефону</h2>
+        <input class="field" id="phone" th:value="${teacher.phone}" type="text" name="phone">
+
+        <fieldset>
+          <legend>Мови:</legend>
+          <div th:each="language : ${languages}">
+            <input type="checkbox" th:id="${'checkbox-' + language.name}"
+                   th:checked="${#lists.contains(teacherLanguages, language)}"
+                   th:value="${language.name}" th:name="${'languages'}">
+            <label th:for="${'checkbox-' + language.name}" th:text="${language.name}"></label><br>
+          </div>
+        </fieldset>
+
+        <input type="hidden" th:value="${admin.login}" name="login">
+        <input type="hidden" th:value="${admin.password}" name="password">
+        <input type="hidden" th:value="${teacher.email}" name="emailOld">
+
+        <input class="button" type="submit" value="Зберегти">
+        <p class="errorText" id="errorText"></p>
+        <p class="errorText" th:text="${errorText}"></p>
+      </div>
+    </form>
+  </div>
+</main>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

@@ -36,6 +36,10 @@ main .action-column {
     width: 15%;
 }
 
+main tr:not(:first-of-type) .action-column:hover {
+    background-color: #38d1bc;
+}
+
 main tr:not(:first-of-type) .action-column {
     cursor: pointer;
 }

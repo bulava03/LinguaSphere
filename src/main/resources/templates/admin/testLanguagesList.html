@@ -23,7 +23,7 @@
                     th:text="${language.name}"></button><br>
         </th:block>
 
-        <button onclick="submitAdminPageForm()">Назад</button>
+        <button onclick="submitAdminPageForm('/admin/alogin')">Назад</button>
     </div>
 </main>
 
@@ -35,7 +35,7 @@
 
 <div th:replace="~{/shared/footer}"></div>
 
-<script src="/script/adminPageForms.js"></script>
+<script src="/script/admin/adminPageForms.js"></script>
 <script src="/script/admin/testLanguagesListPage.js"></script>
 <script src="/script/dropdown.js"></script>
 </body>

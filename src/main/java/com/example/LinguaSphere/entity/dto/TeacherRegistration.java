@@ -47,4 +47,6 @@ public class TeacherRegistration {
     private List<String> contacts;
     private String[] languages;
 
+    private String emailOld;
+
 }

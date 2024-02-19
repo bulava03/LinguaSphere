@@ -10,4 +10,5 @@ public interface TeacherService {
     Teacher findById(Long id);
     Teacher findByEmail(String email);
     void save(Teacher teacher);
+    void deleteById(Long id);
 }
