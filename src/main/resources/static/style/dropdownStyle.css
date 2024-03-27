@@ -43,6 +43,6 @@
     display: block;
 }
 
-#formPersonalInfo {
+#formPersonalInfo, #formPaymentInfo {
     display: none;
 }

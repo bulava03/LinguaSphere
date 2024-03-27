@@ -17,3 +17,7 @@ window.onclick = function (event) {
 function personalInformation() {
     document.getElementById('formPersonalInfo').submit();
 }
+
+function paymentInformation() {
+    document.getElementById('formPaymentInfo').submit();
+}

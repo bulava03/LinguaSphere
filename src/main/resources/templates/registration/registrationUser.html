@@ -7,7 +7,7 @@
   <title>LinguaSphere</title>
   <link rel="stylesheet" href="/style/shared/footerStyle.css">
   <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
-  <link rel="stylesheet" href="/style/regFormStyle.css">
+  <link rel="stylesheet" href="/style/registration/regFormStyle.css">
 </head>
 
 <body>
@@ -20,7 +20,7 @@
     <h1>Реєстрація</h1>
   </div>
   <div class="regForm">
-    <form id="regForm" method="post" action="/registration">
+    <form id="regForm" method="post" action="/registration/registrationUser">
       <div class="regInput">
         <h2 class="name">Ім'я</h2>
         <input class="field" id="name" th:value="${user.name}" type="text" name="name">

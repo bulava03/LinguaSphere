@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaSphere</title>
+  <link rel="stylesheet" href="/style/shared/footerStyle.css">
+  <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+  <link rel="stylesheet" href="/style/userPageStyle.css">
+  <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+  <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+  <div th:replace="~{/user/partsOfPages/aside}"></div>
+
+  <div>
+    <h1 th:text="'Баланс: ' + ${payment.money} + ' грн'"></h1>
+
+    <button href="#">Додати квитанцію про оплату</button><br>
+    <button href="#">Список квитанцій про оплату</button>
+  </div>
+</main>
+
+<form typeof="hidden" method="get" id="scheduleForm" action="/payment/uploadReceipt">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/userPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

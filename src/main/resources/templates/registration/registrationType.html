@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinguaSphere</title>
+  <link rel="stylesheet" href="/style/shared/footerStyle.css">
+  <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
+  <link rel="stylesheet" href="/style/registration/regTypeStyle.css">
+</head>
+
+<body>
+<header>
+  <div th:replace="~{/shared/layout1}"></div>
+</header>
+
+<main>
+  <div class="regTitle">
+    <h1>Реєстрація</h1>
+  </div>
+  <div class="regForm">
+    <form method="get" action="/registration/registrationUser">
+      <input class="button" type="submit" value="Зареєструватись як учень">
+    </form>
+    <form method="get" action="/registration/registrationTeacher">
+      <input class="button" type="submit" value="Зареєструватись як вчитель">
+    </form>
+  </div>
+</main>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/generateYears.js"></script>
+<script src="/script/dateValidation.js"></script>
+</body>
+</html>

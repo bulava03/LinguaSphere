@@ -53,6 +53,8 @@ public class UserController {
     @Autowired
     private UserMaterialService userMaterialService;
     @Autowired
+    private PaymentService paymentService;
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -112,6 +114,21 @@ public class UserController {
         model.addAttribute("languages", languageService.findAll());
         model.addAttribute("token", request.getToken());
         return "user/choosingLanguagePage";
+    }
+
+    @GetMapping("getLanguageChoosingPageInUserPage")
+    public String getLanguageChoosingPageInUserPage(@ModelAttribute("request") RequestDto request, Model model) {
+        Object[] authResult = userService.authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
+
+        model.addAttribute("user", userDto);
+        model.addAttribute("languages", languageService.findAll());
+        model.addAttribute("token", request.getToken());
+        return "user/choosingLanguagePageInUserPage";
     }
 
     @GetMapping("submitChooseLanguageForm")
@@ -444,6 +461,29 @@ public class UserController {
         model.addAttribute("user", userDto);
         model.addAttribute("token", request.getToken());
         return "user/testPage";
+    }
+
+    @GetMapping("/paymentInformation")
+    public String getPaymentInfoPage(RequestDto request, Model model) {
+        Object[] authResult = userService.authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
+
+        Payment userPayment = paymentService.findByUserId(userFounded.getId());
+        if (userPayment == null) {
+            userPayment = new Payment();
+            userPayment.setUserId(userFounded.getId());
+            userPayment.setMoney(0);
+            paymentService.save(userPayment);
+        }
+
+        model.addAttribute("payment", userPayment);
+        model.addAttribute("user", userDto);
+        model.addAttribute("token", request.getToken());
+        return "payment/paymentInfoPage";
     }
 
 }

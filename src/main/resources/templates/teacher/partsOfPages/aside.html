@@ -14,7 +14,10 @@
         <p>Номер телефону:</p>
         <p><i th:text="${teacher.phone}"></i></p><br>
 
-        <p>Додатковий контакт:</p>
-        <p><i th:text="${teacher.contacts}"></i></p><br>
+        <p>Додаткові контакти:</p>
+        <th:block th:each="contact : ${teacher.contacts}">
+            <p style="margin: 0;"><i th:text="${contact}"></i></p><br>
+        </th:block>
+
     </aside>
 </html>

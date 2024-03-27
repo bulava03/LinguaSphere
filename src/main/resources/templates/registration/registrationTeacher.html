@@ -8,21 +8,20 @@
   <link rel="stylesheet" href="/style/shared/footerStyle.css">
   <link rel="stylesheet" href="/style/shared/headerWithImageStyle.css">
   <link rel="stylesheet" href="/style/adminTeacherFormStyle.css">
-  <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
 <body>
 <header>
-  <div th:replace="~{/shared/layout3}"></div>
+  <div th:replace="~{/shared/layout1}"></div>
 </header>
 
 <main>
   <div class="regTitle">
-    <h1>Додати викладача</h1>
+    <h1>Реєстрація</h1>
   </div>
 
   <div class="regForm">
-    <form id="regForm" action="/admin/addTeacher" method="post">
+    <form id="regForm" action="/registration/registrationTeacher" method="post">
       <div class="regInput">
         <h2 class="name">Ім'я</h2>
         <input class="field" id="name" value="" type="text" name="name">
@@ -43,10 +42,7 @@
           </div>
         </fieldset>
 
-        <input type="hidden" th:value="${admin.login}" name="login">
-        <input type="hidden" th:value="${admin.password}" name="password">
-
-        <input class="button" type="submit" value="Додати викладача">
+        <input class="button" type="submit" value="Зареєструватися">
         <p class="errorText" id="errorText"></p>
         <p class="errorText" th:text="${errorText}"></p>
       </div>
@@ -55,8 +51,5 @@
 </main>
 
 <div th:replace="~{/shared/footer}"></div>
-
-<script src="/script/dropdown.js"></script>
-<script src="/script/admin/adminPageForms.js"></script>
 </body>
 </html>

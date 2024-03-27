@@ -363,7 +363,7 @@ public class AdminController {
 
             List<Long> finalList1 = teacherLanguageService.getTeachersLessonsByLanguages(teacher, subjects);
             subjects = teacherLanguageService.deleteRemovedLanguageFromTeacher(teacher, subjects);
-            subjects = teacherLanguageService.addAddedLanguageToTeacher(teacher, subjects);
+            teacherLanguageService.addAddedLanguageToTeacher(teacher, subjects);
 
             List<Lesson> lessons = lessonService.findAllByTeacherId(teacher.getId());
             lessons.stream()

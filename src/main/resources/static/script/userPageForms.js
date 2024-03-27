@@ -8,6 +8,11 @@ function submitSchedule() {
     form.submit();
 }
 
+function submitLanguageChoosingFormInUserPage() {
+    var form = document.getElementById('choosingLanguageFormInUserPage');
+    form.submit();
+}
+
 function submitDailyForm() {
     var form = document.getElementById('dailyForm');
     form.submit();

@@ -21,6 +21,7 @@
 
   <div>
     <button onclick="submitSchedule()">Розклад занять</button><br>
+    <button onclick="submitLanguageChoosingFormInUserPage()">Додати урок</button><br>
     <button onclick="submitGetMaterialsLanguageForm()">Навчальні матеріали</button><br>
     <button href="#">Мої досягнення</button><br>
     <button onclick="submitDailyForm()">Щоденні цікавинки</button><br>
@@ -30,6 +31,9 @@
 </main>
 
 <form typeof="hidden" method="get" id="scheduleForm" action="/user/userSchedule">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="choosingLanguageFormInUserPage" action="/user/getLanguageChoosingPageInUserPage">
   <input type="hidden" th:value="${token}" name="token">
 </form>
 <form typeof="hidden" method="get" id="dailyForm" action="/user/dailyFact">

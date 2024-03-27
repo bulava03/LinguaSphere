@@ -8,10 +8,14 @@
 
 <div id="dropdown" class="dropdown">
   <a href="#" onclick="personalInformation()">Особиста інформація</a>
+  <a href="#" onclick="paymentInformation()">Платіжна інформація</a>
   <a href="/">Вийти</a>
 </div>
 
 <form id="formPersonalInfo" typeof="hidden" method="get" action="/user/personalInformation">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+<form id="formPaymentInfo" typeof="hidden" method="get" action="/user/paymentInformation">
   <input type="hidden" th:value="${token}" name="token">
 </form>
 <form style="display: none;" typeof="hidden" method="get" id="userPageForm" action="/user/userPage">
