@@ -292,8 +292,8 @@ public class TeacherController {
         return "redirect:/teacher/getMaterialsList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
-    @GetMapping("/submitCellLesson")
-    public String submitCellLesson(Teacher teacher, Lesson lesson, Model model) throws IOException {
+    @GetMapping("/submitUserMaterialPage")
+    public String submitUserMaterialPage(Teacher teacher, Lesson lesson, Model model) throws IOException {
         Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
         if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
             model.addAttribute("errorText", "Такого користувача не існує!");
@@ -343,11 +343,52 @@ public class TeacherController {
             teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
 
             model.addAttribute("userId", user.getId());
+            model.addAttribute("user", user);
             model.addAttribute("languageId", lesson.getLanguageId());
             model.addAttribute("teacher", teacherDto);
             model.addAttribute("materials", newList);
             model.addAttribute("available", available);
+            model.addAttribute("day", lesson.getDay());
+            model.addAttribute("time", lesson.getTime());
+
             return "teacher/userMaterialPage";
+        }
+
+        return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
+    }
+
+    @GetMapping("/submitCellLesson")
+    public String submitCellLesson(Teacher teacher, Lesson lesson, Model model) throws IOException {
+        Teacher teacherFounded = teacherService.findByEmail(teacher.getEmail());
+        if (teacherFounded == null || !teacherFounded.getPassword().equals(teacher.getPassword())) {
+            model.addAttribute("errorText", "Такого користувача не існує!");
+            return "authorisation/authorisation";
+        }
+
+        lesson.setTeacherId(teacherFounded.getId());
+        List<Lesson> lessonList = lessonService.findAllByTeacherId(teacherFounded.getId());
+        for (Lesson element : lessonList
+        ) {
+            if (element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime()) {
+                lesson = element;
+                break;
+            }
+        }
+
+        User user = userService.findById(lesson.getUserId());
+        if (user != null) {
+
+            TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
+            teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
+
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("user", user);
+            model.addAttribute("languageId", lesson.getLanguageId());
+            model.addAttribute("teacher", teacherDto);
+            model.addAttribute("day", lesson.getDay());
+            model.addAttribute("time", lesson.getTime());
+
+            return "teacher/userLessonPage";
         }
 
         return "redirect:/teacher/teacherSchedule?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
@@ -371,7 +412,7 @@ public class TeacherController {
                  ) {
                 if (Objects.equals(lesson.getTeacherId(), teacherFounded.getId()) &&
                         Objects.equals(lesson.getLanguageId(), userMaterial.getLanguageId())) {
-                    return "redirect:/teacher/submitCellLesson?email=" + teacher.getEmail() + "&password=" + teacher.getPassword()
+                    return "redirect:/teacher/submitUserMaterialPage?email=" + teacher.getEmail() + "&password=" + teacher.getPassword()
                             + "&day=" + lesson.getDay() + "&time=" + lesson.getTime();
                 }
             }
@@ -405,7 +446,7 @@ public class TeacherController {
             ) {
                 if (Objects.equals(lesson.getTeacherId(), teacherFounded.getId()) &&
                         Objects.equals(lesson.getLanguageId(), userMaterial.getLanguageId())) {
-                    return "redirect:/teacher/submitCellLesson?email=" + teacher.getEmail() + "&password=" + teacher.getPassword()
+                    return "redirect:/teacher/submitUserMaterialPage?email=" + teacher.getEmail() + "&password=" + teacher.getPassword()
                             + "&day=" + lesson.getDay() + "&time=" + lesson.getTime();
                 }
             }

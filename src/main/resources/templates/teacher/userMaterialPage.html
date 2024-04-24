@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
     <link rel="stylesheet" href="/style/teacher/tableStyle.css">
     <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/teacher/controlButtonsStyle.css">
     <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
@@ -70,7 +71,15 @@
             </td>
         </tr>
     </table>
-    <h2 id="emptyList" th:unless="${not #lists.isEmpty(materials)}">Список ваших навчальних матеріалів порожній</h2>
+    <h2 id="emptyList" th:unless="${not #lists.isEmpty(materials)}">Список ваших навчальних матеріалів порожній</h2><br>
+
+    <form id="formCellSubmitLesson" typeof="hidden" method="get" action="/teacher/submitCellLesson">
+        <input type="hidden" th:value="${teacher.email}" name="email">
+        <input type="hidden" th:value="${teacher.password}" name="password">
+        <input id="cellSubmitDayLesson" type="hidden" th:value="${day}" name="day">
+        <input id="cellSubmitTimeLesson" type="hidden" th:value="${time}" name="time">
+        <input class="controlButton" type="submit" value="Назад">
+    </form>
 </main>
 
 <form typeof="hidden" method="get" id="teacherPageForm" action="/teacher/teacherPage">

@@ -42,7 +42,7 @@
                             <div class="content-cell"><b th:text="${elem.surname}"></b></div><br>
                             <div class="content-cell" th:text="'Електронна пошта: ' + ${elem.email}"></div>
                             <div class="content-cell" th:if="${elem.phone != null}" th:text="'Номер телефону: ' + ${elem.phone}"></div><br>
-                            <div th:if="${not #lists.isEmpty(elem.contacts)}" class="content-cell" th:text="'Контакти: '"></div>
+                            <div th:if="${not #lists.isEmpty(elem.contacts)}" class="content-cell" th:text="'Засоби зв'язку: '"></div>
                             <th:block th:each="contact, iterationStat : ${elem.contacts}">
                                 <div class="content-cell" th:text="${contact}"></div>
                             </th:block>

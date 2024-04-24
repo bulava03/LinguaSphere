@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/teacher/controlButtonsStyle.css">
+    <link rel="stylesheet" href="/style/userPageStyle.css">
+    <link rel="stylesheet" href="/style/linkButtonStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <div th:replace="~{/user/partsOfPages/aside}"></div>
+
+    <div>
+        <div style="border-radius: 20px; background-color: #329DFF; margin: 30px; padding: 30px;">
+            <form style="text-align: center;" method="post" action="/user/setLink">
+                <h2 style="font-size: 32px;">Оберіть посилання:</h2>
+                <table style="margin: auto;">
+                    <tr style="background-color: #329DFF; text-align: left; margin: auto;" th:each="elem : ${preferredLinkList}">
+                        <td style="width: 20%;">
+                            <input type="radio" th:checked="${preferredLink == elem}"
+                                   style="width: 25px; height: 25px;" th:id="${elem}" th:value="${elem}" name="link">
+                        </td>
+                        <td style="width: 80%; text-align: left;">
+                            <h2 style="font-size: 25px;" th:text="${elem}"></h2>
+                        </td>
+                    </tr>
+                </table><br><br>
+                <input type="hidden" th:value="${teacherId}" name="teacherId">
+                <input type="hidden" th:value="${token}" name="token">
+                <input class="chooseLinkButton" type="submit" value="Зберегти"><br>
+            </form>
+        </div>
+
+        <button class="controlButton" onclick="submitLinksPageInUserPage()" style="margin-top: 25px; margin-bottom: 25px;">Назад</button><br>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="getLinksPageForm" action="/user/getLinksPage">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/userPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

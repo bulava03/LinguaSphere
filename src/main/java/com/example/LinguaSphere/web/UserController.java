@@ -25,10 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -52,6 +50,10 @@ public class UserController {
     private MaterialsService materialsService;
     @Autowired
     private UserMaterialService userMaterialService;
+    @Autowired
+    private TeacherMaterialService teacherMaterialService;
+    @Autowired
+    private PreferredLinkService preferredLinkService;
     @Autowired
     private PaymentService paymentService;
     @Autowired
@@ -201,6 +203,169 @@ public class UserController {
         } else {
             return "redirect:/user/teacherSchedulePage?token=" + request.getToken();
         }
+    }
+
+    @GetMapping("getLessonPage")
+    public String getLessonPage(RequestDto request, LessonTemplate lesson, Model model) {
+        Object[] authResult = userService.authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
+
+        Lesson usersLesson = lessonService.findAllByUserId(userFounded.getId())
+                .stream()
+                .filter(element -> element.getDay() == lesson.getDay() && element.getTime() == lesson.getTime())
+                .findFirst()
+                .orElse(null);
+
+        Teacher teacherFounded = teacherService.findById(usersLesson.getTeacherId());
+        if (teacherFounded != null) {
+            TeacherLanguage teacherLanguage = teacherLanguageService.findByTeacherIdAndLanguageId(
+                    teacherFounded.getId(), usersLesson.getLanguageId());
+            double price = teacherLanguage.getPrice();
+
+            Optional<String> preferredLinkReceived = preferredLinkService.findByUserIdAndTeacherId(userFounded.getId(), teacherFounded.getId());
+            String preferredLink = null;
+            String program = null;
+            if (preferredLinkReceived.isPresent()) {
+                preferredLink = preferredLinkReceived.get();
+
+                String[] temp = preferredLink.split(": ");
+
+                preferredLink = temp[1];
+                program = temp[0];
+            }
+
+            model.addAttribute("user", userDto);
+            model.addAttribute("price", price);
+            model.addAttribute("lesson", usersLesson);
+            model.addAttribute("day", lesson.getDay());
+            model.addAttribute("time", lesson.getTime());
+            model.addAttribute("teacherId", teacherFounded.getId());
+            model.addAttribute("token", request.getToken());
+            model.addAttribute("preferredLink", preferredLink);
+            model.addAttribute("program", program);
+
+            return "user/lessonPage";
+        } else {
+            return "redirect:/user/submitChooseLanguageForm?token=" + request.getToken() + "&languageid=" + lesson.getLanguageId();
+        }
+    }
+
+    @GetMapping("getLinksPage")
+    public String getLinksPage(RequestDto request, Model model) throws IOException {
+        Object[] authResult = userService.authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
+
+        List<Lesson> lessonList = lessonService.findAllByUserId(userFounded.getId());
+        List<Long> teacherIds = lessonList.stream()
+                .map(Lesson::getTeacherId)
+                .distinct()
+                .toList();
+
+        List<PreferredLink> preferredLinkList = preferredLinkService.findAllByUserId(userFounded.getId());
+        for (Long element : teacherIds) {
+            if (preferredLinkList.stream()
+                    .noneMatch(elem -> Objects.equals(elem.getTeacherId(), element))) {
+                PreferredLink newLink = new PreferredLink(userFounded.getId(), element);
+                preferredLinkService.save(newLink);
+            }
+        }
+        preferredLinkList = preferredLinkService.findAllByUserId(userFounded.getId());
+
+        List<PreferredLinkDto> list = new ArrayList<>();
+        for (PreferredLink element : preferredLinkList) {
+            PreferredLinkDto toAdd = modelMapper.map(element, PreferredLinkDto.class);
+            Teacher teacher = teacherService.findById(element.getTeacherId());
+            toAdd.setTeacherName(teacher.getName());
+            toAdd.setTeacherSurname(teacher.getSurname());
+            toAdd.setFile(Base64.encodeBase64String(teacher.getImage()));
+            list.add(toAdd);
+        }
+
+        model.addAttribute("user", userDto);
+        model.addAttribute("preferredLinkList", list);
+        model.addAttribute("token", request.getToken());
+        return "user/linksPage";
+    }
+
+    @GetMapping("getChoosingLinkPage")
+    public String getChoosingLinkPage(RequestDto request, PreferredLinkDto preferredLinkDto, Model model) throws IOException {
+        Object[] authResult = userService.authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
+
+        Teacher teacher = teacherService.findById(preferredLinkDto.getTeacherId());
+        Optional<String> linkOptional = preferredLinkService.findByUserIdAndTeacherId(userFounded.getId(), preferredLinkDto.getTeacherId());
+
+        String preferredLink;
+        if (linkOptional.isPresent() || linkOptional.toString().isEmpty()) {
+            preferredLink = linkOptional.toString();
+        } else {
+            preferredLink = null;
+        }
+
+        model.addAttribute("user", userDto);
+        model.addAttribute("preferredLinkList", teacher.getContacts());
+        model.addAttribute("preferredLink", preferredLink);
+        model.addAttribute("teacherId", preferredLinkDto.getTeacherId());
+        model.addAttribute("token", request.getToken());
+        return "user/choosingLinkPage";
+    }
+
+    @PostMapping("setLink")
+    public String setLink(RequestDto request, PreferredLinkDto preferredLinkDto, Model model) throws IOException {
+        Object[] authResult = userService.authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
+
+        PreferredLink preferredLink = preferredLinkService.findElementByUserIdAndTeacherId(userFounded.getId(), preferredLinkDto.getTeacherId());
+        preferredLink.setPreferredLink(preferredLinkDto.getLink());
+        preferredLinkService.save(preferredLink);
+
+        return "redirect:/user/getLinksPage?token=" + request.getToken();
+    }
+
+    @GetMapping("submitUserMaterialPage")
+    public String submitUserMaterialPage(RequestDto request, LessonTemplate lesson, Model model) throws IOException {
+        Object[] authResult = userService.authenticateUser(request);
+        if (!(boolean) authResult[0]) {
+            return "authorisation/authorisation";
+        }
+        User userFounded = userService.findByEmail((String) authResult[1]).orElse(null);
+        UserDtoBytes userDto = userHelper.getUserDtoBytes(userFounded);
+
+        Long languageId = lesson.getLanguageId();
+
+        List<UserMaterial> userMaterialList = userMaterialService.findAllByUserId(userFounded.getId());
+        userMaterialList.removeIf(material -> !Objects.equals(material.getLanguageId(), languageId));
+        List<Long> materialsIds = userHelper.getIdsFromUserMaterialsList(userMaterialList);
+        List<Long> teacherMaterialIds = teacherMaterialService.findMaterialsByTeacherId(lesson.getTeacherId());
+
+        materialsIds.retainAll(teacherMaterialIds);
+        List<Material> materials = materialsService.findAllById(materialsIds);
+        List<MaterialDtoBytes> materialsDtoList = languageService.getMaterialDtoBytesFromList(materials);
+
+        model.addAttribute("user", userDto);
+        model.addAttribute("day", lesson.getDay());
+        model.addAttribute("time", lesson.getTime());
+        model.addAttribute("languageId", languageId);
+        model.addAttribute("materials", materialsDtoList);
+        model.addAttribute("languageSubName", languageService.findById(languageId).getSubName());
+        model.addAttribute("token", request.getToken());
+        return "user/lessonMaterialsPage";
     }
 
     @GetMapping("dailyFact")
@@ -391,7 +556,7 @@ public class UserController {
     }
 
     @GetMapping("/personalInformation")
-    public String getPersonalInformationForm(RequestDto request, Model model) throws IOException {
+    public String getPersonalInformationForm(RequestDto request, Model model) {
         Object[] authResult = userService.authenticateUser(request);
         if (!(boolean) authResult[0]) {
             return "authorisation/authorisation";

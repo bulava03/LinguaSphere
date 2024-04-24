@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+    <link rel="stylesheet" href="/style/teacher/tableStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/teacher/controlButtonsStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+    <div th:replace="~{/shared/layout5}"></div>
+</header>
+
+<form id="addAccessForm" action="/teacher/addAccess" method="post">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+    <input type="hidden" th:value="${languageId}" name="languageId">
+    <input type="hidden" th:value="${userId}" name="userId">
+    <input id="idAddAccess" type="hidden" value="" name="materialId">
+</form>
+<form id="removeAccessForm" action="/teacher/removeAccess" method="post">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+    <input type="hidden" th:value="${languageId}" name="languageId">
+    <input type="hidden" th:value="${userId}" name="userId">
+    <input id="idRemoveAccess" type="hidden" value="" name="materialId">
+</form>
+
+<main>
+    <div style="border-radius: 20px; background-color: #329DFF; margin: 30px;"><br>
+        <h2>Контакти учня</h2>
+        <th:block th:each="contact: ${user.contacts}">
+            <a th:text="${contact}" th:href="${contact}" style="font-size: 28px; color: #8a1723; text-decoration: underline;"></a><br>
+        </th:block><br><br>
+    </div>
+
+    <form id="formCellSubmitLesson" typeof="hidden" method="get" action="/teacher/submitUserMaterialPage">
+        <input type="hidden" th:value="${teacher.email}" name="email">
+        <input type="hidden" th:value="${teacher.password}" name="password">
+        <input id="cellSubmitDayLesson" type="hidden" th:value="${day}" name="day">
+        <input id="cellSubmitTimeLesson" type="hidden" th:value="${time}" name="time">
+        <input class="controlButton" type="submit" value="Доступ учня до матеріалів">
+    </form>
+
+    <button class="controlButton" onclick="submitPageForm('/teacher/teacherSchedule')">Назад</button><br>
+</main>
+
+<form typeof="hidden" method="get" id="teacherPageForm" action="/teacher/teacherPage">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/teacher/userMaterialPage.js"></script>
+<script src="/script/teacher/teacherPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

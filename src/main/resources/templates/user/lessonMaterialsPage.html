@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}"></title>
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/teacher/controlButtonsStyle.css">
     <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
     <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
-    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
     <link rel="stylesheet" href="/style/dropdownStyle.css">
 </head>
 
@@ -47,7 +50,12 @@
     </table>
     <h2 id="emptyList" th:unless="${not #lists.isEmpty(materials)}">Список навчальних матеріалів порожній</h2>
 
-    <button class="button" onclick="submitPageForm()">На головну</button>
+    <form method="get" id="formCellSubmit" action="/user/getLessonPage">
+        <input type="hidden" th:value="${token}" name="token">
+        <input id="cellSubmitDay" type="hidden" th:value="${day}" name="day">
+        <input id="cellSubmitTime" type="hidden" th:value="${time}" name="time">
+        <input class="controlButton" type="submit" value="Назад">
+    </form>
 </main>
 
 <div th:replace="~{/shared/footer}"></div>

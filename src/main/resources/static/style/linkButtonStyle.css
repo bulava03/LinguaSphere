@@ -1,0 +1,14 @@
+.chooseLinkButton {
+    border: 0;
+    border-radius: 20px;
+    background-color: #F69809;
+    color: white; width: 250px;
+    height: 70px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.chooseLinkButton:hover {
+    background-color: #fda41c;
+}

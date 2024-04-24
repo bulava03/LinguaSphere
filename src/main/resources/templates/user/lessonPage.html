@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaSphere</title>
+    <link rel="stylesheet" href="/style/shared/footerStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/teacher/controlButtonsStyle.css">
+    <link rel="stylesheet" href="/style/userPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header>
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <div th:replace="~{/user/partsOfPages/aside}"></div>
+
+    <div>
+        <div style="border-radius: 20px; background-color: #329DFF; margin: 30px;"><br>
+            <h1>Посилання на урок</h1>
+            <h2 th:if="${preferredLink == null || preferredLink == ''}" style="color: #8a1723;">Посилання на урок не було обране</h2>
+            <p style="color: white; font-size: 28px; display: inline;" th:text="${program} + ': '"></p>
+            <a th:unless="${preferredLink == null || preferredLink == ''}"
+               style="color: #8a1723; font-size: 28px; font-decoration: underlined;" th:text="${preferredLink}" th:href="${preferredLink}"></a><br><br><br>
+        </div>
+
+        <h1 th:text="'Ціна урока: ' + ${price}"></h1>
+
+        <form id="formCellSubmitLesson" typeof="hidden" method="get" action="/user/submitUserMaterialPage">
+            <input type="hidden" th:value="${token}" name="token">
+            <input type="hidden" th:value="${teacherId}" name="teacherId">
+            <input type="hidden" th:value="${lesson.languageId}" name="languageId">
+            <input id="cellSubmitDayLesson" type="hidden" th:value="${day}" name="day">
+            <input id="cellSubmitTimeLesson" type="hidden" th:value="${time}" name="time">
+            <input class="controlButton" type="submit" value="Навчальні матеріали">
+        </form>
+
+        <button class="controlButton" onclick="submitSchedule()" style="margin-top: 25px; margin-bottom: 25px;">Назад</button><br>
+    </div>
+</main>
+
+<form typeof="hidden" method="get" id="scheduleForm" action="/user/userSchedule">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="choosingLanguageFormInUserPage" action="/user/getLanguageChoosingPageInUserPage">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="dailyForm" action="/user/dailyFact">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="creatureListGettingForm" action="/user/getCreatureLanguageList">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="getMaterialsLanguageForm" action="/user/getMaterialsLanguageList">
+    <input type="hidden" th:value="${token}" name="token">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/userPageForms.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

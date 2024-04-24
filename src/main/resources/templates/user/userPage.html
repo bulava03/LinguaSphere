@@ -23,6 +23,7 @@
     <button onclick="submitSchedule()">Розклад занять</button><br>
     <button onclick="submitLanguageChoosingFormInUserPage()">Додати урок</button><br>
     <button onclick="submitGetMaterialsLanguageForm()">Навчальні матеріали</button><br>
+    <button onclick="submitLinksPageInUserPage()">Вибір посилань на уроки</button><br>
     <button href="#">Мої досягнення</button><br>
     <button onclick="submitDailyForm()">Щоденні цікавинки</button><br>
     <button onclick="submitCreatureListGettingForm()">"Хто я?"</button><br>
@@ -43,6 +44,9 @@
   <input type="hidden" th:value="${token}" name="token">
 </form>
 <form typeof="hidden" method="get" id="getMaterialsLanguageForm" action="/user/getMaterialsLanguageList">
+  <input type="hidden" th:value="${token}" name="token">
+</form>
+<form typeof="hidden" method="get" id="getLinksPageForm" action="/user/getLinksPage">
   <input type="hidden" th:value="${token}" name="token">
 </form>
 

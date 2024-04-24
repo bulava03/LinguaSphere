@@ -27,3 +27,8 @@ function submitGetMaterialsLanguageForm() {
     var form = document.getElementById('getMaterialsLanguageForm');
     form.submit();
 }
+
+function submitLinksPageInUserPage() {
+    var form = document.getElementById('getLinksPageForm');
+    form.submit();
+}

@@ -73,6 +73,21 @@
     cursor: pointer;
 }
 
+.chooseLinkButton {
+    border: 0;
+    border-radius: 20px;
+    background-color: #F69809;
+    color: white; width: 300px;
+    height: 80px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.chooseLinkButton:hover {
+    background-color: #fda41c;
+}
+
 .button:hover {
     background-color: #fda41c;
 }
