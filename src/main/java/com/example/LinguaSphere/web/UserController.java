@@ -307,11 +307,9 @@ public class UserController {
         Teacher teacher = teacherService.findById(preferredLinkDto.getTeacherId());
         Optional<String> linkOptional = preferredLinkService.findByUserIdAndTeacherId(userFounded.getId(), preferredLinkDto.getTeacherId());
 
-        String preferredLink;
-        if (linkOptional.isPresent() || linkOptional.toString().isEmpty()) {
-            preferredLink = linkOptional.toString();
-        } else {
-            preferredLink = null;
+        String preferredLink = null;
+        if (linkOptional.isPresent() && !linkOptional.toString().isEmpty()) {
+            preferredLink = linkOptional.get();
         }
 
         model.addAttribute("user", userDto);
