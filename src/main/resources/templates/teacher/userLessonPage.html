@@ -33,6 +33,14 @@
 
 <main>
     <div style="border-radius: 20px; background-color: #329DFF; margin: 30px;"><br>
+        <h1>Посилання на урок</h1>
+        <h2 th:if="${preferredLink == null || preferredLink == ''}" style="color: #8a1723;">Посилання на урок не було обране</h2>
+        <p style="color: white; font-size: 28px; display: inline;" th:text="${program} + ': '"></p>
+        <a th:unless="${preferredLink == null || preferredLink == ''}"
+           style="color: #8a1723; font-size: 28px; font-decoration: underlined;" th:text="${preferredLink}" th:href="${preferredLink}"></a><br><br><br>
+    </div>
+
+    <div style="border-radius: 20px; background-color: #329DFF; margin: 30px;"><br>
         <h2>Контакти учня</h2>
         <th:block th:each="contact: ${user.contacts}">
             <a th:text="${contact}" th:href="${contact}" style="font-size: 28px; color: #8a1723; text-decoration: underline;"></a><br>

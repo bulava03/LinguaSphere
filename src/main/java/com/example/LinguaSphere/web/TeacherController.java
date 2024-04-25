@@ -24,6 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/teacher")
@@ -43,6 +44,8 @@ public class TeacherController {
     private TeacherLanguageService teacherLanguageService;
     @Autowired
     private UserMaterialService userMaterialService;
+    @Autowired
+    private PreferredLinkService preferredLinkService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -381,12 +384,26 @@ public class TeacherController {
             TeacherDtoBytes teacherDto = modelMapper.map(teacherFounded, TeacherDtoBytes.class);
             teacherDto.setFile(Base64.encodeBase64String(teacherFounded.getImage()));
 
+            Optional<String> preferredLinkReceived = preferredLinkService.findByUserIdAndTeacherId(user.getId(), teacherFounded.getId());
+            String preferredLink = null;
+            String program = null;
+            if (preferredLinkReceived.isPresent()) {
+                preferredLink = preferredLinkReceived.get();
+
+                String[] temp = preferredLink.split(": ");
+
+                preferredLink = temp[1];
+                program = temp[0];
+            }
+
             model.addAttribute("userId", user.getId());
             model.addAttribute("user", user);
             model.addAttribute("languageId", lesson.getLanguageId());
             model.addAttribute("teacher", teacherDto);
             model.addAttribute("day", lesson.getDay());
             model.addAttribute("time", lesson.getTime());
+            model.addAttribute("preferredLink", preferredLink);
+            model.addAttribute("program", program);
 
             return "teacher/userLessonPage";
         }
