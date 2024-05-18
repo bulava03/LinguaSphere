@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+    <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/user/gradingPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+    <div th:replace="~{/shared/layout5}"></div>
+</header>
+
+<main>
+    <h2>Ваш досвід викладання</h2>
+    <table id="table" th:if="${not #lists.isEmpty(experiences)}">
+        <tr>
+            <th>Мова</th>
+            <th>Досвід</th>
+            <th style="display:none;"></th>
+            <th class="action-column"></th>
+        </tr>
+        <tr th:each="experience : ${experiences}">
+            <td th:text="${experience.language}"></td>
+            <td th:text="${experience.experience}"></td>
+            <td style="display: none;" th:text="${experience.id}"></td>
+
+            <td class="action-column" onclick="updateExperience(this.parentNode.getElementsByTagName('td')[2].innerText)">Змінити</td>
+        </tr>
+    </table>
+    <h2 id="emptyList" th:unless="${not #lists.isEmpty(experiences)}">Наразі ви не викладаєте жодної мови</h2>
+
+    <br>
+
+    <button id="backButton" onclick="submitPageForm('/teacher/teacherPage')">Назад</button>
+</main>
+
+<form id="updateExperienceForm" typeof="hidden" method="get" action="/experience/updateExperience">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+    <input id="experienceIdInput" type="hidden" value="" name="id">
+</form>
+
+<form typeof="hidden" method="get" id="teacherPageForm" action="/teacher/teacherPage">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/teacher/teacherPageForms.js"></script>
+<script src="/script/teacher/experience.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

@@ -1,18 +1,12 @@
 package com.example.LinguaSphere.web;
 
 import com.example.LinguaSphere.config.security.JwtTokenService;
-import com.example.LinguaSphere.entity.Admin;
-import com.example.LinguaSphere.entity.Teacher;
-import com.example.LinguaSphere.entity.TeacherLanguage;
-import com.example.LinguaSphere.entity.User;
+import com.example.LinguaSphere.entity.*;
 import com.example.LinguaSphere.entity.dto.TeacherRegistration;
 import com.example.LinguaSphere.entity.dto.UserDto;
 import com.example.LinguaSphere.entity.dto.UserForm;
 import com.example.LinguaSphere.helper.ConvertHelper;
-import com.example.LinguaSphere.service.LanguageService;
-import com.example.LinguaSphere.service.TeacherLanguageService;
-import com.example.LinguaSphere.service.TeacherService;
-import com.example.LinguaSphere.service.UserService;
+import com.example.LinguaSphere.service.*;
 import com.example.LinguaSphere.service.impl.UserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +39,10 @@ public class RegistrationController {
     private LanguageService languageService;
     @Autowired
     private TeacherLanguageService teacherLanguageService;
+    @Autowired
+    private TeacherParamsService teacherParamsService;
+    @Autowired
+    private TeacherExperienceService teacherExperienceService;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -135,6 +133,14 @@ public class RegistrationController {
             return "registration/registrationTeacher";
         } else {
             teacherService.save(teacher);
+            teacher = teacherService.findByEmail(teacher.getEmail());
+            List<Language> languageList = languageService.findAll();
+            for (Language elem : languageList) {
+                TeacherParams teacherParams = new TeacherParams(teacher.getId(), elem.getId(), 0, 0, 0);
+                teacherParamsService.save(teacherParams);
+                TeacherExperience teacherExperience = new TeacherExperience(teacher.getId(), elem.getId());
+                teacherExperienceService.save(teacherExperience);
+            }
             List<TeacherLanguage> subjects = new ArrayList<>();
             List<String> teachersSubjects = Arrays.stream(teacherRegistration.getLanguages()).toList();
             for (String subject : teachersSubjects

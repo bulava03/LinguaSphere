@@ -221,7 +221,6 @@ public class TeacherController {
         teacherMaterial.setTeacherId(teacherFounded.getId());
         teacherMaterialService.save(teacherMaterial);
 
-        model.addAttribute("teacher", teacher);
         return "redirect:/teacher/getMaterialsList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
@@ -529,6 +528,16 @@ public class TeacherController {
         model.addAttribute("languages", teacherLanguages);
         model.addAttribute("teacher", teacherDto);
         return "teacher/pricesPage";
+    }
+
+    @GetMapping("/getCertificatesList")
+    public String getGradesList(Teacher teacher, Model model) {
+        return "redirect:/certificate/getCertificatesList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
+    }
+
+    @GetMapping("/getExperienceList")
+    public String getExperienceList(Teacher teacher, Model model) {
+        return "redirect:/experience/getExperienceList?email=" + teacher.getEmail() + "&password=" + teacher.getPassword();
     }
 
 }

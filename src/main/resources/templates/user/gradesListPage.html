@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+    <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <h2>Поділіться враженням від вчителів</h2>
+    <table id="table" th:if="${not #lists.isEmpty(grades)}">
+        <tr>
+            <th>Фото</th>
+            <th>Викладач</th>
+            <th>Мова</th>
+            <th style="display: none;"></th>
+            <th>Оцінка</th>
+            <th style="display: none;"></th>
+            <th class="action-column"></th>
+        </tr>
+        <tr th:each="grade : ${grades}">
+            <td th:text="${grade.name + ' ' + grade.surname}"></td>
+            <td>
+                <img th:src="'data:image/jpeg;base64,' + ${grade.file}" alt="Image" width="100" height="100">
+            </td>
+            <td th:text="${grade.language}"></td>
+            <td style="display: none;" th:text="${grade.languageId}"></td>
+            <td th:if="${grade.grade == -1}">Не оцінено</td>
+            <td th:if="${grade.grade != -1}" th:text="${grade.grade}"></td>
+            <td style="display: none;" th:text="${grade.id}"></td>
+
+            <td class="action-column" onclick="getGradingPage(this.parentNode.getElementsByTagName('td')[5].innerText)">Оцінити</td>
+        </tr>
+    </table>
+    <h2 id="emptyList" th:unless="${not #lists.isEmpty(grades)}">Список викладачів порожній</h2>
+</main>
+
+<form id="getGradingPageForm" typeof="hidden" method="get" action="/grade/getGradingPage">
+    <input type="hidden" th:value="${token}" name="token">
+    <input id="gradeId" type="hidden" value="" name="id">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/userPageForms.js"></script>
+<script src="/script/user/grades.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

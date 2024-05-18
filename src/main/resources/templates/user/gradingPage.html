@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+    <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/user/gradingPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+    <div th:replace="~{/shared/layout2}"></div>
+</header>
+
+<main>
+    <h2>Оберіть оцінку</h2>
+    <table>
+        <tr>
+            <td onclick="submitGrade(1)" class="gradeButton" style="width: 10%; border-radius: 20px 0 0 20px; border-top: none; border-bottom: none; border-left: none;">1</td>
+            <td onclick="submitGrade(2)" class="gradeButton" style="width: 10%; border-top: none; border-bottom: none;">2</td>
+            <td onclick="submitGrade(3)" class="gradeButton" style="width: 10%; border-top: none; border-bottom: none;">3</td>
+            <td onclick="submitGrade(4)" class="gradeButton" style="width: 10%; border-top: none; border-bottom: none;">4</td>
+            <td onclick="submitGrade(5)" class="gradeButton" style="width: 10%; border-top: none; border-bottom: none;">5</td>
+            <td onclick="submitGrade(6)" class="gradeButton" style="width: 10%; border-top: none; border-bottom: none;">6</td>
+            <td onclick="submitGrade(7)" class="gradeButton" style="width: 10%; border-top: none; border-bottom: none;">7</td>
+            <td onclick="submitGrade(8)" class="gradeButton" style="width: 10%; border-top: none; border-bottom: none;">8</td>
+            <td onclick="submitGrade(9)" class="gradeButton" style="width: 10%; border-top: none; border-bottom: none;">9</td>
+            <td onclick="submitGrade(10)" class="gradeButton" style="width: 10%; border-radius: 0 20px 20px 0; border-top: none; border-bottom: none; border-right: none;">10</td>
+        </tr>
+    </table>
+
+    <br>
+
+    <form method="get" action="/grade/getGradesList">
+        <input type="hidden" th:value="${token}" name="token">
+        <input id="backButton" type="submit" value="Назад">
+    </form>
+
+    <br>
+</main>
+
+<form id="getGradingPageForm" typeof="hidden" method="get" action="/grade/getGradingPage">
+    <input type="hidden" th:value="${token}" name="token">
+    <input type="hidden" value="" name="id">
+</form>
+<form id="gradingForm" typeof="hidden" method="post" action="/grade/setGrade">
+    <input type="hidden" th:value="${token}" name="token">
+    <input type="hidden" th:value="${gradeId}" name="id">
+    <input id="gradingInput" type="hidden" value="" name="grade">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/userPageForms.js"></script>
+<script src="/script/user/grades.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

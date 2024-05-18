@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" href="/style/superAdmin/listPageStyle.css">
+    <link rel="stylesheet" href="/style/superAdmin/tableStyle.css">
+    <link rel="stylesheet" href="/style/shared/headerUserPageStyle.css">
+    <link rel="stylesheet" href="/style/user/gradingPageStyle.css">
+    <link rel="stylesheet" href="/style/dropdownStyle.css">
+</head>
+
+<body>
+<header id="layoutHeader">
+    <div th:replace="~{/shared/layout5}"></div>
+</header>
+
+<main>
+    <h2>Ваші дипломи та сертифікати</h2>
+    <table id="table" th:if="${not #lists.isEmpty(certificates)}">
+        <tr>
+            <th>Мова</th>
+            <th>Сертифікат</th>
+            <th style="display:none;"></th>
+            <th class="action-column"></th>
+        </tr>
+        <tr th:each="certificate : ${certificates}">
+            <td th:text="${certificate.language}"></td>
+            <td>
+                <div th:switch="${certificate.fileType}">
+                    <a th:case="'application/pdf'" th:href="'data:application/pdf;base64,' + ${certificate.file}" download="document.pdf">Download PDF</a>
+                    <a th:case="'application/vnd.openxmlformats-officedocument.wordprocessingml.document'" th:href="'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,' + ${base64String}" download="document.docx">Download DOCX</a>
+                </div>
+            </td>
+            <td style="display: none;" th:text="${certificate.id}"></td>
+
+            <td class="action-column" onclick="deleteCertificate(this.parentNode.getElementsByTagName('td')[2].innerText)">Видалити</td>
+        </tr>
+    </table>
+    <h2 id="emptyList" th:unless="${not #lists.isEmpty(certificates)}">Список сертифікатів порожній</h2>
+
+    <br>
+
+    <button id="backButton" onclick="submitPageForm('/certificate/getCertificateAddingPage')">Додати</button><br>
+    <button id="backButton" onclick="submitPageForm('/teacher/teacherPage')">Назад</button>
+</main>
+
+<form id="deleteCertificateForm" typeof="hidden" method="post" action="/certificate/deleteCertificate">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+    <input id="certificateIdInput" type="hidden" value="" name="id">
+</form>
+
+<form typeof="hidden" method="get" id="teacherPageForm" action="/teacher/teacherPage">
+    <input type="hidden" th:value="${teacher.email}" name="email">
+    <input type="hidden" th:value="${teacher.password}" name="password">
+</form>
+
+<div th:replace="~{/shared/footer}"></div>
+
+<script src="/script/teacher/teacherPageForms.js"></script>
+<script src="/script/teacher/certificates.js"></script>
+<script src="/script/dropdown.js"></script>
+</body>
+</html>

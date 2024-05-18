@@ -28,6 +28,8 @@
             <input type="submit" class="button" value="Пройдіть тест тут">
         </form>
 
+        <h2 th:if="${#lists.isEmpty(teachers)}">На жаль, наразі немає вільних викладачів цієї мови</h2>
+
         <div class="table-container" th:each="elem : ${teachers}">
             <div class="table-wrapper">
                 <table class="teacherTable" th:attr="onclick='submitTeacher(\'' + ${elem.email} + '\')'">

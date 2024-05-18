@@ -2,10 +2,12 @@ package com.example.LinguaSphere.web;
 
 import com.example.LinguaSphere.entity.Admin;
 import com.example.LinguaSphere.entity.Language;
+import com.example.LinguaSphere.entity.TeacherParams;
 import com.example.LinguaSphere.entity.dto.AdminUpdate;
 import com.example.LinguaSphere.service.AdminService;
 import com.example.LinguaSphere.service.LanguageService;
 import com.example.LinguaSphere.service.LessonService;
+import com.example.LinguaSphere.service.TeacherParamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping("/superAdmin")
@@ -25,6 +28,8 @@ public class SuperAdminController {
     private LanguageService languageService;
     @Autowired
     private LessonService lessonService;
+    @Autowired
+    private TeacherParamsService teacherParamsService;
 
     @GetMapping()
     public String getSuperAdminPage() {
@@ -124,6 +129,8 @@ public class SuperAdminController {
         Language languageRemove = languageService.findByName(language.getName());
         if (languageRemove != null) {
             languageService.deleteById(languageRemove.getId());
+            List<TeacherParams> teacherParamsList = teacherParamsService.findAllByLanguageId(languageRemove.getId());
+            teacherParamsService.deleteAll(teacherParamsList);
         }
 
         return "redirect:/superAdmin/getLanguagesList";

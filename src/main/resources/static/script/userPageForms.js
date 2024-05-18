@@ -32,3 +32,8 @@ function submitLinksPageInUserPage() {
     var form = document.getElementById('getLinksPageForm');
     form.submit();
 }
+
+function submitGradesListPage() {
+    var form = document.getElementById('getGradesListForm');
+    form.submit();
+}

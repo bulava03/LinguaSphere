@@ -1,0 +1,32 @@
+#backButton {
+    background-color: #F69809;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    text-align: center;
+    border: 0;
+    border-radius: 20px;
+    width: 500px;
+    height: 100px;
+    cursor: pointer;
+}
+
+#backButton:hover {
+    background-color: #fda41c;
+}
+
+.gradeButton {
+    background-color: #F69809;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    border: 0;
+    cursor: pointer;
+}
+
+.gradeButton:hover {
+    background-color: #fda41c;
+}

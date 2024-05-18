@@ -3,6 +3,7 @@ package com.example.LinguaSphere.web;
 import com.example.LinguaSphere.config.security.JwtTokenService;
 import com.example.LinguaSphere.entity.*;
 import com.example.LinguaSphere.entity.dto.*;
+import com.example.LinguaSphere.extra.TeacherRatingCalc;
 import com.example.LinguaSphere.helper.ConvertHelper;
 import com.example.LinguaSphere.helper.CreatureHelper;
 import com.example.LinguaSphere.helper.UserHelper;
@@ -56,6 +57,8 @@ public class UserController {
     private PreferredLinkService preferredLinkService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private TeacherParamsService teacherParamsService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -150,13 +153,16 @@ public class UserController {
         }
 
         List<TeacherDtoBytes> teacherList = new ArrayList<>();
+        List<TeacherParams> teacherParamsList = new ArrayList<>();
         for (Long id : list
              ) {
             List<Lesson> lessonList = lessonService.findAllByTeacherId(id);
             lessonList.removeIf(lessonElement -> lessonElement.getUserId() != null);
 
-            if (lessonList.size() > 0) {
+            if (!lessonList.isEmpty()) {
                 Teacher teacherElement = teacherService.findById(id);
+                TeacherParams teacherParams = teacherParamsService.findByTeacherIdAndLanguageId(teacherElement.getId(), lesson.getLanguageId());
+                teacherParamsList.add(teacherParams);
                 TeacherDtoBytes teacherDtoBytes = modelMapper.map(teacherElement, TeacherDtoBytes.class);
                 teacherDtoBytes.setFile(Base64.encodeBase64String(teacherElement.getImage()));
 
@@ -168,8 +174,24 @@ public class UserController {
             }
         }
 
+        List<TeacherDtoBytes> teacherListSorted = new ArrayList<>();
+        if (!teacherParamsList.isEmpty()) {
+            teacherParamsList = TeacherRatingCalc.sortTeacherByParams(teacherParamsList);
+            List<Long> teacherIdsSorted = teacherParamsList.stream()
+                    .map(TeacherParams::getTeacherId)
+                    .toList();
+
+            for (Long element : teacherIdsSorted) {
+                Teacher teacherTemp = teacherService.findById(element);
+                String email = teacherTemp.getEmail();
+                teacherList.stream()
+                        .filter(elem -> elem.getEmail().equals(email))
+                        .findFirst().ifPresent(teacherListSorted::add);
+            }
+        }
+
         model.addAttribute("user", userDto);
-        model.addAttribute("teachers", teacherList);
+        model.addAttribute("teachers", teacherListSorted);
         model.addAttribute("languageId", lesson.getLanguageId());
         model.addAttribute("token", request.getToken());
         return "user/teachersListPage";
@@ -647,6 +669,11 @@ public class UserController {
         model.addAttribute("user", userDto);
         model.addAttribute("token", request.getToken());
         return "payment/paymentInfoPage";
+    }
+
+    @GetMapping("/getGradesList")
+    public String getGradesList(RequestDto request, Model model) {
+        return "redirect:/grade/getGradesList?token=" + request.getToken();
     }
 
 }

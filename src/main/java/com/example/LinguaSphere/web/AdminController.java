@@ -45,6 +45,10 @@ public class AdminController {
     @Autowired
     private LessonService lessonService;
     @Autowired
+    private TeacherParamsService teacherParamsService;
+    @Autowired
+    private TeacherExperienceService teacherExperienceService;
+    @Autowired
     private ModelMapper modelMapper;
 
     @GetMapping()
@@ -113,6 +117,14 @@ public class AdminController {
             return "admin/addingTeacherForm";
         } else {
             teacherService.save(teacher);
+            teacher = teacherService.findByEmail(teacher.getEmail());
+            List<Language> languageList = languageService.findAll();
+            for (Language elem : languageList) {
+                TeacherParams teacherParams = new TeacherParams(teacher.getId(), elem.getId(), 0, 0, 0);
+                teacherParamsService.save(teacherParams);
+                TeacherExperience teacherExperience = new TeacherExperience(teacher.getId(), elem.getId());
+                teacherExperienceService.save(teacherExperience);
+            }
             List<TeacherLanguage> subjects = new ArrayList<>();
             List<String> teachersSubjects = Arrays.stream(teacherRegistration.getLanguages()).toList();
             for (String subject : teachersSubjects
@@ -304,6 +316,10 @@ public class AdminController {
     public String deleteTeacher(Admin admin, String teacherEmail) {
         Long teacherId = teacherService.findByEmail(teacherEmail).getId();
         teacherService.deleteById(teacherId);
+        List<Language> languageList = languageService.findAll();
+        for (Language elem : languageList) {
+            teacherParamsService.deleteById(teacherParamsService.findByTeacherIdAndLanguageId(teacherId, elem.getId()).getId());
+        }
         return "redirect:/admin/getTeachersList?login=" + admin.getLogin() + "&password=" + admin.getPassword();
     }
 
